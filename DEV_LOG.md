@@ -194,3 +194,59 @@ Etapas como Autenticação, em que Helena tem IC de 93% e não tem data de saíd
 
 Build (62 páginas), tipos e lint passam.
 
+---
+
+## Etapa 2 — Média fidelidade (17/11)
+
+**O que pedi:** primeiro, o plano da etapa 2. A IA propôs:
+- gráficos reais;
+- a reorganização dos componentes;
+- interações: legado de verdade, copiar/baixar, voltar ao lugar certo, matriz interativa e barras clicáveis;
+- três decisões: a biblioteca de gráficos, a volta ou não do seletor de métrica, e a ordem de corte se o prazo apertasse.
+
+Respondi "faça todos": tudo, inclusive os opcionais.
+
+**Decisões assumidas pela IA a partir do "faça todos":**
+- **Gráficos próprios** (SVG e CSS), sem biblioteca, como ela tinha recomendado. Isso dá controle total para aplicar a identidade do CITi na etapa 3.
+- **O seletor de métrica não voltou.** No lugar entrou a alternativa proposta, "Como o IC foi calculado".
+
+**O que a IA gerou:**
+- **Gerador:**
+  - semanas por etapa;
+  - todas as semanas do projeto, inclusive as sem commits;
+  - a fatia de cada membro em cada um dos 4 sinais do IC.
+- **Componentes reorganizados** em `ui/`, `graficos/`, `painel/`, `risco/` e `legado/`.
+- **Gráficos:**
+  - `BarrasIC`: barras horizontais de IC, compactas nos cards do painel e completas na etapa;
+  - `LinhaDoTempo`: SVG com commits por semana empilhados por membro, tooltip por semana, legenda clicável e eixo com escala automática.
+  - Cada membro tem a mesma cor em todos os gráficos. A paleta é neutra e provisória.
+- **Interações:**
+  - o destaque de membro é compartilhado na página: clicar numa barra, na legenda ou no nome na matriz apaga os outros membros em todos os gráficos;
+  - na matriz, passar o mouse destaca a linha e a coluna, e clicar numa célula abre a etapa;
+  - "Como o IC foi calculado" mostra a tabela de fatia × peso = contribuição para qualquer membro da etapa.
+- **Legado de verdade:**
+  - as perguntas ganharam seções: Decisões e porquês, Pontos de atenção, Combinados com o cliente, Sucessão;
+  - o rascunho é salvo a cada tecla;
+  - o formulário exige pelo menos uma resposta;
+  - o documento é montado com as respostas reais, a data de registro e os commits citados (as perguntas sem resposta aparecem como "Sem resposta registrada.");
+  - Copiar (markdown), Baixar .md e Editar respostas funcionam;
+  - o "Voltar" lembra se o usuário veio do painel ou da etapa.
+
+**Verificação:** testado no navegador:
+- **barras e destaque:** clicar em Sofia apaga 54 dos 70 blocos da linha do tempo e realça a linha dela na matriz;
+- **tooltip da semana:** "Semana de 28/09 · 16 commits";
+- **matriz:** clicar na célula abre a etapa;
+- **cálculo do IC:** a soma dos 4 sinais (46,6 + 15,8 + 13,5 + 14,2) dá o IC de 90% da Sofia;
+- **legado da Sofia:**
+  - registrado a partir da etapa;
+  - erro ao enviar sem respostas;
+  - rascunho restaurado depois de recarregar;
+  - documento com as respostas e "Sem resposta registrada.";
+  - Copiar gera o markdown;
+  - Baixar gera `legado-sofia-lins.md`;
+  - Voltar leva de novo à etapa, agora "✓ Mitigado".
+
+Também conferido na largura de celular, sem rolagem horizontal. Build (62 páginas), tipos e lint passam.
+
+**O que ajustei:** _(preencher após minha revisão)_
+

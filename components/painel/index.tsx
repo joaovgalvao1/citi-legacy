@@ -1,41 +1,36 @@
 "use client";
 
-// Partes do painel e da página de etapa. Rodam no navegador porque o risco
-// e os selos mudam quando um legado é registrado.
+// Painel do projeto e página de etapa. Rodam no navegador porque o risco,
+// os selos e o destaque de membro mudam com a interação.
 
 import Link from "next/link";
 import type { Projeto } from "@/data";
 import { avaliarEtapa, emPct, etapasLideradas, lider, ranking } from "@/lib/indice";
-import { useLegados } from "@/lib/legados";
-import { Alerta, Caixa, Placeholder } from "@/components/wireframe";
-import { AcaoLegado, SeloLegado } from "@/components/wireframe/interativos";
+import { useLegados, type Origem } from "@/lib/legados";
+import { Alerta, Caixa } from "@/components/ui";
+import { AcaoLegado, SeloLegado } from "@/components/legado/acoes";
 import { RiscoDaEtapa, SeloRisco, SeloUrgencia, UrgenciaDoMembro } from "@/components/risco";
+import { BarrasIC } from "@/components/graficos/barras-ic";
+import { LinhaDoTempo } from "@/components/graficos/linha-do-tempo";
+import { DestaqueProvider } from "@/components/graficos/destaque";
+import { MatrizIC } from "./matriz";
+import { CalculoIC, ComoLerIndice } from "./calculo-ic";
 
 const linkEtapa = (projetoId: string, etapaId: string) => `/projetos/${projetoId}/etapas/${etapaId}`;
-const ic = emPct;
-
-export function ComoLerIndice() {
-  return (
-    <p className="text-xs text-gray-500">
-      Índice de Conhecimento (IC, em %): quanto do conhecimento da etapa está com cada pessoa. Combina linhas que
-      continuam no código, frequência de commits, volume de alterações e quão recente é o trabalho. Em cada etapa, os
-      IC somam 100%. Risco = concentração do conhecimento na etapa (alto ≥ 70%, moderado ≥ 45%). Urgência = quando sai
-      quem mais sabe (alta: até 21 dias, moderada: até 60 dias; sem data de saída = baixa).
-    </p>
-  );
-}
 
 /* ---------- Painel do projeto ---------- */
 
 export function PainelInterativo({ projeto }: { projeto: Projeto }) {
+  const origem: Origem = { href: `/projetos/${projeto.id}`, rotulo: projeto.nome };
   return (
-    <>
+    <DestaqueProvider>
       <Caixa titulo="Conhecimento e risco por etapa">
+        <p className="mb-3 text-xs text-gray-500">Clique num membro para destacá-lo em todos os gráficos.</p>
         <ul className="grid gap-4 sm:grid-cols-2">
           {projeto.etapas.map((e) => {
             const top = lider(projeto, e.id);
             return (
-              <li key={e.id} className="space-y-2 border border-gray-300 p-3">
+              <li key={e.id} className="space-y-3 border border-gray-300 p-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <Link href={linkEtapa(projeto.id, e.id)} className="font-semibold underline">
                     {e.nome}
@@ -43,21 +38,20 @@ export function PainelInterativo({ projeto }: { projeto: Projeto }) {
                   <RiscoDaEtapa projeto={projeto} etapaId={e.id} />
                 </div>
                 {top && (
-                  <div className="space-y-1 text-sm">
-                    <div className="text-gray-500">Maior conhecimento</div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-semibold">{top.membro.nome}</span>
-                      <span>· IC {ic(top.ic)}</span>
-                      <UrgenciaDoMembro membro={top.membro} />
-                      <SeloLegado projetoId={projeto.id} membroId={top.membro.id} />
-                    </div>
-                    <div className="text-gray-600">Concentração {emPct(e.concentracao * 100)}</div>
+                  <div className="flex flex-wrap items-center gap-2 text-sm">
+                    <span className="text-gray-500">Maior conhecimento:</span>
+                    <span className="font-semibold">{top.membro.nome}</span>
+                    <UrgenciaDoMembro membro={top.membro} />
+                    <SeloLegado projetoId={projeto.id} membroId={top.membro.id} />
                   </div>
                 )}
-                <Placeholder texto={`barras: IC por membro em ${e.nome}`} altura="h-16" />
-                <Link href={linkEtapa(projeto.id, e.id)} className="block text-sm text-gray-700 underline">
-                  Ver etapa →
-                </Link>
+                <BarrasIC projeto={projeto} etapaId={e.id} compacto />
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-500">Concentração {emPct(e.concentracao * 100)}</span>
+                  <Link href={linkEtapa(projeto.id, e.id)} className="text-gray-700 underline">
+                    Ver etapa →
+                  </Link>
+                </div>
               </li>
             );
           })}
@@ -65,49 +59,14 @@ export function PainelInterativo({ projeto }: { projeto: Projeto }) {
       </Caixa>
 
       <Caixa titulo="Matriz membro × etapa · Índice de Conhecimento">
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[480px] border-collapse text-sm">
-            <thead>
-              <tr>
-                <th className="border border-gray-300 bg-gray-100 p-2 text-left">Membro</th>
-                {projeto.etapas.map((e) => (
-                  <th key={e.id} className="border border-gray-300 bg-gray-100 p-2 text-left">
-                    <Link href={linkEtapa(projeto.id, e.id)} className="underline">
-                      {e.nome}
-                    </Link>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {projeto.membros.map((m) => (
-                <tr key={m.id}>
-                  <td className="border border-gray-300 p-2">{m.nome}</td>
-                  {projeto.etapas.map((e) => {
-                    const valor = e.ic[m.id] ?? 0;
-                    const principal = lider(projeto, e.id)?.membro.id === m.id;
-                    return (
-                      <td
-                        key={e.id}
-                        className={`border border-gray-300 p-2 text-center ${principal ? "bg-gray-400 font-semibold" : "text-gray-600"}`}
-                      >
-                        {valor > 0 ? ic(valor) : "—"}
-                        {principal && " · principal"}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <MatrizIC projeto={projeto} />
         <div className="mt-3">
           <ComoLerIndice />
         </div>
       </Caixa>
 
-      <Caixa titulo="Linha do tempo">
-        <Placeholder texto="linha do tempo de commits por membro e etapa" altura="h-28" />
+      <Caixa titulo="Linha do tempo · commits por semana">
+        <LinhaDoTempo projeto={projeto} semanas={projeto.semanas} titulo={`Commits por semana em ${projeto.nome}`} />
       </Caixa>
 
       <Caixa titulo="Membros · Índice de Conhecimento no projeto">
@@ -126,37 +85,45 @@ export function PainelInterativo({ projeto }: { projeto: Projeto }) {
                       <SeloLegado projetoId={projeto.id} membroId={m.id} />
                     </div>
                     <div className="text-sm text-gray-600">
-                      IC no projeto {ic(m.icProjeto)} ·{" "}
+                      IC no projeto {emPct(m.icProjeto)} ·{" "}
                       {lideradas.length
                         ? `Principal em: ${lideradas.map((id) => projeto.etapas.find((e) => e.id === id)?.nome).join(", ")}`
                         : "Sem etapa principal"}
                     </div>
                   </div>
-                  <AcaoLegado projetoId={projeto.id} membroId={m.id} />
+                  <AcaoLegado projetoId={projeto.id} membroId={m.id} origem={origem} />
                 </li>
               );
             })}
         </ul>
       </Caixa>
-    </>
+    </DestaqueProvider>
   );
 }
 
 /* ---------- Página de uma etapa ---------- */
 
 export function EtapaInterativa({ projeto, etapaId }: { projeto: Projeto; etapaId: string }) {
+  return (
+    <DestaqueProvider>
+      <ConteudoEtapa projeto={projeto} etapaId={etapaId} />
+    </DestaqueProvider>
+  );
+}
+
+function ConteudoEtapa({ projeto, etapaId }: { projeto: Projeto; etapaId: string }) {
   const legados = useLegados();
   const etapa = projeto.etapas.find((e) => e.id === etapaId)!;
   const linhas = ranking(projeto, etapaId);
-  const top = linhas[0];
   const av = avaliarEtapa(projeto, etapaId, legados);
   const quemMaisSabe = av.lider?.membro;
+  const origem: Origem = { href: linkEtapa(projeto.id, etapaId), rotulo: `${etapa.nome} · ${projeto.nome}` };
 
   return (
     <>
       {!av.mitigado && av.urgencia !== "Baixa" && quemMaisSabe && (
         <Alerta>
-          {quemMaisSabe.nome} sai {quemMaisSabe.saidaPrevista} e tem IC {ic(av.lider!.ic)} em {etapa.nome} · risco{" "}
+          {quemMaisSabe.nome} sai {quemMaisSabe.saidaPrevista} e tem IC {emPct(av.lider!.ic)} em {etapa.nome} · risco{" "}
           {av.risco.toLowerCase()}, urgência {av.urgencia.toLowerCase()}
         </Alerta>
       )}
@@ -165,7 +132,7 @@ export function EtapaInterativa({ projeto, etapaId }: { projeto: Projeto; etapaI
         <dl className="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-3">
           <div>
             <dt className="text-gray-500">Maior conhecimento</dt>
-            <dd>{top ? `${top.membro.nome} · IC ${ic(top.ic)}` : "—"}</dd>
+            <dd>{av.lider ? `${av.lider.membro.nome} · IC ${emPct(av.lider.ic)}` : "—"}</dd>
           </div>
           <div>
             <dt className="text-gray-500">Risco · pela concentração ({emPct(etapa.concentracao * 100)})</dt>
@@ -194,9 +161,10 @@ export function EtapaInterativa({ projeto, etapaId }: { projeto: Projeto; etapaI
       </Caixa>
 
       <Caixa titulo="Quem detém o conhecimento">
-        <Placeholder texto={`barras: IC por membro em ${etapa.nome}`} altura="h-24" />
-        <ol className="mt-4 divide-y divide-gray-300">
-          {linhas.map(({ membro: m, ic: valor }, i) => (
+        <p className="mb-3 text-xs text-gray-500">Clique num membro para destacá-lo na linha do tempo e no cálculo.</p>
+        <BarrasIC projeto={projeto} etapaId={etapaId} />
+        <ol className="mt-5 divide-y divide-gray-300 border-t border-gray-300">
+          {linhas.map(({ membro: m, ic }, i) => (
             <li key={m.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
               <div className="flex items-start gap-3">
                 <span className="w-6 text-right text-sm text-gray-500">{i + 1}º</span>
@@ -207,20 +175,24 @@ export function EtapaInterativa({ projeto, etapaId }: { projeto: Projeto; etapaI
                     <UrgenciaDoMembro membro={m} />
                     <SeloLegado projetoId={projeto.id} membroId={m.id} />
                   </div>
-                  <div className="text-sm text-gray-600">IC {ic(valor)} nesta etapa</div>
+                  <div className="text-sm text-gray-600">IC {emPct(ic)} nesta etapa</div>
                 </div>
               </div>
-              <AcaoLegado projetoId={projeto.id} membroId={m.id} />
+              <AcaoLegado projetoId={projeto.id} membroId={m.id} origem={origem} />
             </li>
           ))}
         </ol>
+      </Caixa>
+
+      <Caixa titulo="Linha do tempo da etapa · commits por semana">
+        <LinhaDoTempo projeto={projeto} semanas={etapa.semanas} titulo={`Commits por semana em ${etapa.nome}`} />
+      </Caixa>
+
+      <Caixa titulo="Como o IC foi calculado">
+        <CalculoIC projeto={projeto} etapaId={etapaId} />
         <div className="mt-3">
           <ComoLerIndice />
         </div>
-      </Caixa>
-
-      <Caixa titulo="Linha do tempo da etapa">
-        <Placeholder texto={`linha do tempo de commits em ${etapa.nome}`} altura="h-24" />
       </Caixa>
     </>
   );

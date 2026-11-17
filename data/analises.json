@@ -212,6 +212,157 @@
           "livia-rocha": 0,
           "davi-moura": 0
         },
+        "fatias": {
+          "helena-duarte": {
+            "efetivas": 96.1,
+            "commits": 87.5,
+            "brutas": 89.7,
+            "recentes": 95.6
+          },
+          "caio-ferraz": {
+            "efetivas": 3.9,
+            "commits": 12.5,
+            "brutas": 10.3,
+            "recentes": 4.4
+          }
+        },
+        "semanas": [
+          {
+            "semana": "2026-08-03",
+            "commits": {
+              "helena-duarte": 1,
+              "caio-ferraz": 1,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-08-10",
+            "commits": {
+              "helena-duarte": 5,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-08-17",
+            "commits": {
+              "helena-duarte": 5,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-08-24",
+            "commits": {
+              "helena-duarte": 2,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-08-31",
+            "commits": {
+              "helena-duarte": 1,
+              "caio-ferraz": 1,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-09-07",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-09-14",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-09-21",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-09-28",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-10-05",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-10-12",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-10-19",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-10-26",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-11-02",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-11-09",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          }
+        ],
         "concentracao": 0.88
       },
       "catalogo": {
@@ -299,6 +450,169 @@
           "livia-rocha": 74.7,
           "davi-moura": 10.5
         },
+        "fatias": {
+          "helena-duarte": {
+            "efetivas": 7.2,
+            "commits": 15,
+            "brutas": 8.1,
+            "recentes": 6.6
+          },
+          "caio-ferraz": {
+            "efetivas": 4.5,
+            "commits": 10,
+            "brutas": 7.3,
+            "recentes": 4.3
+          },
+          "livia-rocha": {
+            "efetivas": 81.1,
+            "commits": 55,
+            "brutas": 72.8,
+            "recentes": 81.8
+          },
+          "davi-moura": {
+            "efetivas": 7.2,
+            "commits": 20,
+            "brutas": 11.8,
+            "recentes": 7.4
+          }
+        },
+        "semanas": [
+          {
+            "semana": "2026-08-03",
+            "commits": {
+              "helena-duarte": 1,
+              "caio-ferraz": 0,
+              "livia-rocha": 1,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-08-10",
+            "commits": {
+              "helena-duarte": 2,
+              "caio-ferraz": 1,
+              "livia-rocha": 3,
+              "davi-moura": 2
+            }
+          },
+          {
+            "semana": "2026-08-17",
+            "commits": {
+              "helena-duarte": 1,
+              "caio-ferraz": 0,
+              "livia-rocha": 1,
+              "davi-moura": 1
+            }
+          },
+          {
+            "semana": "2026-08-24",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 1,
+              "livia-rocha": 5,
+              "davi-moura": 1
+            }
+          },
+          {
+            "semana": "2026-08-31",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 5,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-09-07",
+            "commits": {
+              "helena-duarte": 1,
+              "caio-ferraz": 0,
+              "livia-rocha": 1,
+              "davi-moura": 2
+            }
+          },
+          {
+            "semana": "2026-09-14",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 1,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-09-21",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 2,
+              "livia-rocha": 2,
+              "davi-moura": 1
+            }
+          },
+          {
+            "semana": "2026-09-28",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 1,
+              "davi-moura": 1
+            }
+          },
+          {
+            "semana": "2026-10-05",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 2,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-10-12",
+            "commits": {
+              "helena-duarte": 1,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-10-19",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-10-26",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-11-02",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-11-09",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          }
+        ],
         "concentracao": 0.58
       },
       "estoque": {
@@ -386,6 +700,169 @@
           "livia-rocha": 3.9,
           "davi-moura": 19.7
         },
+        "fatias": {
+          "helena-duarte": {
+            "efetivas": 2.4,
+            "commits": 6.1,
+            "brutas": 3.1,
+            "recentes": 1.7
+          },
+          "caio-ferraz": {
+            "efetivas": 84.3,
+            "commits": 36.7,
+            "brutas": 73.4,
+            "recentes": 85.2
+          },
+          "livia-rocha": {
+            "efetivas": 2.5,
+            "commits": 8.2,
+            "brutas": 3.8,
+            "recentes": 2.8
+          },
+          "davi-moura": {
+            "efetivas": 10.8,
+            "commits": 49,
+            "brutas": 19.7,
+            "recentes": 10.3
+          }
+        },
+        "semanas": [
+          {
+            "semana": "2026-08-03",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-08-10",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-08-17",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-08-24",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-08-31",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 5
+            }
+          },
+          {
+            "semana": "2026-09-07",
+            "commits": {
+              "helena-duarte": 1,
+              "caio-ferraz": 5,
+              "livia-rocha": 0,
+              "davi-moura": 3
+            }
+          },
+          {
+            "semana": "2026-09-14",
+            "commits": {
+              "helena-duarte": 1,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-09-21",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 3,
+              "livia-rocha": 0,
+              "davi-moura": 3
+            }
+          },
+          {
+            "semana": "2026-09-28",
+            "commits": {
+              "helena-duarte": 1,
+              "caio-ferraz": 3,
+              "livia-rocha": 0,
+              "davi-moura": 2
+            }
+          },
+          {
+            "semana": "2026-10-05",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 2,
+              "davi-moura": 3
+            }
+          },
+          {
+            "semana": "2026-10-12",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 2,
+              "livia-rocha": 0,
+              "davi-moura": 2
+            }
+          },
+          {
+            "semana": "2026-10-19",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 1,
+              "livia-rocha": 1,
+              "davi-moura": 3
+            }
+          },
+          {
+            "semana": "2026-10-26",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 1,
+              "livia-rocha": 1,
+              "davi-moura": 3
+            }
+          },
+          {
+            "semana": "2026-11-02",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 3,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-11-09",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          }
+        ],
         "concentracao": 0.58
       },
       "pedidos": {
@@ -473,6 +950,169 @@
           "livia-rocha": 37.4,
           "davi-moura": 25.8
         },
+        "fatias": {
+          "helena-duarte": {
+            "efetivas": 7,
+            "commits": 11.6,
+            "brutas": 6.6,
+            "recentes": 7.9
+          },
+          "caio-ferraz": {
+            "efetivas": 31,
+            "commits": 23.3,
+            "brutas": 30.7,
+            "recentes": 27.1
+          },
+          "livia-rocha": {
+            "efetivas": 40.2,
+            "commits": 27.9,
+            "brutas": 32.5,
+            "recentes": 45.7
+          },
+          "davi-moura": {
+            "efetivas": 21.8,
+            "commits": 37.2,
+            "brutas": 30.2,
+            "recentes": 19.3
+          }
+        },
+        "semanas": [
+          {
+            "semana": "2026-08-03",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-08-10",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-08-17",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-08-24",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-08-31",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-09-07",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-09-14",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 1,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-09-21",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 1,
+              "livia-rocha": 1,
+              "davi-moura": 1
+            }
+          },
+          {
+            "semana": "2026-09-28",
+            "commits": {
+              "helena-duarte": 1,
+              "caio-ferraz": 3,
+              "livia-rocha": 2,
+              "davi-moura": 3
+            }
+          },
+          {
+            "semana": "2026-10-05",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 1,
+              "livia-rocha": 1,
+              "davi-moura": 4
+            }
+          },
+          {
+            "semana": "2026-10-12",
+            "commits": {
+              "helena-duarte": 1,
+              "caio-ferraz": 2,
+              "livia-rocha": 0,
+              "davi-moura": 2
+            }
+          },
+          {
+            "semana": "2026-10-19",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 1,
+              "davi-moura": 3
+            }
+          },
+          {
+            "semana": "2026-10-26",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 1,
+              "livia-rocha": 1,
+              "davi-moura": 1
+            }
+          },
+          {
+            "semana": "2026-11-02",
+            "commits": {
+              "helena-duarte": 2,
+              "caio-ferraz": 1,
+              "livia-rocha": 5,
+              "davi-moura": 1
+            }
+          },
+          {
+            "semana": "2026-11-09",
+            "commits": {
+              "helena-duarte": 1,
+              "caio-ferraz": 0,
+              "livia-rocha": 1,
+              "davi-moura": 1
+            }
+          }
+        ],
         "concentracao": 0.3
       },
       "infra": {
@@ -530,6 +1170,157 @@
           "livia-rocha": 0,
           "davi-moura": 11.2
         },
+        "fatias": {
+          "helena-duarte": {
+            "efetivas": 93.4,
+            "commits": 75,
+            "brutas": 88.6,
+            "recentes": 91.8
+          },
+          "davi-moura": {
+            "efetivas": 6.6,
+            "commits": 25,
+            "brutas": 11.4,
+            "recentes": 8.2
+          }
+        },
+        "semanas": [
+          {
+            "semana": "2026-08-03",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-08-10",
+            "commits": {
+              "helena-duarte": 3,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-08-17",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-08-24",
+            "commits": {
+              "helena-duarte": 1,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-08-31",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-09-07",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 1
+            }
+          },
+          {
+            "semana": "2026-09-14",
+            "commits": {
+              "helena-duarte": 1,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-09-21",
+            "commits": {
+              "helena-duarte": 1,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-09-28",
+            "commits": {
+              "helena-duarte": 1,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-10-05",
+            "commits": {
+              "helena-duarte": 1,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-10-12",
+            "commits": {
+              "helena-duarte": 3,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-10-19",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 2
+            }
+          },
+          {
+            "semana": "2026-10-26",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          },
+          {
+            "semana": "2026-11-02",
+            "commits": {
+              "helena-duarte": 1,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 1
+            }
+          },
+          {
+            "semana": "2026-11-09",
+            "commits": {
+              "helena-duarte": 0,
+              "caio-ferraz": 0,
+              "livia-rocha": 0,
+              "davi-moura": 0
+            }
+          }
+        ],
         "concentracao": 0.8
       }
     },
@@ -950,6 +1741,194 @@
           "mateus-cavalcanti": 20.4,
           "paula-siqueira": 0
         },
+        "fatias": {
+          "renata-albuquerque": {
+            "efetivas": 13,
+            "commits": 18.2,
+            "brutas": 12.9,
+            "recentes": 11.7
+          },
+          "igor-batista": {
+            "efetivas": 59.5,
+            "commits": 45.5,
+            "brutas": 56.3,
+            "recentes": 60.7
+          },
+          "sofia-lins": {
+            "efetivas": 8.5,
+            "commits": 13.6,
+            "brutas": 10.1,
+            "recentes": 5.8
+          },
+          "mateus-cavalcanti": {
+            "efetivas": 19,
+            "commits": 22.7,
+            "brutas": 20.8,
+            "recentes": 21.7
+          }
+        },
+        "semanas": [
+          {
+            "semana": "2026-07-27",
+            "commits": {
+              "renata-albuquerque": 2,
+              "igor-batista": 3,
+              "sofia-lins": 2,
+              "mateus-cavalcanti": 1,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-03",
+            "commits": {
+              "renata-albuquerque": 1,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 1,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-10",
+            "commits": {
+              "renata-albuquerque": 1,
+              "igor-batista": 3,
+              "sofia-lins": 1,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-17",
+            "commits": {
+              "renata-albuquerque": 1,
+              "igor-batista": 1,
+              "sofia-lins": 2,
+              "mateus-cavalcanti": 3,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-24",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 2,
+              "sofia-lins": 1,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-31",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 2,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-09-07",
+            "commits": {
+              "renata-albuquerque": 1,
+              "igor-batista": 1,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-09-14",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 2,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-09-21",
+            "commits": {
+              "renata-albuquerque": 1,
+              "igor-batista": 4,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 3,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-09-28",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 1,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 2,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-10-05",
+            "commits": {
+              "renata-albuquerque": 1,
+              "igor-batista": 1,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-10-12",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-10-19",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-10-26",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-11-02",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-11-09",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          }
+        ],
         "concentracao": 0.39
       },
       "pacientes": {
@@ -1038,6 +2017,194 @@
           "mateus-cavalcanti": 62.2,
           "paula-siqueira": 24.6
         },
+        "fatias": {
+          "igor-batista": {
+            "efetivas": 6.1,
+            "commits": 13.9,
+            "brutas": 7,
+            "recentes": 4.7
+          },
+          "sofia-lins": {
+            "efetivas": 5,
+            "commits": 8.3,
+            "brutas": 5.9,
+            "recentes": 3.6
+          },
+          "mateus-cavalcanti": {
+            "efetivas": 66,
+            "commits": 50,
+            "brutas": 62.4,
+            "recentes": 65.7
+          },
+          "paula-siqueira": {
+            "efetivas": 23,
+            "commits": 27.8,
+            "brutas": 24.7,
+            "recentes": 25.9
+          }
+        },
+        "semanas": [
+          {
+            "semana": "2026-07-27",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-03",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 1,
+              "mateus-cavalcanti": 1,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-10",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 1,
+              "paula-siqueira": 2
+            }
+          },
+          {
+            "semana": "2026-08-17",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 1,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-24",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 1,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 1,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-31",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 2,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 1
+            }
+          },
+          {
+            "semana": "2026-09-07",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 2,
+              "sofia-lins": 1,
+              "mateus-cavalcanti": 4,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-09-14",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 1
+            }
+          },
+          {
+            "semana": "2026-09-21",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 1,
+              "mateus-cavalcanti": 4,
+              "paula-siqueira": 1
+            }
+          },
+          {
+            "semana": "2026-09-28",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 2,
+              "paula-siqueira": 1
+            }
+          },
+          {
+            "semana": "2026-10-05",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 1,
+              "paula-siqueira": 1
+            }
+          },
+          {
+            "semana": "2026-10-12",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 2,
+              "paula-siqueira": 2
+            }
+          },
+          {
+            "semana": "2026-10-19",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 1,
+              "paula-siqueira": 1
+            }
+          },
+          {
+            "semana": "2026-10-26",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-11-02",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-11-09",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          }
+        ],
         "concentracao": 0.46
       },
       "unidades": {
@@ -1111,6 +2278,188 @@
           "mateus-cavalcanti": 4.5,
           "paula-siqueira": 0
         },
+        "fatias": {
+          "renata-albuquerque": {
+            "efetivas": 4.3,
+            "commits": 9.1,
+            "brutas": 6,
+            "recentes": 3.4
+          },
+          "sofia-lins": {
+            "efetivas": 93.3,
+            "commits": 78.8,
+            "brutas": 89.8,
+            "recentes": 94.6
+          },
+          "mateus-cavalcanti": {
+            "efetivas": 2.4,
+            "commits": 12.1,
+            "brutas": 4.2,
+            "recentes": 2
+          }
+        },
+        "semanas": [
+          {
+            "semana": "2026-07-27",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-03",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-10",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-17",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-24",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 1,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-31",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 1,
+              "mateus-cavalcanti": 1,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-09-07",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 1,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-09-14",
+            "commits": {
+              "renata-albuquerque": 1,
+              "igor-batista": 0,
+              "sofia-lins": 3,
+              "mateus-cavalcanti": 1,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-09-21",
+            "commits": {
+              "renata-albuquerque": 1,
+              "igor-batista": 0,
+              "sofia-lins": 1,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-09-28",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 3,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-10-05",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 1,
+              "mateus-cavalcanti": 1,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-10-12",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 3,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-10-19",
+            "commits": {
+              "renata-albuquerque": 1,
+              "igor-batista": 0,
+              "sofia-lins": 1,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-10-26",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 6,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-11-02",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 4,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-11-09",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 1,
+              "mateus-cavalcanti": 1,
+              "paula-siqueira": 0
+            }
+          }
+        ],
         "concentracao": 0.82
       },
       "financeiro": {
@@ -1184,6 +2533,188 @@
           "mateus-cavalcanti": 0,
           "paula-siqueira": 49.2
         },
+        "fatias": {
+          "renata-albuquerque": {
+            "efetivas": 4.8,
+            "commits": 11.8,
+            "brutas": 4.6,
+            "recentes": 5.1
+          },
+          "igor-batista": {
+            "efetivas": 44.6,
+            "commits": 41.2,
+            "brutas": 46,
+            "recentes": 47.4
+          },
+          "paula-siqueira": {
+            "efetivas": 50.6,
+            "commits": 47.1,
+            "brutas": 49.4,
+            "recentes": 47.5
+          }
+        },
+        "semanas": [
+          {
+            "semana": "2026-07-27",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-03",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-10",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-17",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-24",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-31",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-09-07",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-09-14",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-09-21",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 3
+            }
+          },
+          {
+            "semana": "2026-09-28",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 2,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 3
+            }
+          },
+          {
+            "semana": "2026-10-05",
+            "commits": {
+              "renata-albuquerque": 1,
+              "igor-batista": 3,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 3
+            }
+          },
+          {
+            "semana": "2026-10-12",
+            "commits": {
+              "renata-albuquerque": 1,
+              "igor-batista": 1,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 1
+            }
+          },
+          {
+            "semana": "2026-10-19",
+            "commits": {
+              "renata-albuquerque": 1,
+              "igor-batista": 2,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 2
+            }
+          },
+          {
+            "semana": "2026-10-26",
+            "commits": {
+              "renata-albuquerque": 1,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 1
+            }
+          },
+          {
+            "semana": "2026-11-02",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 5,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 1
+            }
+          },
+          {
+            "semana": "2026-11-09",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 1,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 2
+            }
+          }
+        ],
         "concentracao": 0.44
       },
       "infra": {
@@ -1242,6 +2773,182 @@
           "mateus-cavalcanti": 0,
           "paula-siqueira": 9.2
         },
+        "fatias": {
+          "renata-albuquerque": {
+            "efetivas": 92.9,
+            "commits": 83.3,
+            "brutas": 89.3,
+            "recentes": 95.3
+          },
+          "paula-siqueira": {
+            "efetivas": 7.1,
+            "commits": 16.7,
+            "brutas": 10.7,
+            "recentes": 4.7
+          }
+        },
+        "semanas": [
+          {
+            "semana": "2026-07-27",
+            "commits": {
+              "renata-albuquerque": 1,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 1
+            }
+          },
+          {
+            "semana": "2026-08-03",
+            "commits": {
+              "renata-albuquerque": 2,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-10",
+            "commits": {
+              "renata-albuquerque": 1,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-17",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-24",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-08-31",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-09-07",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-09-14",
+            "commits": {
+              "renata-albuquerque": 1,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 1
+            }
+          },
+          {
+            "semana": "2026-09-21",
+            "commits": {
+              "renata-albuquerque": 0,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-09-28",
+            "commits": {
+              "renata-albuquerque": 2,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-10-05",
+            "commits": {
+              "renata-albuquerque": 1,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-10-12",
+            "commits": {
+              "renata-albuquerque": 2,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-10-19",
+            "commits": {
+              "renata-albuquerque": 1,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 1
+            }
+          },
+          {
+            "semana": "2026-10-26",
+            "commits": {
+              "renata-albuquerque": 1,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-11-02",
+            "commits": {
+              "renata-albuquerque": 2,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          },
+          {
+            "semana": "2026-11-09",
+            "commits": {
+              "renata-albuquerque": 1,
+              "igor-batista": 0,
+              "sofia-lins": 0,
+              "mateus-cavalcanti": 0,
+              "paula-siqueira": 0
+            }
+          }
+        ],
         "concentracao": 0.83
       }
     },
@@ -1621,6 +3328,148 @@
           "henrique-pacheco": 0,
           "clara-menezes": 0
         },
+        "fatias": {
+          "bruno-tavares": {
+            "efetivas": 67.7,
+            "commits": 42.1,
+            "brutas": 36.6,
+            "recentes": 71.2
+          },
+          "yasmin-freitas": {
+            "efetivas": 32.3,
+            "commits": 57.9,
+            "brutas": 63.4,
+            "recentes": 28.8
+          }
+        },
+        "semanas": [
+          {
+            "semana": "2026-08-10",
+            "commits": {
+              "bruno-tavares": 2,
+              "yasmin-freitas": 3,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-08-17",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 2,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-08-24",
+            "commits": {
+              "bruno-tavares": 2,
+              "yasmin-freitas": 6,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-08-31",
+            "commits": {
+              "bruno-tavares": 1,
+              "yasmin-freitas": 3,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-09-07",
+            "commits": {
+              "bruno-tavares": 4,
+              "yasmin-freitas": 3,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-09-14",
+            "commits": {
+              "bruno-tavares": 3,
+              "yasmin-freitas": 1,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-09-21",
+            "commits": {
+              "bruno-tavares": 1,
+              "yasmin-freitas": 2,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-09-28",
+            "commits": {
+              "bruno-tavares": 3,
+              "yasmin-freitas": 2,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-10-05",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-10-12",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-10-19",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-10-26",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-11-02",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-11-09",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          }
+        ],
         "concentracao": 0.51
       },
       "agente-dados": {
@@ -1693,6 +3542,154 @@
           "henrique-pacheco": 18.8,
           "clara-menezes": 0
         },
+        "fatias": {
+          "bruno-tavares": {
+            "efetivas": 42.1,
+            "commits": 30.8,
+            "brutas": 40.1,
+            "recentes": 43.1
+          },
+          "yasmin-freitas": {
+            "efetivas": 40.4,
+            "commits": 46.2,
+            "brutas": 40,
+            "recentes": 40.2
+          },
+          "henrique-pacheco": {
+            "efetivas": 17.5,
+            "commits": 23.1,
+            "brutas": 19.9,
+            "recentes": 16.7
+          }
+        },
+        "semanas": [
+          {
+            "semana": "2026-08-10",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-08-17",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-08-24",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-08-31",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-09-07",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-09-14",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-09-21",
+            "commits": {
+              "bruno-tavares": 3,
+              "yasmin-freitas": 1,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-09-28",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 3,
+              "henrique-pacheco": 1,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-10-05",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 2,
+              "henrique-pacheco": 1,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-10-12",
+            "commits": {
+              "bruno-tavares": 1,
+              "yasmin-freitas": 1,
+              "henrique-pacheco": 2,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-10-19",
+            "commits": {
+              "bruno-tavares": 1,
+              "yasmin-freitas": 3,
+              "henrique-pacheco": 2,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-10-26",
+            "commits": {
+              "bruno-tavares": 1,
+              "yasmin-freitas": 1,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-11-02",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 1,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-11-09",
+            "commits": {
+              "bruno-tavares": 2,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          }
+        ],
         "concentracao": 0.37
       },
       "agente-manual": {
@@ -1750,6 +3747,148 @@
           "henrique-pacheco": 91.7,
           "clara-menezes": 8.3
         },
+        "fatias": {
+          "henrique-pacheco": {
+            "efetivas": 95,
+            "commits": 82.8,
+            "brutas": 88.4,
+            "recentes": 96.1
+          },
+          "clara-menezes": {
+            "efetivas": 5,
+            "commits": 17.2,
+            "brutas": 11.6,
+            "recentes": 3.9
+          }
+        },
+        "semanas": [
+          {
+            "semana": "2026-08-10",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-08-17",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-08-24",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-08-31",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-09-07",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 3,
+              "clara-menezes": 1
+            }
+          },
+          {
+            "semana": "2026-09-14",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-09-21",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 3,
+              "clara-menezes": 1
+            }
+          },
+          {
+            "semana": "2026-09-28",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 2,
+              "clara-menezes": 1
+            }
+          },
+          {
+            "semana": "2026-10-05",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 3,
+              "clara-menezes": 1
+            }
+          },
+          {
+            "semana": "2026-10-12",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-10-19",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 4,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-10-26",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 4,
+              "clara-menezes": 1
+            }
+          },
+          {
+            "semana": "2026-11-02",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 5,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-11-09",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          }
+        ],
         "concentracao": 0.85
       },
       "interface": {
@@ -1807,6 +3946,148 @@
           "henrique-pacheco": 6.6,
           "clara-menezes": 93.4
         },
+        "fatias": {
+          "henrique-pacheco": {
+            "efetivas": 4.2,
+            "commits": 14.3,
+            "brutas": 6.6,
+            "recentes": 4.3
+          },
+          "clara-menezes": {
+            "efetivas": 95.8,
+            "commits": 85.7,
+            "brutas": 93.4,
+            "recentes": 95.7
+          }
+        },
+        "semanas": [
+          {
+            "semana": "2026-08-10",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-08-17",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-08-24",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-08-31",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-09-07",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-09-14",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-09-21",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 3
+            }
+          },
+          {
+            "semana": "2026-09-28",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 2
+            }
+          },
+          {
+            "semana": "2026-10-05",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 2
+            }
+          },
+          {
+            "semana": "2026-10-12",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 2,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-10-19",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 3
+            }
+          },
+          {
+            "semana": "2026-10-26",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 3
+            }
+          },
+          {
+            "semana": "2026-11-02",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 4
+            }
+          },
+          {
+            "semana": "2026-11-09",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 1,
+              "clara-menezes": 1
+            }
+          }
+        ],
         "concentracao": 0.88
       },
       "infra": {
@@ -1864,6 +4145,148 @@
           "henrique-pacheco": 0,
           "clara-menezes": 86.8
         },
+        "fatias": {
+          "bruno-tavares": {
+            "efetivas": 9.9,
+            "commits": 23.1,
+            "brutas": 9.9,
+            "recentes": 14.7
+          },
+          "clara-menezes": {
+            "efetivas": 90.1,
+            "commits": 76.9,
+            "brutas": 90.1,
+            "recentes": 85.3
+          }
+        },
+        "semanas": [
+          {
+            "semana": "2026-08-10",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-08-17",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 1
+            }
+          },
+          {
+            "semana": "2026-08-24",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 1
+            }
+          },
+          {
+            "semana": "2026-08-31",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 1
+            }
+          },
+          {
+            "semana": "2026-09-07",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 1
+            }
+          },
+          {
+            "semana": "2026-09-14",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 1
+            }
+          },
+          {
+            "semana": "2026-09-21",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 1
+            }
+          },
+          {
+            "semana": "2026-09-28",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-10-05",
+            "commits": {
+              "bruno-tavares": 1,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 2
+            }
+          },
+          {
+            "semana": "2026-10-12",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-10-19",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 1
+            }
+          },
+          {
+            "semana": "2026-10-26",
+            "commits": {
+              "bruno-tavares": 1,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 1
+            }
+          },
+          {
+            "semana": "2026-11-02",
+            "commits": {
+              "bruno-tavares": 1,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          },
+          {
+            "semana": "2026-11-09",
+            "commits": {
+              "bruno-tavares": 0,
+              "yasmin-freitas": 0,
+              "henrique-pacheco": 0,
+              "clara-menezes": 0
+            }
+          }
+        ],
         "concentracao": 0.77
       }
     },

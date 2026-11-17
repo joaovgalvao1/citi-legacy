@@ -142,13 +142,21 @@ function indiceConhecimento(lista, membroIds) {
     recentes: (k) => k.efetivas * Math.pow(0.5, (ref - new Date(k.data)) / DIA / MEIA_VIDA_DIAS),
   };
   const ic = Object.fromEntries(membroIds.map((id) => [id, 0]));
+  // fatias: % de cada sinal que pertence ao membro (para explicar o IC na tela)
+  const fatias = Object.fromEntries(membroIds.map((id) => [id, { efetivas: 0, commits: 0, brutas: 0, recentes: 0 }]));
   for (const [sinal, f] of Object.entries(sinais)) {
     const total = lista.reduce((s, k) => s + f(k), 0);
     if (!total) continue;
-    for (const k of lista) ic[k.autor] += (PESOS_IC[sinal] * f(k)) / total;
+    for (const k of lista) {
+      ic[k.autor] += (PESOS_IC[sinal] * f(k)) / total;
+      fatias[k.autor][sinal] += (100 * f(k)) / total;
+    }
   }
-  for (const id of membroIds) ic[id] = Math.round(ic[id] * 1000) / 10;
-  return ic;
+  for (const id of membroIds) {
+    ic[id] = Math.round(ic[id] * 1000) / 10;
+    for (const sinal of Object.keys(sinais)) fatias[id][sinal] = Math.round(fatias[id][sinal] * 10) / 10;
+  }
+  return { ic, fatias };
 }
 
 
@@ -240,14 +248,31 @@ for (const c of cenarios) {
     }
   }
 
+  // todas as semanas do projeto (inclusive as sem commits), de segunda a segunda
+  const listaSemanas = [];
+  for (let d = paraData(inicioDaSemana(c.inicio + "T12:00:00")); d <= fim; d = new Date(d.getTime() + 7 * DIA)) {
+    listaSemanas.push(new Date(d.getTime() - 3 * 3600000).toISOString().slice(0, 10));
+  }
+
   /* ----- Índice de Conhecimento (IC) e concentração ----- */
   const icDe = (lista) => indiceConhecimento(lista, c.membros.map((m) => m.id));
-  const icProjeto = icDe(commits);
+  const icProjeto = icDe(commits).ic;
   for (const m of c.membros) porMembro[m.id].icProjeto = icProjeto[m.id];
 
   for (const e of c.etapas) {
     const reg = porEtapa[e.id];
-    reg.ic = icDe(commits.filter((k) => k.etapa === e.id));
+    const resultado = icDe(commits.filter((k) => k.etapa === e.id));
+    reg.ic = resultado.ic;
+    reg.fatias = Object.fromEntries(Object.entries(resultado.fatias).filter(([id]) => resultado.ic[id] > 0));
+    reg.semanas = listaSemanas.map((semana) => ({
+      semana,
+      commits: Object.fromEntries(
+        c.membros.map((m) => [
+          m.id,
+          commits.filter((k) => k.etapa === e.id && k.autor === m.id && inicioDaSemana(k.data) === semana).length,
+        ]),
+      ),
+    }));
     reg.concentracao = Math.round(Object.values(reg.ic).reduce((s, v) => s + (v / 100) ** 2, 0) * 100) / 100;
   }
 
@@ -256,9 +281,10 @@ for (const c of cenarios) {
     totais,
     porMembro,
     porEtapa,
-    semanas: Object.entries(semanas)
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([semana, porMembroSemana]) => ({ semana, commits: porMembroSemana })),
+    semanas: listaSemanas.map((semana) => ({
+      semana,
+      commits: semanas[semana] ?? Object.fromEntries(c.membros.map((m) => [m.id, 0])),
+    })),
   };
 
   projetosSaida.push({

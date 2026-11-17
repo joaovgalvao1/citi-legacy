@@ -4,8 +4,9 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { formatarMesAno, getMembro, getProjeto, nomeEtapa, projetos } from "@/data";
 import { commitsDoMembro, commitsEmDestaque, etapaPrincipal, perguntasPara } from "@/data/commits";
-import { Caixa, Selo, Voltar } from "@/components/wireframe";
-import { FormLegado } from "@/components/wireframe/interativos";
+import { Caixa, Selo } from "@/components/ui";
+import { VoltarOrigem } from "@/components/legado/acoes";
+import { FormLegado } from "@/components/legado/formulario";
 import { emPct, etapasLideradas, nivelUrgencia } from "@/lib/indice";
 
 export function generateStaticParams() {
@@ -25,7 +26,7 @@ async function RegistrarLegadoConteudo({ params }: { params: PageProps<"/projeto
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <Voltar href={`/projetos/${projeto.id}`}>{projeto.nome}</Voltar>
+        <VoltarOrigem padrao={{ href: `/projetos/${projeto.id}`, rotulo: projeto.nome }} />
         <h1 className="text-2xl font-bold">Registrar legado de {membro.nome}</h1>
         <p className="text-sm text-gray-600">
           Responda às perguntas abaixo. Elas viram o documento de passagem de conhecimento para a equipe.

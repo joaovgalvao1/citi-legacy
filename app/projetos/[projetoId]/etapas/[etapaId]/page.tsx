@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProjeto, projetos } from "@/data";
-import { Voltar } from "@/components/wireframe";
+import { Voltar } from "@/components/ui";
 import { EtapaInterativa } from "@/components/painel";
 
 export function generateStaticParams() {

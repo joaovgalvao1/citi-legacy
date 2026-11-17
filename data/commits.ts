@@ -3,6 +3,7 @@
 
 import commitsJson from "./commits.json";
 import type { Membro, Projeto } from "./index";
+import type { Pergunta } from "@/lib/legados";
 import { etapasLideradas, icDe } from "@/lib/indice";
 
 export type Commit = {
@@ -55,39 +56,57 @@ export function commitsEmDestaque(projeto: Projeto, membro: Membro, limite = 6) 
   );
 }
 
-const semPrefixo =(mensagem: string) => mensagem.replace(/^\w+\([^)]*\):\s*/, "");
+const semPrefixo = (mensagem: string) => mensagem.replace(/^\w+\([^)]*\):\s*/, "");
 
 /**
- * Perguntas de exemplo para registrar o legado (etapa 1 e 2).
- * Na etapa 3 serão geradas pela IA a partir destes mesmos commits.
+ * Perguntas para registrar o legado, agrupadas pelas seções do documento.
+ * Por enquanto montadas por regras a partir dos commits; na etapa 3, a IA gera as perguntas.
  */
-export function perguntasPara(projeto: Projeto, membro: Membro): string[] {
+export function perguntasPara(projeto: Projeto, membro: Membro): Pergunta[] {
   const etapaId = etapaPrincipal(projeto, membro);
   const etapa = projeto.etapas.find((e) => e.id === etapaId);
   const nome = etapa?.nome ?? "suas etapas";
   const { maior, refatoracao, correcao } = commitsCitados(projeto, membro);
 
-  const perguntas = [
-    `Quais decisões em ${nome} não estão óbvias no código, e por que foram tomadas assim?`,
+  const perguntas: Pergunta[] = [
+    {
+      secao: "Decisões e porquês",
+      texto: `Quais decisões em ${nome} não estão óbvias no código, e por que foram tomadas assim?`,
+      commits: [],
+    },
   ];
   if (maior) {
-    perguntas.push(
-      `No commit ${maior.hash} ("${semPrefixo(maior.mensagem)}"), o que motivou essa abordagem e que alternativas foram descartadas?`,
-    );
+    perguntas.push({
+      secao: "Decisões e porquês",
+      texto: `No commit ${maior.hash} ("${semPrefixo(maior.mensagem)}"), o que motivou essa abordagem e que alternativas foram descartadas?`,
+      commits: [maior.hash],
+    });
   }
   if (refatoracao) {
-    perguntas.push(
-      `Por que foi preciso ${semPrefixo(refatoracao.mensagem).replace(/^\w/, (l) => l.toLowerCase())} (${refatoracao.hash})? O que estava ruim antes?`,
-    );
+    perguntas.push({
+      secao: "Decisões e porquês",
+      texto: `Por que foi preciso ${semPrefixo(refatoracao.mensagem).replace(/^\w/, (l) => l.toLowerCase())} (${refatoracao.hash})? O que estava ruim antes?`,
+      commits: [refatoracao.hash],
+    });
   }
   if (correcao) {
-    perguntas.push(
-      `O bug corrigido em ${correcao.hash} ("${semPrefixo(correcao.mensagem)}") pode voltar? O que alguém novo precisa saber para não reintroduzi-lo?`,
-    );
+    perguntas.push({
+      secao: "Pontos de atenção",
+      texto: `O bug corrigido em ${correcao.hash} ("${semPrefixo(correcao.mensagem)}") pode voltar? O que alguém novo precisa saber para não reintroduzi-lo?`,
+      commits: [correcao.hash],
+    });
   }
   perguntas.push(
-    `Que combinados com o cliente (${projeto.cliente.split(" · ")[0]}) explicam regras de ${nome}?`,
-    `Quem do time deveria assumir ${nome} e o que essa pessoa precisa estudar primeiro?`,
+    {
+      secao: "Combinados com o cliente",
+      texto: `Que combinados com o cliente (${projeto.cliente.split(" · ")[0]}) explicam regras de ${nome}?`,
+      commits: [],
+    },
+    {
+      secao: "Sucessão e próximos passos",
+      texto: `Quem do time deveria assumir ${nome} e o que essa pessoa precisa estudar primeiro?`,
+      commits: [],
+    },
   );
   return perguntas;
 }

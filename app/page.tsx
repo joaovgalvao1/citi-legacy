@@ -1,6 +1,6 @@
 // Página inicial — apresenta o CITi Legacy antes da lista de projetos
 
-import { BotaoLink, Caixa, Placeholder } from "@/components/wireframe";
+import { BotaoLink, Caixa, Placeholder } from "@/components/ui";
 
 const passos = [
   {

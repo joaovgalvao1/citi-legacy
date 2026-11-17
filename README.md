@@ -6,7 +6,7 @@ Protótipo para o desafio **Inovação no PS** do CITi. O CITi Legacy mostra ao 
 
 ## Estado atual
 
-**Etapa 1: baixa fidelidade (wireframe navegável).** São 6 telas em tons de cinza, com dados fictícios de 3 projetos (Folhagem & Cia, Clínica Movimento e Metalúrgica Mezzalira) e sem IA.
+**Etapa 2: média fidelidade.** As telas já têm gráficos reais (barras de IC e linha do tempo de commits), interações e o legado montado a partir das respostas. Os dados são fictícios, de 3 projetos (Folhagem & Cia, Clínica Movimento e Metalúrgica Mezzalira). A interface ainda está em tons de cinza, sem identidade visual e sem IA; as duas entram na etapa 3.
 
 | Tela | Rota |
 |---|---|
@@ -55,6 +55,23 @@ Cada etapa recebe duas classificações independentes:
 - Só geram alerta as etapas com urgência alta ou moderada.
 - Registrar o legado de quem tem o maior IC marca a etapa como **mitigada**.
 
+## Funcionalidades
+
+- **Painel do projeto:**
+  - barras de IC por etapa;
+  - matriz membro × etapa (passar o mouse destaca linha e coluna; clicar abre a etapa);
+  - linha do tempo de commits por semana, com detalhe ao passar o mouse.
+- **Destaque de membro:** clicar num membro destaca a contribuição dele em todos os gráficos da página.
+- **Página da etapa:**
+  - ranking por IC, risco e urgência;
+  - linha do tempo só da etapa;
+  - "Como o IC foi calculado", com os 4 sinais de cada membro, os pesos e a contribuição de cada um.
+- **Legado:**
+  - as perguntas são agrupadas por seção, e o rascunho é salvo a cada tecla;
+  - o documento é montado com as respostas;
+  - dá para copiar e baixar em `.md`;
+  - o "Voltar" leva para a página de onde você veio.
+
 ## Stack
 
 Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · deploy na Vercel.
@@ -62,15 +79,17 @@ Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · deploy na Vercel.
 ## Estrutura
 
 ```
-app/                    rotas (uma pasta por tela)
-components/wireframe/   peças visuais do wireframe
-data/*.json             dados fictícios gerados (projetos, commits, análises)
-data/index.ts           leitura dos JSONs no formato usado pelas telas
-data/commits.ts         commits e perguntas do legado derivadas deles (só no servidor)
-scripts/                cenários e gerador dos dados (npm run dados)
-components/risco.tsx    selos e alertas de risco (somem quando o legado é registrado)
-components/painel.tsx   painel e página de etapa (IC, matriz, membros)
-lib/indice.ts           leitura do Índice de Conhecimento e do risco
-lib/legados.ts          registro de legados no localStorage
-DEV_LOG.md              como a IA foi usada em cada etapa
+app/                       rotas (uma pasta por tela)
+components/ui/             peças de interface (Caixa, Selo, Alerta, botões)
+components/graficos/       barras de IC, linha do tempo, cores dos membros, destaque
+components/painel/         painel, página da etapa, matriz e cálculo do IC
+components/risco/          selos e alertas de risco e urgência
+components/legado/         botões, formulário (com rascunho) e documento do legado
+data/*.json                dados fictícios gerados (projetos, commits, análises)
+data/index.ts              leitura dos JSONs no formato usado pelas telas
+data/commits.ts            commits e perguntas do legado (só no servidor)
+lib/indice.ts              IC, risco e urgência
+lib/legados.ts             legados, rascunhos e origem no armazenamento do navegador
+scripts/                   cenários e gerador dos dados (npm run dados)
+DEV_LOG.md                 como a IA foi usada em cada etapa
 ```

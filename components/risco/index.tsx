@@ -14,7 +14,7 @@ import {
   type Nivel,
   type NivelUrgencia,
 } from "@/lib/indice";
-import { Alerta, Selo } from "@/components/wireframe";
+import { Alerta, Selo } from "@/components/ui";
 
 export function SeloRisco({ nivel }: { nivel: Nivel }) {
   return <Selo forte={nivel === "Alto"}>Risco {nivel.toLowerCase()}</Selo>;

@@ -27,7 +27,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <footer className="border-t border-gray-300 py-3 text-center text-xs text-gray-500">
-          Wireframe · etapa 1 (baixa fidelidade)
+          Protótipo · etapa 2 (média fidelidade)
         </footer>
       </body>
     </html>

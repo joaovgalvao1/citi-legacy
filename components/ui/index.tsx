@@ -1,4 +1,5 @@
-// Peças básicas do wireframe (etapa 1): tudo em tons de cinza, sem identidade visual.
+// Peças básicas de interface (Caixa, Selo, Alerta, botões). Ainda em tons de cinza:
+// a identidade visual do CITi entra na etapa 3, trocando só este arquivo e as cores dos gráficos.
 
 import Link from "next/link";
 import type { ReactNode } from "react";

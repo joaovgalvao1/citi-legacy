@@ -15,7 +15,17 @@ export type Etapa = {
   ic: Record<string, number>;
   /** Concentração do conhecimento (HHI, 0 a 1): 1 = uma pessoa sabe tudo. */
   concentracao: number;
+  /** Fatia (%) de cada membro em cada sinal do IC, para explicar o cálculo. */
+  fatias: Record<string, Sinais>;
+  /** Commits por semana nesta etapa. */
+  semanas: Semana[];
 };
+
+/** Os quatro sinais que compõem o IC, em % (fatia do membro no total da etapa). */
+export type Sinais = { efetivas: number; commits: number; brutas: number; recentes: number };
+
+/** Commits de cada membro numa semana (semana = segunda-feira, "aaaa-mm-dd"). */
+export type Semana = { semana: string; commits: Record<string, number> };
 
 export type Membro = {
   id: string;
@@ -39,12 +49,17 @@ export type Projeto = {
   etapaAtual: string; // nome da etapa
   etapas: Etapa[];
   membros: Membro[];
+  /** Commits por semana no projeto inteiro. */
+  semanas: Semana[];
+  /** Pesos de cada sinal no IC (iguais em todos os projetos). */
+  pesos: Sinais;
 };
 
 type Analise = {
-  indice: { pesos: Record<string, number>; meiaVidaDias: number };
+  indice: { pesos: Sinais; meiaVidaDias: number };
   porMembro: Record<string, { icProjeto: number }>;
-  porEtapa: Record<string, { ic: Record<string, number>; concentracao: number }>;
+  porEtapa: Record<string, { ic: Record<string, number>; concentracao: number; fatias: Record<string, Sinais>; semanas: Semana[] }>;
+  semanas: Semana[];
 };
 
 const analises = analisesJson as unknown as Record<string, Analise>;
@@ -73,6 +88,8 @@ export const projetos: Projeto[] = projetosJson.projetos.map((p) => {
         : {}),
       icProjeto: a.porMembro[m.id].icProjeto,
     })),
+    semanas: a.semanas,
+    pesos: a.indice.pesos,
   };
 });
 

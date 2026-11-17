@@ -1,0 +1,140 @@
+"use client";
+
+// Linha do tempo: commits por semana, empilhados por membro (SVG próprio).
+// Passar o mouse numa semana mostra o detalhe; clicar na legenda destaca um membro.
+
+import { useState } from "react";
+import type { Projeto, Semana } from "@/data";
+import { corDoMembro } from "./cores";
+import { useDestaque } from "./destaque";
+
+type Props = { projeto: Projeto; semanas: Semana[]; titulo: string };
+
+const L = 640; // largura do desenho (o SVG escala para a largura disponível)
+const A = 200; // altura
+const M = { topo: 10, dir: 8, base: 26, esq: 28 };
+
+const ddmm = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
+
+export function LinhaDoTempo({ projeto, semanas, titulo }: Props) {
+  const { membroId, alternar } = useDestaque();
+  const [hover, setHover] = useState<number | null>(null);
+
+  const membros = projeto.membros.filter((m) => semanas.some((s) => (s.commits[m.id] ?? 0) > 0));
+  const totais = semanas.map((s) => membros.reduce((soma, m) => soma + (s.commits[m.id] ?? 0), 0));
+  const max = Math.max(1, ...totais);
+  const passoY = max <= 5 ? 1 : max <= 12 ? 2 : 5;
+  const topoY = Math.ceil(max / passoY) * passoY;
+
+  const areaL = L - M.esq - M.dir;
+  const areaA = A - M.topo - M.base;
+  const col = areaL / semanas.length;
+  const larg = Math.min(24, col * 0.7);
+  const y = (v: number) => M.topo + areaA - (v / topoY) * areaA;
+  const ticks = Array.from({ length: topoY / passoY + 1 }, (_, i) => i * passoY);
+  const cadaRotulo = semanas.length > 10 ? 2 : 1;
+
+  const total = totais.reduce((a, b) => a + b, 0);
+  const resumo = `${titulo}: ${total} commits em ${semanas.length} semanas, de ${ddmm(semanas[0].semana)} a ${ddmm(semanas.at(-1)!.semana)}.`;
+
+  return (
+    <div className="space-y-2">
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600">
+        {membros.map((m) => (
+          <button
+            key={m.id}
+            type="button"
+            onClick={() => alternar(m.id)}
+            aria-pressed={membroId === m.id}
+            className={`flex cursor-pointer items-center gap-1.5 ${membroId && membroId !== m.id ? "opacity-40" : ""}`}
+          >
+            <span className="inline-block h-2.5 w-2.5" style={{ backgroundColor: corDoMembro(projeto, m.id) }} />
+            {m.nome}
+          </button>
+        ))}
+      </div>
+
+      <div className="relative">
+        <svg viewBox={`0 0 ${L} ${A}`} className="h-auto w-full" role="img" aria-label={resumo}>
+          {ticks.map((t) => (
+            <g key={t}>
+              <line x1={M.esq} x2={L - M.dir} y1={y(t)} y2={y(t)} stroke="#e5e7eb" strokeWidth={1} />
+              <text x={M.esq - 6} y={y(t) + 3} textAnchor="end" fontSize={10} fill="#6b7280">
+                {t}
+              </text>
+            </g>
+          ))}
+
+          {semanas.map((s, i) => {
+            const x = M.esq + i * col + (col - larg) / 2;
+            let acumulado = 0;
+            return (
+              <g key={s.semana}>
+                {membros.map((m) => {
+                  const v = s.commits[m.id] ?? 0;
+                  if (!v) return null;
+                  const y1 = y(acumulado + v);
+                  const h = y(acumulado) - y1;
+                  acumulado += v;
+                  return (
+                    <rect
+                      key={m.id}
+                      x={x}
+                      y={y1}
+                      width={larg}
+                      height={Math.max(h - 1, 0.5)}
+                      fill={corDoMembro(projeto, m.id)}
+                      opacity={membroId && membroId !== m.id ? 0.2 : 1}
+                    />
+                  );
+                })}
+                {i % cadaRotulo === 0 && (
+                  <text x={x + larg / 2} y={A - 8} textAnchor="middle" fontSize={10} fill="#6b7280">
+                    {ddmm(s.semana)}
+                  </text>
+                )}
+                {/* área invisível para o hover cobrir a coluna inteira */}
+                <rect
+                  x={M.esq + i * col}
+                  y={M.topo}
+                  width={col}
+                  height={areaA}
+                  fill={hover === i ? "rgba(0,0,0,0.04)" : "transparent"}
+                  onMouseEnter={() => setHover(i)}
+                  onMouseLeave={() => setHover(null)}
+                />
+              </g>
+            );
+          })}
+          <line x1={M.esq} x2={L - M.dir} y1={y(0)} y2={y(0)} stroke="#9ca3af" strokeWidth={1} />
+        </svg>
+
+        {hover !== null && (
+          <div
+            className="pointer-events-none absolute top-0 z-10 min-w-40 border border-gray-300 bg-white p-2 text-xs shadow-sm"
+            style={{
+              left: `${((M.esq + (hover + 0.5) * col) / L) * 100}%`,
+              transform: hover > semanas.length / 2 ? "translateX(-105%)" : "translateX(5%)",
+            }}
+          >
+            <div className="mb-1 font-semibold">
+              Semana de {ddmm(semanas[hover].semana)} · {totais[hover]} commits
+            </div>
+            {membros
+              .filter((m) => (semanas[hover].commits[m.id] ?? 0) > 0)
+              .map((m) => (
+                <div key={m.id} className="flex items-center justify-between gap-3">
+                  <span className="flex items-center gap-1.5">
+                    <span className="inline-block h-2 w-2" style={{ backgroundColor: corDoMembro(projeto, m.id) }} />
+                    {m.nome.split(" ")[0]}
+                  </span>
+                  <span className="tabular-nums">{semanas[hover].commits[m.id]}</span>
+                </div>
+              ))}
+            {totais[hover] === 0 && <div className="text-gray-500">Sem commits</div>}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

@@ -3,7 +3,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { getProjeto, projetos } from "@/data";
-import { Voltar } from "@/components/wireframe";
+import { Voltar } from "@/components/ui";
 import { AlertasDoProjeto, RiscoDoProjeto } from "@/components/risco";
 import { PainelInterativo } from "@/components/painel";
 
