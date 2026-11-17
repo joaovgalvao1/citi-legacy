@@ -1,16 +1,13 @@
-// Página do membro: o histórico da pessoa em todos os projetos da empresa
+// Página do membro: os projetos de que a pessoa participou
 
 import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { formatarData, formatarMesAno, getPessoa, nomeEtapa, pessoas, projetosDaPessoa } from "@/data";
-import { commitsDaPessoa, commitsPorMes } from "@/data/commits";
-import { emPct, etapasLideradas, nivelUrgencia } from "@/lib/indice";
-import { statusProjeto } from "@/lib/status";
-import { Caixa, Selo, Voltar } from "@/components/ui";
-import { SeloUrgencia } from "@/components/risco";
-import { corPorIndice } from "@/components/graficos/cores";
-import { AtividadeDoMembro } from "@/components/membro/atividade";
+import { formatarData, formatarMesAno, getPessoa, pessoas, projetosDaPessoa } from "@/data";
+import { commitsDaPessoa } from "@/data/commits";
+import { emPct } from "@/lib/indice";
+import { Selo, Voltar } from "@/components/ui";
+import { SeloStatusProjeto } from "@/components/projeto/status";
 
 export function generateStaticParams() {
   return pessoas.map((p) => ({ membroId: p.id }));
@@ -22,8 +19,7 @@ async function MembroConteudo({ params }: { params: PageProps<"/membros/[membroI
   if (!pessoa) notFound();
 
   const participacoes = projetosDaPessoa(pessoa.id);
-  const todos = commitsDaPessoa(pessoa.id);
-  const series = participacoes.map(({ projeto }, i) => ({ id: projeto.id, nome: projeto.nome, cor: corPorIndice(i) }));
+  const total = commitsDaPessoa(pessoa.id).length;
 
   return (
     <div className="space-y-6">
@@ -31,86 +27,43 @@ async function MembroConteudo({ params }: { params: PageProps<"/membros/[membroI
         <Voltar href="/membros">Membros</Voltar>
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="text-2xl font-bold">{pessoa.nome}</h1>
-          {pessoa.saiuEm ? (
-            <Selo>Saiu em {formatarMesAno(pessoa.saiuEm.slice(0, 7))}</Selo>
-          ) : pessoa.saidaPrevista ? (
-            <>
-              <Selo>Sai {pessoa.saidaPrevista}</Selo>
-              <SeloUrgencia nivel={nivelUrgencia(pessoa)} />
-            </>
-          ) : (
-            <Selo>Na empresa</Selo>
-          )}
+          {pessoa.saiuEm && <Selo>Saiu em {formatarMesAno(pessoa.saiuEm.slice(0, 7))}</Selo>}
         </div>
         <p className="text-sm text-gray-600">
           No CITi desde {formatarMesAno(pessoa.entrada)} · {participacoes.length}{" "}
-          {participacoes.length === 1 ? "projeto" : "projetos"} · {todos.length} commits
+          {participacoes.length === 1 ? "projeto" : "projetos"} · {total} commits
         </p>
       </div>
 
-      <Caixa titulo="Projetos">
-        <ul className="divide-y divide-gray-300">
-          {participacoes.map(({ projeto, membro }, i) => {
-            const meus = commitsDaPessoa(pessoa.id, projeto.id);
-            const lideradas = etapasLideradas(projeto, membro);
-            const etapasComIc = projeto.etapas
-              .map((e) => ({ etapa: e, ic: e.ic[pessoa.id] ?? 0 }))
-              .filter((x) => x.ic > 0)
-              .sort((a, b) => b.ic - a.ic);
-            return (
-              <li key={projeto.id} className="space-y-2 py-4">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-block h-2.5 w-2.5" style={{ backgroundColor: corPorIndice(i) }} />
-                  <Link href={`/projetos/${projeto.id}`} className="font-semibold underline">
-                    {projeto.nome}
-                  </Link>
-                  <Selo forte={statusProjeto(projeto) === "Atrasado"}>{statusProjeto(projeto)}</Selo>
-                  {projeto.caseReal && <Selo>Case real</Selo>}
+      <ul className="grid gap-4 md:grid-cols-2">
+        {participacoes.map(({ projeto, membro }) => {
+          const meus = commitsDaPessoa(pessoa.id, projeto.id);
+          return (
+            <li key={projeto.id}>
+              <Link href={`/projetos/${projeto.id}`} className="block h-full space-y-3 border border-gray-400 bg-white p-4 hover:border-gray-800">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <div className="text-lg font-semibold">{projeto.nome}</div>
+                    <div className="text-sm text-gray-600">{membro.papel}</div>
+                  </div>
+                  <SeloStatusProjeto projeto={projeto} />
                 </div>
-                <p className="text-sm text-gray-600">
-                  {membro.papel} · IC no projeto {emPct(membro.icProjeto)}
-                  {meus.length > 0 &&
-                    ` · ${meus.length} commits de ${formatarData(meus.at(-1)!.data)} a ${formatarData(meus[0].data)}`}
-                </p>
-                {lideradas.length > 0 && (
-                  <p className="text-sm">
-                    Quem mais sabe de: {lideradas.map((id) => nomeEtapa(projeto, id)).join(", ")}
-                  </p>
-                )}
-                <ul className="flex flex-wrap gap-2 text-xs">
-                  {etapasComIc.map(({ etapa, ic }) => (
-                    <li key={etapa.id}>
-                      <Link
-                        href={`/projetos/${projeto.id}/etapas/${etapa.id}`}
-                        className="inline-block rounded-full border border-gray-400 px-2 py-0.5 text-gray-700 hover:border-gray-800"
-                      >
-                        {etapa.nome} · IC {emPct(ic)}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            );
-          })}
-        </ul>
-      </Caixa>
-
-      <Caixa titulo="Atividade · commits por mês">
-        <AtividadeDoMembro series={series} meses={commitsPorMes(pessoa.id)} nome={pessoa.nome} />
-      </Caixa>
-
-      <Caixa titulo="Últimos commits">
-        <ul className="space-y-1.5 text-sm">
-          {todos.slice(0, 10).map((c) => (
-            <li key={c.hash} className="flex flex-wrap gap-x-3">
-              <span className="font-mono text-gray-500">{c.hash}</span>
-              <span className="text-gray-500">{formatarData(c.data)}</span>
-              <span className="text-gray-600">{participacoes.find((x) => x.projeto.id === c.projetoId)?.projeto.nome}</span>
-              <span className="font-mono">{c.mensagem}</span>
+                <div className="flex items-end justify-between gap-3">
+                  <div className="text-sm text-gray-600">
+                    {meus.length
+                      ? `${formatarData(meus.at(-1)!.data)} a ${formatarData(meus[0].data)}`
+                      : "sem commits"}
+                  </div>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold tabular-nums">{emPct(membro.icProjeto)}</div>
+                    <div className="text-xs text-gray-500">IC no projeto</div>
+                  </div>
+                </div>
+              </Link>
             </li>
-          ))}
-        </ul>
-      </Caixa>
+          );
+        })}
+      </ul>
     </div>
   );
 }

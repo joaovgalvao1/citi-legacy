@@ -2,7 +2,7 @@
 //
 // Etapa:
 //   Concluída     progresso 100%
-//   Não iniciada  progresso 0% e o início previsto ainda não chegou
+//   Em planejamento  progresso 0% e o início previsto ainda não chegou
 //   Atrasada      passou do fim previsto sem chegar a 100%
 //   Em andamento  o resto
 //   + "parada" (sinal extra): em andamento ou atrasada, sem commits há 14 dias ou mais
@@ -12,13 +12,11 @@
 //   Atrasado      passou do fim previsto sem ser entregue
 //   Em andamento  o resto
 //
-// Alertas (só projetos não concluídos), do mais grave para o menos:
-//   saída próxima de quem detém o conhecimento (urgência alta/moderada) · etapa atrasada · etapa parada
-// Projetos concluídos têm só um aviso informativo: quem mais sabe de uma etapa já saiu da empresa.
+// Alertas (só projetos não concluídos): etapa atrasada e/ou parada, um por etapa.
 
 import type { Etapa, Projeto } from "@/data";
 import { dataReferencia } from "@/data/referencia.json";
-import { avaliarEtapa, emPct, type Nivel, type NivelUrgencia } from "./indice";
+import { emPct } from "./indice";
 
 export const DIAS_PARADA = 14;
 
@@ -27,13 +25,13 @@ const data = (iso: string) => new Date(`${iso.slice(0, 10)}T12:00:00Z`).getTime(
 export const diasEntre = (de: string, ate: string) => Math.round((data(ate) - data(de)) / DIA);
 const hoje = dataReferencia;
 
-export type StatusEtapa = "Concluída" | "Em andamento" | "Atrasada" | "Não iniciada";
+export type StatusEtapa = "Concluída" | "Em andamento" | "Atrasada" | "Em planejamento";
 export type StatusProjeto = "Concluído" | "Em andamento" | "Atrasado";
 
 export function statusEtapa(projeto: Projeto, etapa: Etapa): StatusEtapa {
   if (etapa.progresso >= 100 || projeto.status === "concluido") return "Concluída";
   if (hoje > etapa.fimPrevisto) return "Atrasada";
-  if (etapa.progresso === 0 && hoje < etapa.inicioPrevisto) return "Não iniciada";
+  if (etapa.progresso === 0 && hoje < etapa.inicioPrevisto) return "Em planejamento";
   return "Em andamento";
 }
 
@@ -48,6 +46,19 @@ export function statusProjeto(projeto: Projeto): StatusProjeto {
   if (projeto.status === "concluido") return "Concluído";
   if (hoje > projeto.fimPrevisto) return "Atrasado";
   return "Em andamento";
+}
+
+/** Prazo de uma etapa: "começa em 13 dias", "faltam 10 dias", "atrasada há 11 dias" ("" se concluída). */
+export function textoPrazoEtapa(projeto: Projeto, etapa: Etapa) {
+  const s = statusEtapa(projeto, etapa);
+  if (s === "Concluída") return "";
+  if (s === "Em planejamento") {
+    const d = diasEntre(hoje, etapa.inicioPrevisto);
+    return d <= 0 ? "começa hoje" : `começa em ${d} ${d === 1 ? "dia" : "dias"}`;
+  }
+  if (s === "Atrasada") return `atrasada há ${diasEntre(etapa.fimPrevisto, hoje)} dias`;
+  const d = diasEntre(hoje, etapa.fimPrevisto);
+  return d === 0 ? "prazo termina hoje" : `faltam ${d} ${d === 1 ? "dia" : "dias"}`;
 }
 
 /** Progresso do projeto: média simples do progresso das etapas. */
@@ -69,66 +80,60 @@ export function textoPrazo(projeto: Projeto) {
   return d === 0 ? "prazo termina hoje" : `faltam ${d} dias`;
 }
 
+/** Só a comparação com o previsto, para projetos entregues: "7 dias depois do previsto". */
+export function textoEntrega(projeto: Projeto) {
+  if (!projeto.entrega) return "";
+  const d = diasEntre(projeto.fimPrevisto, projeto.entrega);
+  if (d > 0) return `${d} dias depois do previsto`;
+  if (d < 0) return `${-d} dias antes do previsto`;
+  return "no prazo";
+}
+
 /* ---------- alertas ---------- */
 
 export type Alerta = {
-  tipo: "saida" | "atrasada" | "parada" | "conhecimento-saiu";
   etapaId: string;
+  /** Frase completa, para o painel. */
   texto: string;
+  /** Frase curta, para os cards da lista de projetos. */
+  curto: string;
   gravidade: number; // maior = mais grave
-  risco?: Nivel;
-  urgencia?: NivelUrgencia;
 };
 
-const pesoUrgencia: Record<NivelUrgencia, number> = { Alta: 30, Moderada: 20, Baixa: 0 };
-const pesoRisco: Record<Nivel, number> = { Alto: 3, Moderado: 2, Baixo: 1 };
-
+/** Um alerta por etapa atrasada e/ou parada, do mais grave para o menos grave. */
 export function alertas(projeto: Projeto): Alerta[] {
+  if (projeto.status === "concluido") return [];
   const lista: Alerta[] = [];
   for (const etapa of projeto.etapas) {
-    const av = avaliarEtapa(projeto, etapa.id);
-    const quem = av.lider?.membro;
-
-    if (projeto.status === "concluido") {
-      if (quem?.saiuEm) {
-        lista.push({
-          tipo: "conhecimento-saiu",
-          etapaId: etapa.id,
-          gravidade: 1,
-          texto: `Quem mais sabe de ${etapa.nome} (${quem.nome}, IC ${emPct(av.lider!.ic)}) já saiu da empresa`,
-        });
-      }
-      continue;
-    }
-
-    if (quem && av.urgencia !== "Baixa") {
-      lista.push({
-        tipo: "saida",
-        etapaId: etapa.id,
-        gravidade: pesoUrgencia[av.urgencia] + pesoRisco[av.risco],
-        risco: av.risco,
-        urgencia: av.urgencia,
-        texto: `${quem.nome} sai ${quem.saidaPrevista} · ${etapa.nome} depende de ${quem.nome.split(" ")[0]} (IC ${emPct(av.lider!.ic)})`,
-      });
-    }
-    if (statusEtapa(projeto, etapa) === "Atrasada") {
-      const d = diasEntre(etapa.fimPrevisto, hoje);
-      lista.push({
-        tipo: "atrasada",
-        etapaId: etapa.id,
-        gravidade: 15 + Math.min(d, 30) / 10,
-        texto: `${etapa.nome} está atrasada há ${d} dias, com ${emPct(etapa.progresso)} concluído`,
-      });
-    }
+    const atrasada = statusEtapa(projeto, etapa) === "Atrasada";
     const parada = diasParada(projeto, etapa);
-    if (parada !== null) {
-      lista.push({
-        tipo: "parada",
-        etapaId: etapa.id,
-        gravidade: 10 + Math.min(parada, 30) / 10,
-        texto: `${etapa.nome} está sem commits há ${parada} dias`,
-      });
-    }
+    if (!atrasada && parada === null) continue;
+    const diasAtraso = atrasada ? diasEntre(etapa.fimPrevisto, hoje) : 0;
+    const partes = [
+      atrasada ? `atrasada há ${diasAtraso} dias (${emPct(etapa.progresso)} concluído)` : null,
+      parada !== null ? `sem commits há ${parada} dias` : null,
+    ].filter(Boolean);
+    lista.push({
+      etapaId: etapa.id,
+      texto: `${etapa.nome}: ${partes.join(" e ")}`,
+      curto: `${etapa.nome} ${atrasada ? "atrasada" : "parada"}`,
+      gravidade: (atrasada ? 20 + Math.min(diasAtraso, 60) / 10 : 0) + (parada !== null ? 10 + Math.min(parada, 60) / 10 : 0),
+    });
   }
   return lista.sort((a, b) => b.gravidade - a.gravidade);
+}
+
+/** Resumo curto para o card da lista: o alerta mais grave, ou "N etapas atrasadas" quando há várias. */
+export function alertaDoCard(projeto: Projeto): string | null {
+  const lista = alertas(projeto);
+  if (!lista.length) return null;
+  const atrasadas = projeto.etapas.filter((e) => statusEtapa(projeto, e) === "Atrasada").length;
+  if (atrasadas > 1) return `${atrasadas} etapas atrasadas`;
+  return lista[0].curto;
+}
+
+/** Duração de um projeto concluído, em meses arredondados. */
+export function duracaoEmMeses(projeto: Projeto) {
+  const fim = projeto.entrega ?? projeto.fimPrevisto;
+  return Math.max(1, Math.round(diasEntre(projeto.inicio, fim) / 30.4));
 }

@@ -1,65 +1,113 @@
-// Painel do projeto
+// Aba "Visão geral": o que precisa de atenção, resumo e andamento das etapas
 
 import { Suspense } from "react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProjeto, projetos } from "@/data";
-import { Caixa, Selo, Voltar } from "@/components/ui";
-import { AlertasDoProjeto, SeloStatusProjeto } from "@/components/risco";
-import { PainelInterativo } from "@/components/painel";
+import { formatarData } from "@/data/formatos";
+import { emPct, lider } from "@/lib/indice";
+import { alertas, statusEtapa, textoPrazoEtapa } from "@/lib/status";
+import { Alerta, Caixa, Placeholder } from "@/components/ui";
+import { BarraProgresso } from "@/components/ui/progresso";
+import { SeloStatusEtapa } from "@/components/projeto/status";
 
 export function generateStaticParams() {
   return projetos.map((p) => ({ projetoId: p.id }));
 }
 
-async function PainelDoProjetoConteudo({ params }: { params: PageProps<"/projetos/[projetoId]">["params"] }) {
+async function VisaoGeral({ params }: { params: PageProps<"/projetos/[projetoId]">["params"] }) {
   const { projetoId } = await params;
   const projeto = getProjeto(projetoId);
   if (!projeto) notFound();
+  const concluido = projeto.status === "concluido";
+  const lista = alertas(projeto);
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <Voltar href="/projetos">Projetos</Voltar>
-        <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-bold">{projeto.nome}</h1>
-          <SeloStatusProjeto projeto={projeto} />
-          {projeto.caseReal && <Selo>Case real do CITi</Selo>}
-        </div>
-        <p className="text-sm text-gray-600">
-          Cliente: {projeto.cliente} · {projeto.membros.length} membros
-        </p>
-        <p className="max-w-3xl text-sm text-gray-700">{projeto.descricao}</p>
-        <AlertasDoProjeto projeto={projeto} limite={3} />
-      </div>
-
-      {(projeto.contexto || projeto.resultados) && (
-        <Caixa titulo="Contexto e resultados">
-          <div className="space-y-2 text-sm">
-            {projeto.contexto && <p className="text-gray-700">{projeto.contexto}</p>}
-            {projeto.resultados && (
-              <p>
-                <span className="font-semibold">Resultados: </span>
-                {projeto.resultados}
-              </p>
-            )}
-            {projeto.caseReal && (
-              <p className="text-xs text-gray-500">
-                Contexto e resultados do case real; pessoas, commits e prazos das etapas são fictícios.
-              </p>
-            )}
-          </div>
+      {concluido ? (
+        projeto.resultados && (
+          <Caixa titulo="Resultados">
+            <p className="text-sm text-gray-700">{projeto.resultados}</p>
+          </Caixa>
+        )
+      ) : (
+        <Caixa titulo="Precisa de atenção">
+          {lista.length ? (
+            <div className="space-y-2">
+              {lista.map((a) => (
+                <Alerta key={a.etapaId}>{a.texto}</Alerta>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm text-gray-600">Tudo em dia: nenhuma etapa atrasada ou parada.</p>
+          )}
         </Caixa>
       )}
 
-      <PainelInterativo projeto={projeto} />
+      <Caixa titulo={concluido ? "Retrospectiva · gerada por IA" : "Resumo da semana · gerado por IA"}>
+        <Placeholder
+          texto={
+            concluido
+              ? "etapa 3: a IA lê os commits e escreve a retrospectiva do projeto"
+              : "etapa 3: a IA lê os commits e escreve o que andou, o que travou e o que fazer primeiro"
+          }
+          altura="h-20"
+        />
+      </Caixa>
+
+      <Caixa titulo={`Etapas · ${projeto.etapas.length}`}>
+        <ul className="divide-y divide-gray-300">
+          {projeto.etapas.map((e) => {
+            const top = lider(projeto, e.id);
+            const emPlanejamento = statusEtapa(projeto, e) === "Em planejamento";
+            const conteudo = (
+              <div className="space-y-2 py-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="font-semibold">{e.nome}</span>
+                  <SeloStatusEtapa projeto={projeto} etapaId={e.id} />
+                </div>
+                <p className="text-sm text-gray-700">{e.descricao}</p>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                  <div className="w-full max-w-xs flex-1">
+                    <BarraProgresso valor={e.progresso} compacta />
+                  </div>
+                  <span className="text-sm tabular-nums">{emPct(e.progresso)}</span>
+                  <span className="text-sm text-gray-600">
+                    {textoPrazoEtapa(projeto, e) && `${textoPrazoEtapa(projeto, e)} · `}
+                    {emPlanejamento
+                      ? `previsto de ${formatarData(e.inicioPrevisto)} a ${formatarData(e.fimPrevisto)}`
+                      : `prazo ${formatarData(e.fimPrevisto)}`}
+                  </span>
+                </div>
+                {top && (
+                  <p className="text-xs text-gray-500">
+                    Quem mais sabe: <span className="text-gray-800">{top.membro.nome}</span> · {emPct(top.ic)}
+                  </p>
+                )}
+              </div>
+            );
+            return (
+              <li key={e.id}>
+                {top ? (
+                  <Link href={`/projetos/${projeto.id}/participacao?etapa=${e.id}`} className="block hover:bg-gray-50">
+                    {conteudo}
+                  </Link>
+                ) : (
+                  conteudo
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </Caixa>
     </div>
   );
 }
 
-export default function PainelDoProjeto(props: PageProps<"/projetos/[projetoId]">) {
+export default function PaginaVisaoGeral(props: PageProps<"/projetos/[projetoId]">) {
   return (
     <Suspense fallback={<p className="text-sm text-gray-500">Carregando…</p>}>
-      <PainelDoProjetoConteudo params={props.params} />
+      <VisaoGeral params={props.params} />
     </Suspense>
   );
 }

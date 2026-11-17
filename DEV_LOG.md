@@ -307,3 +307,86 @@ As escolhas, feitas num questionário de múltipla escolha montado pela IA:
 - **celular:** largura conferida, sem rolagem horizontal.
 
 Build (74 páginas), tipos e lint passam.
+
+---
+
+## Simplificação das telas (17/11)
+
+**O que pedi:** menos informação nas telas e uma navegação simples. Analisamos tela por tela. A IA propôs cada mudança, mostrou exemplos visuais quando pedi (cards × lista, painel enxuto), e eu decidi.
+
+**Minhas decisões:**
+- **Início:** vira uma **tela de login** com um único usuário administrador, de demonstração.
+- **Projetos:** em **cards** (escolhi a opção A entre cards e lista), com abas Em andamento / Concluídos, busca e um alerta curto por projeto.
+- **Painel do projeto:**
+  - saem os blocos de conhecimento e risco, o cronograma e a matriz;
+  - **sai toda a funcionalidade de risco e urgência**;
+  - ficam só dois gráficos: **commits por semana** e **IC**, cada um no projeto todo e por etapa, separados para não poluir;
+  - pedi também um lugar para ver o **escopo total** do projeto.
+- **A IA propôs separar o projeto em 4 abas** (Visão geral, Escopo, Atividade, Conhecimento) e eu aprovei. Também aprovei:
+  - remover a página da etapa, cujo filtro foi para dentro das abas;
+  - deixar em "Precisa de atenção" só as etapas atrasadas ou paradas;
+  - **remover a data de saída prevista**.
+- **Contexto:** pedi que a IA escrevesse o contexto dos 4 projetos que não são cases reais.
+- **Membros:** cards com abas Na empresa / Já saíram e busca.
+- **Página do membro:** só o cabeçalho e cards dos projetos com o IC do membro, sem "quem mais sabe de" e sem gráficos.
+
+**O que a IA gerou:**
+- **Login:**
+  - `config/acesso.ts` com o usuário de demonstração;
+  - `lib/sessao.ts` com a sessão no navegador;
+  - `components/layout/estrutura.tsx`, com o cabeçalho, o botão Sair e o redirecionamento ao login para quem não está logado.
+- **Projeto em 4 rotas** com um layout comum (nome, status, progresso, prazo e abas):
+  - as abas Atividade e Conhecimento têm um seletor "Projeto todo / Etapa" guardado na URL (`?etapa=`);
+  - clicar numa etapa na Visão geral abre o Conhecimento já filtrado nela.
+- **Dados:** o gerador grava as fatias dos 4 sinais do IC no projeto inteiro, para o "Como o IC foi calculado" funcionar também em "Projeto todo". As datas de saída prevista saíram dos cenários. Os cases ganharam uma linha de resultado para os cards.
+- **Alertas:** um por etapa, juntando atraso e parada numa frase ("Certificados de horas: atrasada há 11 dias (30% concluído) e sem commits há 18 dias"). No card, aparece a versão curta ("4 etapas atrasadas").
+- **Removido:** risco, urgência, concentração na tela, cronograma, matriz, página da etapa, data de saída e os gráficos da página do membro.
+
+**Problemas encontrados pela IA no teste:**
+- O cliente aparecia repetido nos cards ("Clínica Movimento · Clínica Movimento…"). Agora mostra só o complemento quando o cliente tem o mesmo nome do projeto.
+- O cabeçalho dos projetos concluídos repetia a data de entrega.
+- A barra de abas mostrava uma rolagem vertical desnecessária.
+- O Next acusou que a proteção de login escondia as páginas durante a pré-renderização. Agora as páginas são renderizadas normalmente no servidor, e o redirecionamento acontece no navegador.
+
+**Verificação:** testado no navegador:
+- **login:** vazio dá erro, senha errada dá erro, a correta entra; sem sessão, as páginas voltam ao login; Sair limpa a sessão;
+- **projetos:** abas e cards;
+- **projeto:** as 4 abas, inclusive o link da etapa para o Conhecimento filtrado e a troca de etapa no seletor;
+- **membros:** abas e página do membro;
+- **celular:** largura conferida, sem rolagem horizontal da página.
+
+Build (55 páginas), tipos e lint passam.
+
+### Escopo nas etapas e etapas em planejamento (17/11)
+
+**O que pedi:** colocar o escopo dentro das etapas, na Visão geral. Pedi também que uma etapa que ainda não começou apareça "em planejamento", com 0% e "faltam X dias".
+
+**O que a IA fez:**
+- **Cada etapa da Visão geral mostra:** a descrição do que ela inclui (o escopo), o status, o progresso e uma contagem de prazo:
+  - "faltam 17 dias" (em andamento);
+  - "atrasada há 18 dias" (atrasada);
+  - "começa em 13 dias" (em planejamento, com o período previsto).
+- **"Não iniciada" virou "Em planejamento".**
+- **Dados:** como nenhuma etapa estava em planejamento, os cenários ganharam uma etapa futura em cada projeto em andamento, sem commits:
+  - Relatórios de vendas (Folhagem);
+  - Implantação nas unidades (Clínica);
+  - Avaliação com operadores (Mezzalira).
+
+  Isso também baixa o progresso médio desses projetos.
+- **A aba "Escopo" virou "Sobre"** (sobre o projeto, equipe e resultados), sem a lista de entregas, que ficaria repetida.
+
+**Verificação:** a Visão geral da Clínica Movimento mostra 6 etapas, incluindo "Implantação nas unidades · Em planejamento · 0% · começa em 13 dias". Build, tipos e lint passam.
+
+### Atividade e Conhecimento numa aba só (17/11)
+
+**O que pedi:** juntar Atividade e Conhecimento numa única página.
+
+**O que a IA fez:**
+- **Abas:** o projeto passou a ter 3 abas: Visão geral, Sobre e **Participação**.
+- **Aba Participação:** um seletor único "Projeto todo / Etapa" no topo e, abaixo, o gráfico de IC (com "Como o IC foi calculado") e o gráfico de commits por semana. Clicar num membro destaca a pessoa nos dois gráficos ao mesmo tempo.
+- **Links:** a Visão geral passou a levar a essa aba já filtrada na etapa.
+- **Etapas sem commits** (em planejamento) mostram "Esta etapa ainda não tem commits." no lugar de um gráfico vazio.
+
+**Problema no teste:** depois da troca de rotas, o servidor de desenvolvimento ficou com uma versão antiga do módulo em cache e mostrava "Element type is invalid". O build de produção já passava. Reiniciar o servidor resolveu.
+
+**Verificação:** na Folhagem, a etapa Estoque abre filtrada pela Visão geral. Clicar em Caio apaga 17 das 27 barras de outros membros na linha do tempo. A etapa em planejamento mostra o aviso de "sem commits". Build, tipos e lint passam.

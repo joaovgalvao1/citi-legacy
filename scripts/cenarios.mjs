@@ -13,22 +13,22 @@
 
 export const dataReferencia = "2026-11-17";
 
-// Pessoas (fictícias). "saida" = saída prevista (futuro); "saiuEm" = já saiu da empresa.
+// Pessoas (fictícias). "saiuEm" = já saiu da empresa.
 export const pessoas = [
   { id: "helena-duarte", nome: "Helena Duarte", entrada: "2025-08" },
-  { id: "caio-ferraz", nome: "Caio Ferraz", entrada: "2025-03", saida: "2026-12-08" },
+  { id: "caio-ferraz", nome: "Caio Ferraz", entrada: "2025-03" },
   { id: "livia-rocha", nome: "Lívia Rocha", entrada: "2025-09" },
   { id: "davi-moura", nome: "Davi Moura", entrada: "2026-08" },
   { id: "renata-albuquerque", nome: "Renata Albuquerque", entrada: "2025-02" },
   { id: "igor-batista", nome: "Igor Batista", entrada: "2025-08" },
-  { id: "sofia-lins", nome: "Sofia Lins", entrada: "2025-03", saida: "2026-12-01" },
+  { id: "sofia-lins", nome: "Sofia Lins", entrada: "2025-03" },
   { id: "mateus-cavalcanti", nome: "Mateus Cavalcanti", entrada: "2026-02" },
   { id: "paula-siqueira", nome: "Paula Siqueira", entrada: "2026-02" },
   { id: "bruno-tavares", nome: "Bruno Tavares", entrada: "2025-08" },
   { id: "yasmin-freitas", nome: "Yasmin Freitas", entrada: "2026-02" },
-  { id: "henrique-pacheco", nome: "Henrique Pacheco", entrada: "2025-03", saida: "2026-12-15" },
+  { id: "henrique-pacheco", nome: "Henrique Pacheco", entrada: "2025-03" },
   { id: "clara-menezes", nome: "Clara Menezes", entrada: "2025-02" },
-  { id: "otavio-neves", nome: "Otávio Neves", entrada: "2025-08", saida: "2027-01-29" },
+  { id: "otavio-neves", nome: "Otávio Neves", entrada: "2025-08" },
   { id: "larissa-campos", nome: "Larissa Campos", entrada: "2026-02" },
   { id: "felipe-arruda", nome: "Felipe Arruda", entrada: "2026-02" },
   { id: "marcos-vilela", nome: "Marcos Vilela", entrada: "2024-08", saiuEm: "2026-07-15" },
@@ -43,6 +43,8 @@ export const cenarios = [
     nome: "Folhagem & Cia",
     cliente: "Folhagem & Cia · loja de plantas",
     descricao: "Sistema de gestão (CRUD) de uma loja de plantas: catálogo, estoque e pedidos.",
+    contexto:
+      "A Folhagem & Cia vende plantas, vasos e acessórios e controlava catálogo, estoque e pedidos em planilhas, o que gerava venda de itens sem estoque e retrabalho no fechamento do dia. O sistema centraliza o cadastro das plantas, dá baixa no estoque a cada pedido e avisa quando é hora de repor.",
     status: "andamento",
     inicio: "2026-08-03",
     fimPrevisto: "2026-12-18",
@@ -52,6 +54,7 @@ export const cenarios = [
       { id: "estoque", nome: "Estoque", descricao: "Entradas, saídas, alertas de reposição", janela: [0.25, 1], previsto: ["2026-09-01", "2026-11-27"], progresso: 75 },
       { id: "pedidos", nome: "Pedidos e checkout", descricao: "Carrinho, pedidos e status de entrega", janela: [0.45, 1], previsto: ["2026-09-28", "2026-12-11"], progresso: 55 },
       { id: "infra", nome: "Infra/Deploy", descricao: "CI, banco e deploy", janela: [0, 1], previsto: ["2026-08-03", "2026-12-18"], progresso: 60 },
+      { id: "relatorios", nome: "Relatórios de vendas", descricao: "Vendas por planta, categoria e período, e plantas mais vendidas", janela: [0, 0], previsto: ["2026-11-30", "2026-12-18"], progresso: 0 },
     ],
     membros: [
       {
@@ -144,6 +147,8 @@ export const cenarios = [
     nome: "Clínica Movimento",
     cliente: "Clínica Movimento · unidades Boa Viagem (BV) e Casa Forte (CF)",
     descricao: "Sistema da clínica com duas unidades (BV e CF): agenda, pacientes, financeiro e multiunidade.",
+    contexto:
+      "A Clínica Movimento atende em duas unidades, Boa Viagem (BV) e Casa Forte (CF), com profissionais que circulam entre elas. Agendas, prontuários e pagamentos ficavam separados por unidade, sem visão conjunta. O sistema unifica agenda, pacientes e financeiro, mantendo os dados de cada unidade separados quando necessário.",
     status: "andamento",
     inicio: "2026-07-27",
     fimPrevisto: "2026-12-11",
@@ -153,6 +158,7 @@ export const cenarios = [
       { id: "unidades", nome: "Multiunidade (BV/CF)", descricao: "Separação de agendas, salas e dados entre BV e CF", janela: [0.3, 1], previsto: ["2026-09-07", "2026-12-04"], progresso: 70 },
       { id: "financeiro", nome: "Financeiro", descricao: "Pagamentos, convênios e repasses", janela: [0.5, 1], previsto: ["2026-09-28", "2026-12-11"], progresso: 45 },
       { id: "infra", nome: "Infra/Deploy", descricao: "CI, banco e deploy", janela: [0, 1], previsto: ["2026-07-27", "2026-12-11"], progresso: 60 },
+      { id: "implantacao", nome: "Implantação nas unidades", descricao: "Migração dos dados antigos e treinamento das equipes de BV e CF", janela: [0, 0], previsto: ["2026-11-30", "2026-12-11"], progresso: 0 },
     ],
     membros: [
       {
@@ -249,6 +255,8 @@ export const cenarios = [
     cliente: "Metalúrgica Mezzalira · indústria",
     descricao:
       "Limpeza dos dados da indústria e dois agentes de IA: um que lê e responde sobre os dados e outro que responde sobre o manual de instrução.",
+    contexto:
+      "A Metalúrgica Mezzalira acumulava anos de dados de produção em planilhas com formatos diferentes, e as dúvidas da operação sobre os equipamentos dependiam de consultar um manual extenso. O projeto padroniza esses dados e cria dois agentes de IA: um que responde perguntas sobre a produção e outro que responde sobre o manual de instrução.",
     status: "andamento",
     inicio: "2026-08-10",
     fimPrevisto: "2026-12-18",
@@ -258,6 +266,7 @@ export const cenarios = [
       { id: "agente-manual", nome: "Agente do manual", descricao: "Agente (RAG) que responde sobre o manual de instrução", janela: [0.3, 1], previsto: ["2026-09-07", "2026-12-11"], progresso: 70 },
       { id: "interface", nome: "Interface de chat", descricao: "Tela de conversa com os dois agentes", janela: [0.45, 1], previsto: ["2026-10-05", "2026-12-18"], progresso: 50 },
       { id: "infra", nome: "Infra/Deploy", descricao: "CI, chaves de API e deploy", janela: [0, 1], previsto: ["2026-08-10", "2026-12-18"], progresso: 55 },
+      { id: "avaliacao", nome: "Avaliação com operadores", descricao: "Testes dos agentes com operadores do chão de fábrica e ajustes finais", janela: [0, 0], previsto: ["2026-12-01", "2026-12-18"], progresso: 0 },
     ],
     membros: [
       {
@@ -346,6 +355,8 @@ export const cenarios = [
     nome: "Plataforma de Voluntariado",
     cliente: "Instituto Capibaribe · ONG educacional",
     descricao: "Plataforma para a ONG divulgar oportunidades, receber inscrições de voluntários e emitir certificados de horas.",
+    contexto:
+      "O Instituto Capibaribe organiza ações educativas com voluntários e fazia divulgação, inscrições e controle de presença por mensagens e formulários soltos. A plataforma reúne as oportunidades num mural, organiza as inscrições e emite certificados de horas para os voluntários.",
     status: "andamento",
     inicio: "2026-07-20",
     fimPrevisto: "2026-11-06",
@@ -426,6 +437,7 @@ export const cenarios = [
       "A Neoenergia opera linhas de transmissão de centenas de quilômetros, nas quais um desligamento precisa ser investigado em campo. Saber que uma falha aconteceu não basta: é preciso reduzir a área de busca e indicar onde procurar primeiro.",
     resultados:
       "Erro médio de localização de 1,73% do comprimento da linha, avaliado em 37 casos reais, com fases, impedâncias e causas diferentes.",
+    resumoResultado: "Erro médio de localização de 1,73% da linha",
     caseReal: true,
     status: "concluido",
     inicio: "2025-09-01",
@@ -515,6 +527,7 @@ export const cenarios = [
       "A Riachuelo controla da fábrica à venda final e opera centenas de lojas físicas, além do canal digital. O desafio era fortalecer a presença digital, integrar os canais físico e digital, estruturar um design voltado para conversão e manter alta performance técnica.",
     resultados:
       "Resultados qualitativos: jornada do usuário otimizada, mais conversão e engajamento, marca fortalecida e base para evolução contínua. O material do case não traz números.",
+    resumoResultado: "Jornada loja + digital integrada",
     caseReal: true,
     status: "concluido",
     inicio: "2025-10-06",

@@ -107,16 +107,6 @@ function inicioDaSemana(isoData) {
   return new Date(d.getTime() - dow * DIA).toISOString().slice(0, 10);
 }
 
-const diasAte = (saida) => Math.round((paraData(saida) - paraData(dataReferencia)) / DIA);
-
-function textoSaida(saida) {
-  const dias = diasAte(saida);
-  if (dias < 0) return "já saiu";
-  if (dias < 7) return `em ${dias} dia${dias === 1 ? "" : "s"}`;
-  const semanas = Math.round(dias / 7);
-  return `em ${semanas} semana${semanas === 1 ? "" : "s"}`;
-}
-
 /* ---------- Índice de Conhecimento e risco ----------
  *
  * IC (0 a 100) de um membro numa etapa = média ponderada das fatias dele em:
@@ -249,8 +239,11 @@ for (const c of cenarios) {
 
   /* ----- Índice de Conhecimento (IC) e concentração ----- */
   const icDe = (lista) => indiceConhecimento(lista, c.membros.map((m) => m.id), fim);
-  const icProjeto = icDe(commits).ic;
-  for (const m of c.membros) porMembro[m.id].icProjeto = icProjeto[m.id];
+  const doProjeto = icDe(commits);
+  for (const m of c.membros) {
+    porMembro[m.id].icProjeto = doProjeto.ic[m.id];
+    porMembro[m.id].fatiasProjeto = doProjeto.fatias[m.id];
+  }
 
   for (const e of c.etapas) {
     const reg = porEtapa[e.id];
@@ -286,7 +279,7 @@ for (const c of cenarios) {
     cliente: c.cliente,
     descricao: c.descricao,
     ...(c.contexto ? { contexto: c.contexto } : {}),
-    ...(c.resultados ? { resultados: c.resultados } : {}),
+    ...(c.resultados ? { resultados: c.resultados, resumoResultado: c.resumoResultado } : {}),
     caseReal: !!c.caseReal,
     status: c.status,
     inicio: c.inicio,
@@ -304,10 +297,7 @@ for (const c of cenarios) {
   });
 }
 
-const pessoasSaida = pessoas.map((p) => ({
-  ...p,
-  ...(p.saida ? { saidaTexto: textoSaida(p.saida), diasParaSaida: diasAte(p.saida) } : {}),
-}));
+const pessoasSaida = pessoas;
 
 mkdirSync(join(raiz, "data"), { recursive: true });
 const salvar = (nome, dados) => writeFileSync(join(raiz, "data", nome), JSON.stringify(dados, null, 2) + "\n");

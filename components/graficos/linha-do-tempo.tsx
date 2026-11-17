@@ -47,6 +47,7 @@ export function LinhaDoTempo({ series, semanas, titulo, periodo = "semana" }: Pr
   const cadaRotulo = Math.max(1, Math.ceil(semanas.length / 12));
 
   const total = totais.reduce((a, b) => a + b, 0);
+  if (total === 0) return <p className="text-sm text-gray-500">Sem commits neste período.</p>;
   const unidade = periodo === "mes" ? "meses" : "semanas";
   const resumo = `${titulo}: ${total} commits em ${semanas.length} ${unidade}, de ${ddmm(semanas[0].semana)} a ${ddmm(semanas.at(-1)!.semana)}.`;
 

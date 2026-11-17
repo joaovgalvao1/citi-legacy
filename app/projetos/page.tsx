@@ -1,40 +1,31 @@
-// Lista de todos os projetos da empresa (em andamento, atrasados e concluídos)
+// Lista de todos os projetos da empresa
 
 import { projetos } from "@/data";
-import { alertas, progressoProjeto, statusProjeto, textoPrazo } from "@/lib/status";
+import { formatarData } from "@/data/formatos";
+import { alertaDoCard, duracaoEmMeses, progressoProjeto, statusProjeto, textoPrazo } from "@/lib/status";
 import { ListaProjetos, type ResumoProjeto } from "@/components/projetos/lista";
 
 export default function Projetos() {
-  // resumo calculado no servidor: o navegador recebe só o necessário para a lista
+  // resumo calculado no servidor: o navegador recebe só o necessário para os cards
   const resumos: ResumoProjeto[] = projetos.map((p) => {
-    const lista = alertas(p);
+    const meses = duracaoEmMeses(p);
     return {
       id: p.id,
       nome: p.nome,
-      cliente: p.cliente,
-      descricao: p.descricao,
-      caseReal: p.caseReal,
+      cliente: p.cliente.split(" · ")[0],
+      subtitulo: p.cliente.split(" · ").slice(1).join(" · "),
       status: statusProjeto(p),
       progresso: progressoProjeto(p),
       prazo: textoPrazo(p),
-      membros: p.membros.length,
-      etapas: p.etapas.length,
-      alertaPrincipal: lista[0] ? { texto: lista[0].texto, informativo: lista[0].tipo === "conhecimento-saiu" } : null,
-      totalAlertas: lista.filter((a) => a.tipo !== "conhecimento-saiu").length,
+      alerta: alertaDoCard(p),
+      entrega: p.entrega ? `Entregue em ${formatarData(p.entrega)} · ${meses} ${meses === 1 ? "mês" : "meses"}` : null,
+      resultado: p.resumoResultado ?? null,
     };
   });
 
-  const n = (s: ResumoProjeto["status"]) => resumos.filter((r) => r.status === s).length;
-
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Projetos</h1>
-        <p className="text-sm text-gray-600">
-          {resumos.length} projetos · {n("Em andamento")} em andamento · {n("Atrasado")} atrasado
-          {n("Atrasado") === 1 ? "" : "s"} · {n("Concluído")} concluído{n("Concluído") === 1 ? "" : "s"}
-        </p>
-      </div>
+      <h1 className="text-2xl font-bold">Projetos</h1>
       <ListaProjetos projetos={resumos} />
     </div>
   );

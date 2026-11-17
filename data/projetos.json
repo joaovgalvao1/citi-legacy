@@ -9,10 +9,7 @@
     {
       "id": "caio-ferraz",
       "nome": "Caio Ferraz",
-      "entrada": "2025-03",
-      "saida": "2026-12-08",
-      "saidaTexto": "em 3 semanas",
-      "diasParaSaida": 21
+      "entrada": "2025-03"
     },
     {
       "id": "livia-rocha",
@@ -37,10 +34,7 @@
     {
       "id": "sofia-lins",
       "nome": "Sofia Lins",
-      "entrada": "2025-03",
-      "saida": "2026-12-01",
-      "saidaTexto": "em 2 semanas",
-      "diasParaSaida": 14
+      "entrada": "2025-03"
     },
     {
       "id": "mateus-cavalcanti",
@@ -65,10 +59,7 @@
     {
       "id": "henrique-pacheco",
       "nome": "Henrique Pacheco",
-      "entrada": "2025-03",
-      "saida": "2026-12-15",
-      "saidaTexto": "em 4 semanas",
-      "diasParaSaida": 28
+      "entrada": "2025-03"
     },
     {
       "id": "clara-menezes",
@@ -78,10 +69,7 @@
     {
       "id": "otavio-neves",
       "nome": "Otávio Neves",
-      "entrada": "2025-08",
-      "saida": "2027-01-29",
-      "saidaTexto": "em 10 semanas",
-      "diasParaSaida": 73
+      "entrada": "2025-08"
     },
     {
       "id": "larissa-campos",
@@ -123,6 +111,7 @@
       "nome": "Folhagem & Cia",
       "cliente": "Folhagem & Cia · loja de plantas",
       "descricao": "Sistema de gestão (CRUD) de uma loja de plantas: catálogo, estoque e pedidos.",
+      "contexto": "A Folhagem & Cia vende plantas, vasos e acessórios e controlava catálogo, estoque e pedidos em planilhas, o que gerava venda de itens sem estoque e retrabalho no fechamento do dia. O sistema centraliza o cadastro das plantas, dá baixa no estoque a cada pedido e avisa quando é hora de repor.",
       "caseReal": false,
       "status": "andamento",
       "inicio": "2026-08-03",
@@ -167,6 +156,14 @@
           "inicioPrevisto": "2026-08-03",
           "fimPrevisto": "2026-12-18",
           "progresso": 60
+        },
+        {
+          "id": "relatorios",
+          "nome": "Relatórios de vendas",
+          "descricao": "Vendas por planta, categoria e período, e plantas mais vendidas",
+          "inicioPrevisto": "2026-11-30",
+          "fimPrevisto": "2026-12-18",
+          "progresso": 0
         }
       ],
       "membros": [
@@ -193,6 +190,7 @@
       "nome": "Clínica Movimento",
       "cliente": "Clínica Movimento · unidades Boa Viagem (BV) e Casa Forte (CF)",
       "descricao": "Sistema da clínica com duas unidades (BV e CF): agenda, pacientes, financeiro e multiunidade.",
+      "contexto": "A Clínica Movimento atende em duas unidades, Boa Viagem (BV) e Casa Forte (CF), com profissionais que circulam entre elas. Agendas, prontuários e pagamentos ficavam separados por unidade, sem visão conjunta. O sistema unifica agenda, pacientes e financeiro, mantendo os dados de cada unidade separados quando necessário.",
       "caseReal": false,
       "status": "andamento",
       "inicio": "2026-07-27",
@@ -237,6 +235,14 @@
           "inicioPrevisto": "2026-07-27",
           "fimPrevisto": "2026-12-11",
           "progresso": 60
+        },
+        {
+          "id": "implantacao",
+          "nome": "Implantação nas unidades",
+          "descricao": "Migração dos dados antigos e treinamento das equipes de BV e CF",
+          "inicioPrevisto": "2026-11-30",
+          "fimPrevisto": "2026-12-11",
+          "progresso": 0
         }
       ],
       "membros": [
@@ -267,6 +273,7 @@
       "nome": "Metalúrgica Mezzalira",
       "cliente": "Metalúrgica Mezzalira · indústria",
       "descricao": "Limpeza dos dados da indústria e dois agentes de IA: um que lê e responde sobre os dados e outro que responde sobre o manual de instrução.",
+      "contexto": "A Metalúrgica Mezzalira acumulava anos de dados de produção em planilhas com formatos diferentes, e as dúvidas da operação sobre os equipamentos dependiam de consultar um manual extenso. O projeto padroniza esses dados e cria dois agentes de IA: um que responde perguntas sobre a produção e outro que responde sobre o manual de instrução.",
       "caseReal": false,
       "status": "andamento",
       "inicio": "2026-08-10",
@@ -311,6 +318,14 @@
           "inicioPrevisto": "2026-08-10",
           "fimPrevisto": "2026-12-18",
           "progresso": 55
+        },
+        {
+          "id": "avaliacao",
+          "nome": "Avaliação com operadores",
+          "descricao": "Testes dos agentes com operadores do chão de fábrica e ajustes finais",
+          "inicioPrevisto": "2026-12-01",
+          "fimPrevisto": "2026-12-18",
+          "progresso": 0
         }
       ],
       "membros": [
@@ -337,6 +352,7 @@
       "nome": "Plataforma de Voluntariado",
       "cliente": "Instituto Capibaribe · ONG educacional",
       "descricao": "Plataforma para a ONG divulgar oportunidades, receber inscrições de voluntários e emitir certificados de horas.",
+      "contexto": "O Instituto Capibaribe organiza ações educativas com voluntários e fazia divulgação, inscrições e controle de presença por mensagens e formulários soltos. A plataforma reúne as oportunidades num mural, organiza as inscrições e emite certificados de horas para os voluntários.",
       "caseReal": false,
       "status": "andamento",
       "inicio": "2026-07-20",
@@ -413,6 +429,7 @@
       "descricao": "Plataforma em parceria com a Neoenergia que usa machine learning para indicar as possíveis causas e a localização provável de falhas em linhas de transmissão, a partir das oscilografias do evento.",
       "contexto": "A Neoenergia opera linhas de transmissão de centenas de quilômetros, nas quais um desligamento precisa ser investigado em campo. Saber que uma falha aconteceu não basta: é preciso reduzir a área de busca e indicar onde procurar primeiro.",
       "resultados": "Erro médio de localização de 1,73% do comprimento da linha, avaliado em 37 casos reais, com fases, impedâncias e causas diferentes.",
+      "resumoResultado": "Erro médio de localização de 1,73% da linha",
       "caseReal": true,
       "status": "concluido",
       "inicio": "2025-09-01",
@@ -494,6 +511,7 @@
       "descricao": "Ecossistema que une loja física e digital: personal shopper no app, escaneamento de peças na loja, carrinho virtual integrado, checkout simplificado, cadastro de clientes no ponto de venda e painel administrativo com vendas por canal.",
       "contexto": "A Riachuelo controla da fábrica à venda final e opera centenas de lojas físicas, além do canal digital. O desafio era fortalecer a presença digital, integrar os canais físico e digital, estruturar um design voltado para conversão e manter alta performance técnica.",
       "resultados": "Resultados qualitativos: jornada do usuário otimizada, mais conversão e engajamento, marca fortalecida e base para evolução contínua. O material do case não traz números.",
+      "resumoResultado": "Jornada loja + digital integrada",
       "caseReal": true,
       "status": "concluido",
       "inicio": "2025-10-06",

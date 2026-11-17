@@ -1,7 +1,7 @@
 // Camada de dados do protótipo: lê os JSONs gerados por `npm run dados`
 // (scripts/gerar-dados.mjs) e entrega no formato que as telas usam.
 //
-// As telas mostram o progresso, o Índice de Conhecimento (IC), o risco e a urgência;
+// As telas mostram o progresso, a atividade e o Índice de Conhecimento (IC);
 // as métricas brutas (linhas efetivas, brutas, commits) ficam no analises.json.
 
 import projetosJson from "./projetos.json";
@@ -37,9 +37,6 @@ export type Pessoa = {
   id: string;
   nome: string;
   entrada: string; // "aaaa-mm"
-  saida?: string; // saída prevista, "aaaa-mm-dd"
-  saidaPrevista?: string; // texto relativo, ex.: "em 3 semanas"
-  diasParaSaida?: number;
   saiuEm?: string; // já saiu da empresa, "aaaa-mm-dd"
 };
 
@@ -48,6 +45,8 @@ export type Membro = Pessoa & {
   papel: string;
   /** IC do membro no projeto inteiro (0 a 100). */
   icProjeto: number;
+  /** Fatias do membro nos 4 sinais do IC, no projeto inteiro. */
+  fatiasProjeto: Sinais;
 };
 
 export type Projeto = {
@@ -57,6 +56,8 @@ export type Projeto = {
   descricao: string;
   contexto?: string;
   resultados?: string;
+  /** Uma linha de resultado para os cards (só concluídos). */
+  resumoResultado?: string;
   /** Case real do CITi (pessoas e commits continuam fictícios). */
   caseReal: boolean;
   status: "andamento" | "concluido";
@@ -73,7 +74,7 @@ export type Projeto = {
 
 type Analise = {
   indice: { pesos: Sinais; meiaVidaDias: number };
-  porMembro: Record<string, { icProjeto: number }>;
+  porMembro: Record<string, { icProjeto: number; fatiasProjeto: Sinais }>;
   porEtapa: Record<
     string,
     {
@@ -91,10 +92,7 @@ type Analise = {
 const analises = analisesJson as unknown as Record<string, Analise>;
 
 export const dataReferencia = projetosJson.dataReferencia;
-export const pessoas: Pessoa[] = projetosJson.pessoas.map(({ saidaTexto, ...p }) => ({
-  ...p,
-  ...(saidaTexto ? { saidaPrevista: saidaTexto } : {}),
-}));
+export const pessoas: Pessoa[] = projetosJson.pessoas;
 
 export const projetos: Projeto[] = projetosJson.projetos.map((p) => {
   const a = analises[p.id];
@@ -106,6 +104,7 @@ export const projetos: Projeto[] = projetosJson.projetos.map((p) => {
       ...pessoas.find((x) => x.id === m.id)!,
       papel: m.papel,
       icProjeto: a.porMembro[m.id].icProjeto,
+      fatiasProjeto: a.porMembro[m.id].fatiasProjeto,
     })),
     semanas: a.semanas,
     pesos: a.indice.pesos,

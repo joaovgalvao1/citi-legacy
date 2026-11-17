@@ -4,23 +4,33 @@
 
 Protótipo para o desafio **Inovação no PS** do CITi. O CITi Legacy é um **visualizador interno de todos os projetos da empresa**, em andamento e concluídos.
 
-- **Projetos em andamento:** acompanhamento de progresso, prazo e atividade, e alertas de etapa atrasada, etapa parada e saída próxima de quem detém o conhecimento.
-- **Projetos concluídos:** o legado da empresa, isto é, o que foi feito, quando, por quem e quem procurar hoje.
+- **Projetos em andamento:** acompanhamento do progresso, do prazo e da atividade, e aviso quando uma etapa está atrasada ou parada.
+- **Projetos concluídos:** o legado da empresa, isto é, o que foi feito, quando e por quem.
 
 Tudo é calculado a partir dos commits.
 
 ## Estado atual
 
-**Etapa 2: média fidelidade.** As telas têm gráficos reais e interações. A interface ainda está em tons de cinza; a identidade visual do CITi e o resumo gerado por IA entram na etapa 3.
+**Etapa 2: média fidelidade, versão simplificada.** A interface ainda está em tons de cinza; a identidade visual do CITi e o resumo gerado por IA entram na etapa 3.
 
 | Tela | Rota |
 |---|---|
-| Início | `/` |
-| Projetos (filtros e busca) | `/projetos` |
-| Painel do projeto | `/projetos/[projetoId]` |
-| Etapa do projeto | `/projetos/[projetoId]/etapas/[etapaId]` |
-| Membros | `/membros` |
-| Página do membro | `/membros/[membroId]` |
+| Login | `/` |
+| Projetos (abas Em andamento / Concluídos, busca) | `/projetos` |
+| Projeto · Visão geral | `/projetos/[projetoId]` |
+| Projeto · Sobre | `/projetos/[projetoId]/sobre` |
+| Projeto · Participação (IC e commits por semana) | `/projetos/[projetoId]/participacao?etapa=…` |
+| Membros (abas Na empresa / Já saíram, busca) | `/membros` |
+| Membro | `/membros/[membroId]` |
+
+## Acesso ao protótipo
+
+O login é de demonstração e tem um único usuário administrador, definido em [`config/acesso.ts`](config/acesso.ts):
+
+- **Usuário:** `admin`
+- **Senha:** `admin`
+
+As credenciais ficam no código do front-end e a sessão fica no navegador, então não há segurança real. O login só serve para simular a entrada na ferramenta interna. Sem login, qualquer página leva de volta à tela de login.
 
 ## Rodando localmente
 
@@ -29,7 +39,7 @@ npm install
 npm run dev
 ```
 
-Abra http://localhost:3000. Para gerar os dados de novo: `npm run dados`.
+Abra http://localhost:3000 e entre com o usuário de demonstração. Para gerar os dados de novo: `npm run dados`.
 
 ## Dados
 
@@ -44,14 +54,14 @@ São gerados por `npm run dados` a partir de `scripts/cenarios.mjs`. A data de r
 | Neoenergia · GALT | Concluído | **case real do CITi** |
 | Riachuelo · plataforma omnichannel | Concluído | **case real do CITi** |
 
-Nos cases reais, o contexto e os resultados vêm do material do CITi. **Pessoas, commits, prazos e progresso das etapas são fictícios em todos os projetos**: 20 pessoas e 808 commits. Algumas pessoas participam de mais de um projeto, e três já saíram da empresa.
+Nos cases reais, o contexto e os resultados vêm do material do CITi. **Pessoas, commits, prazos e progresso das etapas são fictícios em todos os projetos**: 20 pessoas e 808 commits. Algumas pessoas participam de mais de um projeto, e três já saíram da empresa. Os contextos dos projetos que não são cases reais foram escritos para o protótipo.
 
 ### Status
 
 - **Etapa:**
   - **concluída** quando chega a 100%;
   - **atrasada** quando passa do fim previsto sem chegar a 100%;
-  - **não iniciada** antes do início previsto, com 0%;
+  - **em planejamento** antes do início previsto, com 0%;
   - **em andamento** no resto;
   - além disso, ela fica **parada** quando passa 14 dias ou mais sem commits sem estar concluída.
 - **Projeto:** **concluído** (entregue), **atrasado** (passou do fim previsto) ou **em andamento**.
@@ -68,40 +78,24 @@ Um único número por membro e etapa, em %, que diz quanto do conhecimento da et
 | Linhas brutas | 15% | Volume de alterações (adicionadas + removidas) |
 | Linhas efetivas recentes | 15% | Linhas efetivas com meia-vida de 45 dias: conhecimento esfria |
 
-**Concentração (HHI)** é a soma dos (IC/100)² da etapa. Uma concentração de 100% significa que uma pessoa sabe tudo.
+### Alertas
 
-### Risco, urgência e alertas
-
-| | Alto(a) | Moderado(a) | Baixo(a) |
-|---|---|---|---|
-| **Risco**, pela concentração do IC | ≥ 70% | ≥ 45% | < 45% |
-| **Urgência**, pela saída de quem tem o maior IC | sai em até 21 dias | sai em até 60 dias | sai depois disso ou **não tem data de saída** |
-
-**Alertas em projetos não concluídos:**
-- saída próxima de quem detém o conhecimento (urgência alta ou moderada);
-- etapa atrasada;
-- etapa parada.
-
-**Em projetos concluídos**, há só um aviso informativo: quando quem mais sabe de uma etapa já saiu da empresa, a página da etapa indica a próxima pessoa a procurar.
+Só em projetos não concluídos. Cada etapa atrasada ou parada gera um alerta, que aparece em "Precisa de atenção". Os cards da lista de projetos mostram só o mais importante.
 
 ## Funcionalidades
 
-- **Projetos:** filtros (todos, em andamento, atrasados, concluídos) e busca por nome ou cliente. Cada card mostra progresso, prazo e o alerta principal.
-- **Painel do projeto:**
-  - andamento (progresso, prazo, etapas por status);
-  - cronograma (previsto × progresso × período real de commits, com a linha de hoje);
-  - conhecimento e risco por etapa;
-  - matriz membro × etapa;
-  - atividade semanal;
-  - equipe;
-  - contexto e resultados (nos cases reais).
-- **Destaque de membro:** clicar num membro destaca a contribuição dele em todos os gráficos da página.
-- **Página da etapa:**
-  - andamento e prazo;
-  - quem detém o conhecimento, com risco e urgência (nos concluídos, "quem procurar");
-  - atividade;
-  - "Como o IC foi calculado".
-- **Página do membro:** projetos de que participou (papel, IC, período, etapas), atividade mensal por projeto e últimos commits.
+- **Login:** usuário único de demonstração e botão Sair no cabeçalho.
+- **Projetos:** cards com nome, cliente, status, progresso, prazo e o alerta principal. Os concluídos mostram a entrega e o resultado.
+- **Projeto, em 3 abas** (o cabeçalho, com status, progresso e prazo, aparece em todas):
+  - **Visão geral:** precisa de atenção (nos concluídos, resultados), espaço do resumo por IA (etapa 3) e lista de etapas. Cada etapa mostra o escopo (o que inclui), o status, o progresso, a contagem de prazo ("faltam 17 dias", "atrasada há 18 dias", "começa em 13 dias") e quem mais sabe. Clicar numa etapa abre a aba Participação já filtrada nela.
+  - **Sobre:** sobre o projeto (cliente, objetivo, contexto e período), equipe e resultados.
+  - **Participação:** os dois gráficos na mesma página, com um único seletor "Projeto todo / Etapa":
+    - **Conhecimento:** IC por membro, com "Como o IC foi calculado" recolhível.
+    - **Atividade:** commits por semana, empilhados por membro.
+
+    Clicar num membro destaca a pessoa nos dois gráficos.
+- **Membros:** cards, com abas Na empresa / Já saíram e busca por nome.
+- **Membro:** cabeçalho (desde quando está no CITi, número de projetos e de commits) e cards dos projetos com papel, período e IC no projeto.
 
 ## Stack
 
@@ -112,15 +106,18 @@ Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · deploy na Vercel. Os 
 ```
 app/                       rotas (uma pasta por tela)
 components/ui/             peças de interface (Caixa, Selo, Alerta, botões, barra de progresso)
-components/graficos/       barras de IC, linha do tempo, cronograma, cores, destaque
-components/painel/         painel, página da etapa, matriz e cálculo do IC
-components/projetos/       lista de projetos com filtros e busca
-components/membro/         atividade do membro
-components/risco/          selos de status, risco e urgência e lista de alertas
+components/graficos/       barras de IC, linha do tempo, cálculo do IC, cores, destaque
+components/projeto/        abas, seletor de etapa, conteúdo das abas, selos de status
+components/projetos/       cards de projetos com abas e busca
+components/membros/        cards de membros com abas e busca
+components/layout/         cabeçalho e proteção das páginas
+components/login/          formulário de login
+config/acesso.ts           usuário e senha de demonstração
 data/*.json                dados gerados (projetos e pessoas, commits, análises, data de referência)
 data/index.ts              leitura dos JSONs no formato usado pelas telas
 data/commits.ts            consultas aos commits (só no servidor)
-lib/indice.ts              IC, risco e urgência
+lib/indice.ts              Índice de Conhecimento
+lib/sessao.ts              sessão de demonstração (login/sair)
 lib/status.ts              status de etapas e projetos, progresso, prazo e alertas
 scripts/                   cenários e gerador dos dados (npm run dados)
 DEV_LOG.md                 como a IA foi usada em cada etapa
