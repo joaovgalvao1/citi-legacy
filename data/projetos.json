@@ -1,0 +1,206 @@
+{
+  "dataReferencia": "2026-11-17",
+  "projetos": [
+    {
+      "id": "folhagem-cia",
+      "nome": "Folhagem & Cia",
+      "cliente": "Folhagem & Cia · loja de plantas",
+      "descricao": "Sistema de gestão (CRUD) de uma loja de plantas: catálogo, estoque e pedidos.",
+      "inicio": "2026-08-03",
+      "fim": "2026-11-13",
+      "etapaAtual": "pedidos",
+      "etapas": [
+        {
+          "id": "autenticacao",
+          "nome": "Autenticação",
+          "descricao": "Login de funcionários e permissões"
+        },
+        {
+          "id": "catalogo",
+          "nome": "Catálogo de plantas",
+          "descricao": "CRUD de plantas, categorias e fotos"
+        },
+        {
+          "id": "estoque",
+          "nome": "Estoque",
+          "descricao": "Entradas, saídas, alertas de reposição"
+        },
+        {
+          "id": "pedidos",
+          "nome": "Pedidos e checkout",
+          "descricao": "Carrinho, pedidos e status de entrega"
+        },
+        {
+          "id": "infra",
+          "nome": "Infra/Deploy",
+          "descricao": "CI, banco e deploy"
+        }
+      ],
+      "membros": [
+        {
+          "id": "helena-duarte",
+          "nome": "Helena Duarte",
+          "papel": "Tech lead",
+          "entrada": "2025-08"
+        },
+        {
+          "id": "caio-ferraz",
+          "nome": "Caio Ferraz",
+          "papel": "Dev back-end",
+          "entrada": "2025-03",
+          "saida": "2026-12-08",
+          "saidaTexto": "em 3 semanas",
+          "diasParaSaida": 21
+        },
+        {
+          "id": "livia-rocha",
+          "nome": "Lívia Rocha",
+          "papel": "Dev front-end",
+          "entrada": "2026-02"
+        },
+        {
+          "id": "davi-moura",
+          "nome": "Davi Moura",
+          "papel": "Dev full-stack (trainee)",
+          "entrada": "2026-08"
+        }
+      ]
+    },
+    {
+      "id": "clinica-movimento",
+      "nome": "Clínica Movimento",
+      "cliente": "Clínica Movimento · unidades Boa Viagem (BV) e Casa Forte (CF)",
+      "descricao": "Sistema da clínica com duas unidades (BV e CF): agenda, pacientes, financeiro e multiunidade.",
+      "inicio": "2026-07-27",
+      "fim": "2026-11-14",
+      "etapaAtual": "financeiro",
+      "etapas": [
+        {
+          "id": "agendamento",
+          "nome": "Agendamento",
+          "descricao": "Agenda de profissionais e marcação de sessões"
+        },
+        {
+          "id": "pacientes",
+          "nome": "Pacientes e prontuário",
+          "descricao": "Cadastro, prontuário e evolução"
+        },
+        {
+          "id": "unidades",
+          "nome": "Multiunidade (BV/CF)",
+          "descricao": "Separação de agendas, salas e dados entre BV e CF"
+        },
+        {
+          "id": "financeiro",
+          "nome": "Financeiro",
+          "descricao": "Pagamentos, convênios e repasses"
+        },
+        {
+          "id": "infra",
+          "nome": "Infra/Deploy",
+          "descricao": "CI, banco e deploy"
+        }
+      ],
+      "membros": [
+        {
+          "id": "renata-albuquerque",
+          "nome": "Renata Albuquerque",
+          "papel": "Tech lead",
+          "entrada": "2025-02"
+        },
+        {
+          "id": "igor-batista",
+          "nome": "Igor Batista",
+          "papel": "Dev back-end",
+          "entrada": "2025-08"
+        },
+        {
+          "id": "sofia-lins",
+          "nome": "Sofia Lins",
+          "papel": "Dev back-end",
+          "entrada": "2025-03",
+          "saida": "2026-12-01",
+          "saidaTexto": "em 2 semanas",
+          "diasParaSaida": 14
+        },
+        {
+          "id": "mateus-cavalcanti",
+          "nome": "Mateus Cavalcanti",
+          "papel": "Dev front-end",
+          "entrada": "2026-02"
+        },
+        {
+          "id": "paula-siqueira",
+          "nome": "Paula Siqueira",
+          "papel": "Dev full-stack",
+          "entrada": "2026-02"
+        }
+      ]
+    },
+    {
+      "id": "metalurgica-mezzalira",
+      "nome": "Metalúrgica Mezzalira",
+      "cliente": "Metalúrgica Mezzalira · indústria",
+      "descricao": "Limpeza dos dados da indústria e dois agentes de IA: um que lê e responde sobre os dados e outro que responde sobre o manual de instrução.",
+      "inicio": "2026-08-10",
+      "fim": "2026-11-13",
+      "etapaAtual": "agente-manual",
+      "etapas": [
+        {
+          "id": "limpeza",
+          "nome": "Limpeza de dados",
+          "descricao": "Padronização das planilhas de produção e pipeline ETL"
+        },
+        {
+          "id": "agente-dados",
+          "nome": "Agente de leitura de dados",
+          "descricao": "Agente que consulta os dados limpos e responde perguntas"
+        },
+        {
+          "id": "agente-manual",
+          "nome": "Agente do manual",
+          "descricao": "Agente (RAG) que responde sobre o manual de instrução"
+        },
+        {
+          "id": "interface",
+          "nome": "Interface de chat",
+          "descricao": "Tela de conversa com os dois agentes"
+        },
+        {
+          "id": "infra",
+          "nome": "Infra/Deploy",
+          "descricao": "CI, chaves de API e deploy"
+        }
+      ],
+      "membros": [
+        {
+          "id": "bruno-tavares",
+          "nome": "Bruno Tavares",
+          "papel": "Engenheiro de dados",
+          "entrada": "2025-08"
+        },
+        {
+          "id": "yasmin-freitas",
+          "nome": "Yasmin Freitas",
+          "papel": "Analista de dados",
+          "entrada": "2026-02"
+        },
+        {
+          "id": "henrique-pacheco",
+          "nome": "Henrique Pacheco",
+          "papel": "Dev IA",
+          "entrada": "2025-03",
+          "saida": "2026-12-15",
+          "saidaTexto": "em 4 semanas",
+          "diasParaSaida": 28
+        },
+        {
+          "id": "clara-menezes",
+          "nome": "Clara Menezes",
+          "papel": "Tech lead",
+          "entrada": "2025-02"
+        }
+      ]
+    }
+  ]
+}

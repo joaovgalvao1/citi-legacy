@@ -1,0 +1,1999 @@
+{
+  "folhagem-cia": {
+    "indice": {
+      "pesos": {
+        "efetivas": 0.5,
+        "commits": 0.2,
+        "brutas": 0.15,
+        "recentes": 0.15
+      },
+      "meiaVidaDias": 45
+    },
+    "totais": {
+      "efetivas": 8032,
+      "brutas": 15119,
+      "commits": 164
+    },
+    "porMembro": {
+      "helena-duarte": {
+        "total": {
+          "efetivas": 1205,
+          "brutas": 2064,
+          "commits": 40
+        },
+        "porEtapa": {
+          "autenticacao": {
+            "efetivas": 598,
+            "brutas": 945,
+            "commits": 14
+          },
+          "catalogo": {
+            "efetivas": 191,
+            "brutas": 402,
+            "commits": 6
+          },
+          "estoque": {
+            "efetivas": 60,
+            "brutas": 141,
+            "commits": 3
+          },
+          "pedidos": {
+            "efetivas": 143,
+            "brutas": 282,
+            "commits": 5
+          },
+          "infra": {
+            "efetivas": 213,
+            "brutas": 294,
+            "commits": 12
+          }
+        },
+        "icProjeto": 16.1
+      },
+      "caio-ferraz": {
+        "total": {
+          "efetivas": 2888,
+          "brutas": 5089,
+          "commits": 34
+        },
+        "porEtapa": {
+          "autenticacao": {
+            "efetivas": 24,
+            "brutas": 108,
+            "commits": 2
+          },
+          "catalogo": {
+            "efetivas": 119,
+            "brutas": 359,
+            "commits": 4
+          },
+          "estoque": {
+            "efetivas": 2117,
+            "brutas": 3307,
+            "commits": 18
+          },
+          "pedidos": {
+            "efetivas": 628,
+            "brutas": 1315,
+            "commits": 10
+          },
+          "infra": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          }
+        },
+        "icProjeto": 33.3
+      },
+      "livia-rocha": {
+        "total": {
+          "efetivas": 3020,
+          "brutas": 5162,
+          "commits": 38
+        },
+        "porEtapa": {
+          "autenticacao": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          },
+          "catalogo": {
+            "efetivas": 2143,
+            "brutas": 3598,
+            "commits": 22
+          },
+          "estoque": {
+            "efetivas": 62,
+            "brutas": 172,
+            "commits": 4
+          },
+          "pedidos": {
+            "efetivas": 815,
+            "brutas": 1392,
+            "commits": 12
+          },
+          "infra": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          }
+        },
+        "icProjeto": 33.9
+      },
+      "davi-moura": {
+        "total": {
+          "efetivas": 919,
+          "brutas": 2804,
+          "commits": 52
+        },
+        "porEtapa": {
+          "autenticacao": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          },
+          "catalogo": {
+            "efetivas": 190,
+            "brutas": 585,
+            "commits": 8
+          },
+          "estoque": {
+            "efetivas": 271,
+            "brutas": 887,
+            "commits": 24
+          },
+          "pedidos": {
+            "efetivas": 443,
+            "brutas": 1294,
+            "commits": 16
+          },
+          "infra": {
+            "efetivas": 15,
+            "brutas": 38,
+            "commits": 4
+          }
+        },
+        "icProjeto": 16.7
+      }
+    },
+    "porEtapa": {
+      "autenticacao": {
+        "total": {
+          "efetivas": 622,
+          "brutas": 1053,
+          "commits": 16
+        },
+        "ranking": {
+          "efetivas": [
+            {
+              "membroId": "helena-duarte",
+              "valor": 598,
+              "pct": 96.1
+            },
+            {
+              "membroId": "caio-ferraz",
+              "valor": 24,
+              "pct": 3.9
+            }
+          ],
+          "brutas": [
+            {
+              "membroId": "helena-duarte",
+              "valor": 945,
+              "pct": 89.7
+            },
+            {
+              "membroId": "caio-ferraz",
+              "valor": 108,
+              "pct": 10.3
+            }
+          ],
+          "commits": [
+            {
+              "membroId": "helena-duarte",
+              "valor": 14,
+              "pct": 87.5
+            },
+            {
+              "membroId": "caio-ferraz",
+              "valor": 2,
+              "pct": 12.5
+            }
+          ]
+        },
+        "lider": {
+          "efetivas": "helena-duarte",
+          "brutas": "helena-duarte",
+          "commits": "helena-duarte"
+        },
+        "ic": {
+          "helena-duarte": 93.4,
+          "caio-ferraz": 6.6,
+          "livia-rocha": 0,
+          "davi-moura": 0
+        },
+        "concentracao": 0.88
+      },
+      "catalogo": {
+        "total": {
+          "efetivas": 2643,
+          "brutas": 4944,
+          "commits": 40
+        },
+        "ranking": {
+          "efetivas": [
+            {
+              "membroId": "livia-rocha",
+              "valor": 2143,
+              "pct": 81.1
+            },
+            {
+              "membroId": "helena-duarte",
+              "valor": 191,
+              "pct": 7.2
+            },
+            {
+              "membroId": "davi-moura",
+              "valor": 190,
+              "pct": 7.2
+            },
+            {
+              "membroId": "caio-ferraz",
+              "valor": 119,
+              "pct": 4.5
+            }
+          ],
+          "brutas": [
+            {
+              "membroId": "livia-rocha",
+              "valor": 3598,
+              "pct": 72.8
+            },
+            {
+              "membroId": "davi-moura",
+              "valor": 585,
+              "pct": 11.8
+            },
+            {
+              "membroId": "helena-duarte",
+              "valor": 402,
+              "pct": 8.1
+            },
+            {
+              "membroId": "caio-ferraz",
+              "valor": 359,
+              "pct": 7.3
+            }
+          ],
+          "commits": [
+            {
+              "membroId": "livia-rocha",
+              "valor": 22,
+              "pct": 55
+            },
+            {
+              "membroId": "davi-moura",
+              "valor": 8,
+              "pct": 20
+            },
+            {
+              "membroId": "helena-duarte",
+              "valor": 6,
+              "pct": 15
+            },
+            {
+              "membroId": "caio-ferraz",
+              "valor": 4,
+              "pct": 10
+            }
+          ]
+        },
+        "lider": {
+          "efetivas": "livia-rocha",
+          "brutas": "livia-rocha",
+          "commits": "livia-rocha"
+        },
+        "ic": {
+          "helena-duarte": 8.8,
+          "caio-ferraz": 6,
+          "livia-rocha": 74.7,
+          "davi-moura": 10.5
+        },
+        "concentracao": 0.58
+      },
+      "estoque": {
+        "total": {
+          "efetivas": 2510,
+          "brutas": 4507,
+          "commits": 49
+        },
+        "ranking": {
+          "efetivas": [
+            {
+              "membroId": "caio-ferraz",
+              "valor": 2117,
+              "pct": 84.3
+            },
+            {
+              "membroId": "davi-moura",
+              "valor": 271,
+              "pct": 10.8
+            },
+            {
+              "membroId": "livia-rocha",
+              "valor": 62,
+              "pct": 2.5
+            },
+            {
+              "membroId": "helena-duarte",
+              "valor": 60,
+              "pct": 2.4
+            }
+          ],
+          "brutas": [
+            {
+              "membroId": "caio-ferraz",
+              "valor": 3307,
+              "pct": 73.4
+            },
+            {
+              "membroId": "davi-moura",
+              "valor": 887,
+              "pct": 19.7
+            },
+            {
+              "membroId": "livia-rocha",
+              "valor": 172,
+              "pct": 3.8
+            },
+            {
+              "membroId": "helena-duarte",
+              "valor": 141,
+              "pct": 3.1
+            }
+          ],
+          "commits": [
+            {
+              "membroId": "davi-moura",
+              "valor": 24,
+              "pct": 49
+            },
+            {
+              "membroId": "caio-ferraz",
+              "valor": 18,
+              "pct": 36.7
+            },
+            {
+              "membroId": "livia-rocha",
+              "valor": 4,
+              "pct": 8.2
+            },
+            {
+              "membroId": "helena-duarte",
+              "valor": 3,
+              "pct": 6.1
+            }
+          ]
+        },
+        "lider": {
+          "efetivas": "caio-ferraz",
+          "brutas": "caio-ferraz",
+          "commits": "davi-moura"
+        },
+        "ic": {
+          "helena-duarte": 3.1,
+          "caio-ferraz": 73.3,
+          "livia-rocha": 3.9,
+          "davi-moura": 19.7
+        },
+        "concentracao": 0.58
+      },
+      "pedidos": {
+        "total": {
+          "efetivas": 2029,
+          "brutas": 4283,
+          "commits": 43
+        },
+        "ranking": {
+          "efetivas": [
+            {
+              "membroId": "livia-rocha",
+              "valor": 815,
+              "pct": 40.2
+            },
+            {
+              "membroId": "caio-ferraz",
+              "valor": 628,
+              "pct": 31
+            },
+            {
+              "membroId": "davi-moura",
+              "valor": 443,
+              "pct": 21.8
+            },
+            {
+              "membroId": "helena-duarte",
+              "valor": 143,
+              "pct": 7
+            }
+          ],
+          "brutas": [
+            {
+              "membroId": "livia-rocha",
+              "valor": 1392,
+              "pct": 32.5
+            },
+            {
+              "membroId": "caio-ferraz",
+              "valor": 1315,
+              "pct": 30.7
+            },
+            {
+              "membroId": "davi-moura",
+              "valor": 1294,
+              "pct": 30.2
+            },
+            {
+              "membroId": "helena-duarte",
+              "valor": 282,
+              "pct": 6.6
+            }
+          ],
+          "commits": [
+            {
+              "membroId": "davi-moura",
+              "valor": 16,
+              "pct": 37.2
+            },
+            {
+              "membroId": "livia-rocha",
+              "valor": 12,
+              "pct": 27.9
+            },
+            {
+              "membroId": "caio-ferraz",
+              "valor": 10,
+              "pct": 23.3
+            },
+            {
+              "membroId": "helena-duarte",
+              "valor": 5,
+              "pct": 11.6
+            }
+          ]
+        },
+        "lider": {
+          "efetivas": "livia-rocha",
+          "brutas": "livia-rocha",
+          "commits": "davi-moura"
+        },
+        "ic": {
+          "helena-duarte": 8,
+          "caio-ferraz": 28.8,
+          "livia-rocha": 37.4,
+          "davi-moura": 25.8
+        },
+        "concentracao": 0.3
+      },
+      "infra": {
+        "total": {
+          "efetivas": 228,
+          "brutas": 332,
+          "commits": 16
+        },
+        "ranking": {
+          "efetivas": [
+            {
+              "membroId": "helena-duarte",
+              "valor": 213,
+              "pct": 93.4
+            },
+            {
+              "membroId": "davi-moura",
+              "valor": 15,
+              "pct": 6.6
+            }
+          ],
+          "brutas": [
+            {
+              "membroId": "helena-duarte",
+              "valor": 294,
+              "pct": 88.6
+            },
+            {
+              "membroId": "davi-moura",
+              "valor": 38,
+              "pct": 11.4
+            }
+          ],
+          "commits": [
+            {
+              "membroId": "helena-duarte",
+              "valor": 12,
+              "pct": 75
+            },
+            {
+              "membroId": "davi-moura",
+              "valor": 4,
+              "pct": 25
+            }
+          ]
+        },
+        "lider": {
+          "efetivas": "helena-duarte",
+          "brutas": "helena-duarte",
+          "commits": "helena-duarte"
+        },
+        "ic": {
+          "helena-duarte": 88.8,
+          "caio-ferraz": 0,
+          "livia-rocha": 0,
+          "davi-moura": 11.2
+        },
+        "concentracao": 0.8
+      }
+    },
+    "semanas": [
+      {
+        "semana": "2026-08-03",
+        "commits": {
+          "helena-duarte": 2,
+          "caio-ferraz": 1,
+          "livia-rocha": 1,
+          "davi-moura": 0
+        }
+      },
+      {
+        "semana": "2026-08-10",
+        "commits": {
+          "helena-duarte": 10,
+          "caio-ferraz": 1,
+          "livia-rocha": 3,
+          "davi-moura": 2
+        }
+      },
+      {
+        "semana": "2026-08-17",
+        "commits": {
+          "helena-duarte": 6,
+          "caio-ferraz": 0,
+          "livia-rocha": 1,
+          "davi-moura": 1
+        }
+      },
+      {
+        "semana": "2026-08-24",
+        "commits": {
+          "helena-duarte": 3,
+          "caio-ferraz": 1,
+          "livia-rocha": 5,
+          "davi-moura": 1
+        }
+      },
+      {
+        "semana": "2026-08-31",
+        "commits": {
+          "helena-duarte": 1,
+          "caio-ferraz": 1,
+          "livia-rocha": 5,
+          "davi-moura": 5
+        }
+      },
+      {
+        "semana": "2026-09-07",
+        "commits": {
+          "helena-duarte": 2,
+          "caio-ferraz": 5,
+          "livia-rocha": 1,
+          "davi-moura": 6
+        }
+      },
+      {
+        "semana": "2026-09-14",
+        "commits": {
+          "helena-duarte": 2,
+          "caio-ferraz": 1,
+          "livia-rocha": 1,
+          "davi-moura": 0
+        }
+      },
+      {
+        "semana": "2026-09-21",
+        "commits": {
+          "helena-duarte": 1,
+          "caio-ferraz": 6,
+          "livia-rocha": 3,
+          "davi-moura": 5
+        }
+      },
+      {
+        "semana": "2026-09-28",
+        "commits": {
+          "helena-duarte": 3,
+          "caio-ferraz": 6,
+          "livia-rocha": 3,
+          "davi-moura": 6
+        }
+      },
+      {
+        "semana": "2026-10-05",
+        "commits": {
+          "helena-duarte": 1,
+          "caio-ferraz": 1,
+          "livia-rocha": 5,
+          "davi-moura": 7
+        }
+      },
+      {
+        "semana": "2026-10-12",
+        "commits": {
+          "helena-duarte": 5,
+          "caio-ferraz": 4,
+          "livia-rocha": 0,
+          "davi-moura": 4
+        }
+      },
+      {
+        "semana": "2026-10-19",
+        "commits": {
+          "helena-duarte": 0,
+          "caio-ferraz": 1,
+          "livia-rocha": 2,
+          "davi-moura": 8
+        }
+      },
+      {
+        "semana": "2026-10-26",
+        "commits": {
+          "helena-duarte": 0,
+          "caio-ferraz": 2,
+          "livia-rocha": 2,
+          "davi-moura": 4
+        }
+      },
+      {
+        "semana": "2026-11-02",
+        "commits": {
+          "helena-duarte": 3,
+          "caio-ferraz": 4,
+          "livia-rocha": 5,
+          "davi-moura": 2
+        }
+      },
+      {
+        "semana": "2026-11-09",
+        "commits": {
+          "helena-duarte": 1,
+          "caio-ferraz": 0,
+          "livia-rocha": 1,
+          "davi-moura": 1
+        }
+      }
+    ]
+  },
+  "clinica-movimento": {
+    "indice": {
+      "pesos": {
+        "efetivas": 0.5,
+        "commits": 0.2,
+        "brutas": 0.15,
+        "recentes": 0.15
+      },
+      "meiaVidaDias": 45
+    },
+    "totais": {
+      "efetivas": 12023,
+      "brutas": 21286,
+      "commits": 165
+    },
+    "porMembro": {
+      "renata-albuquerque": {
+        "total": {
+          "efetivas": 1046,
+          "brutas": 1793,
+          "commits": 30
+        },
+        "porEtapa": {
+          "agendamento": {
+            "efetivas": 487,
+            "brutas": 868,
+            "commits": 8
+          },
+          "pacientes": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          },
+          "unidades": {
+            "efetivas": 128,
+            "brutas": 298,
+            "commits": 3
+          },
+          "financeiro": {
+            "efetivas": 119,
+            "brutas": 203,
+            "commits": 4
+          },
+          "infra": {
+            "efetivas": 312,
+            "brutas": 424,
+            "commits": 15
+          }
+        },
+        "icProjeto": 10.4
+      },
+      "igor-batista": {
+        "total": {
+          "efetivas": 3484,
+          "brutas": 6136,
+          "commits": 39
+        },
+        "porEtapa": {
+          "agendamento": {
+            "efetivas": 2231,
+            "brutas": 3790,
+            "commits": 20
+          },
+          "pacientes": {
+            "efetivas": 152,
+            "brutas": 328,
+            "commits": 5
+          },
+          "unidades": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          },
+          "financeiro": {
+            "efetivas": 1101,
+            "brutas": 2018,
+            "commits": 14
+          },
+          "infra": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          }
+        },
+        "icProjeto": 27.6
+      },
+      "sofia-lins": {
+        "total": {
+          "efetivas": 3220,
+          "brutas": 5433,
+          "commits": 35
+        },
+        "porEtapa": {
+          "agendamento": {
+            "efetivas": 318,
+            "brutas": 681,
+            "commits": 6
+          },
+          "pacientes": {
+            "efetivas": 124,
+            "brutas": 278,
+            "commits": 3
+          },
+          "unidades": {
+            "efetivas": 2778,
+            "brutas": 4474,
+            "commits": 26
+          },
+          "financeiro": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          },
+          "infra": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          }
+        },
+        "icProjeto": 26
+      },
+      "mateus-cavalcanti": {
+        "total": {
+          "efetivas": 2427,
+          "brutas": 4541,
+          "commits": 32
+        },
+        "porEtapa": {
+          "agendamento": {
+            "efetivas": 714,
+            "brutas": 1398,
+            "commits": 10
+          },
+          "pacientes": {
+            "efetivas": 1643,
+            "brutas": 2932,
+            "commits": 18
+          },
+          "unidades": {
+            "efetivas": 70,
+            "brutas": 211,
+            "commits": 4
+          },
+          "financeiro": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          },
+          "infra": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          }
+        },
+        "icProjeto": 19.7
+      },
+      "paula-siqueira": {
+        "total": {
+          "efetivas": 1846,
+          "brutas": 3383,
+          "commits": 29
+        },
+        "porEtapa": {
+          "agendamento": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          },
+          "pacientes": {
+            "efetivas": 572,
+            "brutas": 1162,
+            "commits": 10
+          },
+          "unidades": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          },
+          "financeiro": {
+            "efetivas": 1250,
+            "brutas": 2170,
+            "commits": 16
+          },
+          "infra": {
+            "efetivas": 24,
+            "brutas": 51,
+            "commits": 3
+          }
+        },
+        "icProjeto": 16.3
+      }
+    },
+    "porEtapa": {
+      "agendamento": {
+        "total": {
+          "efetivas": 3750,
+          "brutas": 6737,
+          "commits": 44
+        },
+        "ranking": {
+          "efetivas": [
+            {
+              "membroId": "igor-batista",
+              "valor": 2231,
+              "pct": 59.5
+            },
+            {
+              "membroId": "mateus-cavalcanti",
+              "valor": 714,
+              "pct": 19
+            },
+            {
+              "membroId": "renata-albuquerque",
+              "valor": 487,
+              "pct": 13
+            },
+            {
+              "membroId": "sofia-lins",
+              "valor": 318,
+              "pct": 8.5
+            }
+          ],
+          "brutas": [
+            {
+              "membroId": "igor-batista",
+              "valor": 3790,
+              "pct": 56.3
+            },
+            {
+              "membroId": "mateus-cavalcanti",
+              "valor": 1398,
+              "pct": 20.8
+            },
+            {
+              "membroId": "renata-albuquerque",
+              "valor": 868,
+              "pct": 12.9
+            },
+            {
+              "membroId": "sofia-lins",
+              "valor": 681,
+              "pct": 10.1
+            }
+          ],
+          "commits": [
+            {
+              "membroId": "igor-batista",
+              "valor": 20,
+              "pct": 45.5
+            },
+            {
+              "membroId": "mateus-cavalcanti",
+              "valor": 10,
+              "pct": 22.7
+            },
+            {
+              "membroId": "renata-albuquerque",
+              "valor": 8,
+              "pct": 18.2
+            },
+            {
+              "membroId": "sofia-lins",
+              "valor": 6,
+              "pct": 13.6
+            }
+          ]
+        },
+        "lider": {
+          "efetivas": "igor-batista",
+          "brutas": "igor-batista",
+          "commits": "igor-batista"
+        },
+        "ic": {
+          "renata-albuquerque": 13.8,
+          "igor-batista": 56.4,
+          "sofia-lins": 9.4,
+          "mateus-cavalcanti": 20.4,
+          "paula-siqueira": 0
+        },
+        "concentracao": 0.39
+      },
+      "pacientes": {
+        "total": {
+          "efetivas": 2491,
+          "brutas": 4700,
+          "commits": 36
+        },
+        "ranking": {
+          "efetivas": [
+            {
+              "membroId": "mateus-cavalcanti",
+              "valor": 1643,
+              "pct": 66
+            },
+            {
+              "membroId": "paula-siqueira",
+              "valor": 572,
+              "pct": 23
+            },
+            {
+              "membroId": "igor-batista",
+              "valor": 152,
+              "pct": 6.1
+            },
+            {
+              "membroId": "sofia-lins",
+              "valor": 124,
+              "pct": 5
+            }
+          ],
+          "brutas": [
+            {
+              "membroId": "mateus-cavalcanti",
+              "valor": 2932,
+              "pct": 62.4
+            },
+            {
+              "membroId": "paula-siqueira",
+              "valor": 1162,
+              "pct": 24.7
+            },
+            {
+              "membroId": "igor-batista",
+              "valor": 328,
+              "pct": 7
+            },
+            {
+              "membroId": "sofia-lins",
+              "valor": 278,
+              "pct": 5.9
+            }
+          ],
+          "commits": [
+            {
+              "membroId": "mateus-cavalcanti",
+              "valor": 18,
+              "pct": 50
+            },
+            {
+              "membroId": "paula-siqueira",
+              "valor": 10,
+              "pct": 27.8
+            },
+            {
+              "membroId": "igor-batista",
+              "valor": 5,
+              "pct": 13.9
+            },
+            {
+              "membroId": "sofia-lins",
+              "valor": 3,
+              "pct": 8.3
+            }
+          ]
+        },
+        "lider": {
+          "efetivas": "mateus-cavalcanti",
+          "brutas": "mateus-cavalcanti",
+          "commits": "mateus-cavalcanti"
+        },
+        "ic": {
+          "renata-albuquerque": 0,
+          "igor-batista": 7.6,
+          "sofia-lins": 5.6,
+          "mateus-cavalcanti": 62.2,
+          "paula-siqueira": 24.6
+        },
+        "concentracao": 0.46
+      },
+      "unidades": {
+        "total": {
+          "efetivas": 2976,
+          "brutas": 4983,
+          "commits": 33
+        },
+        "ranking": {
+          "efetivas": [
+            {
+              "membroId": "sofia-lins",
+              "valor": 2778,
+              "pct": 93.3
+            },
+            {
+              "membroId": "renata-albuquerque",
+              "valor": 128,
+              "pct": 4.3
+            },
+            {
+              "membroId": "mateus-cavalcanti",
+              "valor": 70,
+              "pct": 2.4
+            }
+          ],
+          "brutas": [
+            {
+              "membroId": "sofia-lins",
+              "valor": 4474,
+              "pct": 89.8
+            },
+            {
+              "membroId": "renata-albuquerque",
+              "valor": 298,
+              "pct": 6
+            },
+            {
+              "membroId": "mateus-cavalcanti",
+              "valor": 211,
+              "pct": 4.2
+            }
+          ],
+          "commits": [
+            {
+              "membroId": "sofia-lins",
+              "valor": 26,
+              "pct": 78.8
+            },
+            {
+              "membroId": "mateus-cavalcanti",
+              "valor": 4,
+              "pct": 12.1
+            },
+            {
+              "membroId": "renata-albuquerque",
+              "valor": 3,
+              "pct": 9.1
+            }
+          ]
+        },
+        "lider": {
+          "efetivas": "sofia-lins",
+          "brutas": "sofia-lins",
+          "commits": "sofia-lins"
+        },
+        "ic": {
+          "renata-albuquerque": 5.4,
+          "igor-batista": 0,
+          "sofia-lins": 90.1,
+          "mateus-cavalcanti": 4.5,
+          "paula-siqueira": 0
+        },
+        "concentracao": 0.82
+      },
+      "financeiro": {
+        "total": {
+          "efetivas": 2470,
+          "brutas": 4391,
+          "commits": 34
+        },
+        "ranking": {
+          "efetivas": [
+            {
+              "membroId": "paula-siqueira",
+              "valor": 1250,
+              "pct": 50.6
+            },
+            {
+              "membroId": "igor-batista",
+              "valor": 1101,
+              "pct": 44.6
+            },
+            {
+              "membroId": "renata-albuquerque",
+              "valor": 119,
+              "pct": 4.8
+            }
+          ],
+          "brutas": [
+            {
+              "membroId": "paula-siqueira",
+              "valor": 2170,
+              "pct": 49.4
+            },
+            {
+              "membroId": "igor-batista",
+              "valor": 2018,
+              "pct": 46
+            },
+            {
+              "membroId": "renata-albuquerque",
+              "valor": 203,
+              "pct": 4.6
+            }
+          ],
+          "commits": [
+            {
+              "membroId": "paula-siqueira",
+              "valor": 16,
+              "pct": 47.1
+            },
+            {
+              "membroId": "igor-batista",
+              "valor": 14,
+              "pct": 41.2
+            },
+            {
+              "membroId": "renata-albuquerque",
+              "valor": 4,
+              "pct": 11.8
+            }
+          ]
+        },
+        "lider": {
+          "efetivas": "paula-siqueira",
+          "brutas": "paula-siqueira",
+          "commits": "paula-siqueira"
+        },
+        "ic": {
+          "renata-albuquerque": 6.2,
+          "igor-batista": 44.5,
+          "sofia-lins": 0,
+          "mateus-cavalcanti": 0,
+          "paula-siqueira": 49.2
+        },
+        "concentracao": 0.44
+      },
+      "infra": {
+        "total": {
+          "efetivas": 336,
+          "brutas": 475,
+          "commits": 18
+        },
+        "ranking": {
+          "efetivas": [
+            {
+              "membroId": "renata-albuquerque",
+              "valor": 312,
+              "pct": 92.9
+            },
+            {
+              "membroId": "paula-siqueira",
+              "valor": 24,
+              "pct": 7.1
+            }
+          ],
+          "brutas": [
+            {
+              "membroId": "renata-albuquerque",
+              "valor": 424,
+              "pct": 89.3
+            },
+            {
+              "membroId": "paula-siqueira",
+              "valor": 51,
+              "pct": 10.7
+            }
+          ],
+          "commits": [
+            {
+              "membroId": "renata-albuquerque",
+              "valor": 15,
+              "pct": 83.3
+            },
+            {
+              "membroId": "paula-siqueira",
+              "valor": 3,
+              "pct": 16.7
+            }
+          ]
+        },
+        "lider": {
+          "efetivas": "renata-albuquerque",
+          "brutas": "renata-albuquerque",
+          "commits": "renata-albuquerque"
+        },
+        "ic": {
+          "renata-albuquerque": 90.8,
+          "igor-batista": 0,
+          "sofia-lins": 0,
+          "mateus-cavalcanti": 0,
+          "paula-siqueira": 9.2
+        },
+        "concentracao": 0.83
+      }
+    },
+    "semanas": [
+      {
+        "semana": "2026-07-27",
+        "commits": {
+          "renata-albuquerque": 3,
+          "igor-batista": 3,
+          "sofia-lins": 2,
+          "mateus-cavalcanti": 1,
+          "paula-siqueira": 1
+        }
+      },
+      {
+        "semana": "2026-08-03",
+        "commits": {
+          "renata-albuquerque": 3,
+          "igor-batista": 0,
+          "sofia-lins": 1,
+          "mateus-cavalcanti": 2,
+          "paula-siqueira": 0
+        }
+      },
+      {
+        "semana": "2026-08-10",
+        "commits": {
+          "renata-albuquerque": 2,
+          "igor-batista": 3,
+          "sofia-lins": 1,
+          "mateus-cavalcanti": 1,
+          "paula-siqueira": 2
+        }
+      },
+      {
+        "semana": "2026-08-17",
+        "commits": {
+          "renata-albuquerque": 1,
+          "igor-batista": 1,
+          "sofia-lins": 2,
+          "mateus-cavalcanti": 4,
+          "paula-siqueira": 0
+        }
+      },
+      {
+        "semana": "2026-08-24",
+        "commits": {
+          "renata-albuquerque": 0,
+          "igor-batista": 3,
+          "sofia-lins": 2,
+          "mateus-cavalcanti": 1,
+          "paula-siqueira": 0
+        }
+      },
+      {
+        "semana": "2026-08-31",
+        "commits": {
+          "renata-albuquerque": 0,
+          "igor-batista": 4,
+          "sofia-lins": 1,
+          "mateus-cavalcanti": 1,
+          "paula-siqueira": 1
+        }
+      },
+      {
+        "semana": "2026-09-07",
+        "commits": {
+          "renata-albuquerque": 1,
+          "igor-batista": 3,
+          "sofia-lins": 2,
+          "mateus-cavalcanti": 4,
+          "paula-siqueira": 0
+        }
+      },
+      {
+        "semana": "2026-09-14",
+        "commits": {
+          "renata-albuquerque": 2,
+          "igor-batista": 2,
+          "sofia-lins": 3,
+          "mateus-cavalcanti": 1,
+          "paula-siqueira": 2
+        }
+      },
+      {
+        "semana": "2026-09-21",
+        "commits": {
+          "renata-albuquerque": 2,
+          "igor-batista": 4,
+          "sofia-lins": 2,
+          "mateus-cavalcanti": 7,
+          "paula-siqueira": 4
+        }
+      },
+      {
+        "semana": "2026-09-28",
+        "commits": {
+          "renata-albuquerque": 2,
+          "igor-batista": 3,
+          "sofia-lins": 3,
+          "mateus-cavalcanti": 4,
+          "paula-siqueira": 4
+        }
+      },
+      {
+        "semana": "2026-10-05",
+        "commits": {
+          "renata-albuquerque": 3,
+          "igor-batista": 4,
+          "sofia-lins": 1,
+          "mateus-cavalcanti": 2,
+          "paula-siqueira": 4
+        }
+      },
+      {
+        "semana": "2026-10-12",
+        "commits": {
+          "renata-albuquerque": 3,
+          "igor-batista": 1,
+          "sofia-lins": 3,
+          "mateus-cavalcanti": 2,
+          "paula-siqueira": 3
+        }
+      },
+      {
+        "semana": "2026-10-19",
+        "commits": {
+          "renata-albuquerque": 3,
+          "igor-batista": 2,
+          "sofia-lins": 1,
+          "mateus-cavalcanti": 1,
+          "paula-siqueira": 4
+        }
+      },
+      {
+        "semana": "2026-10-26",
+        "commits": {
+          "renata-albuquerque": 2,
+          "igor-batista": 0,
+          "sofia-lins": 6,
+          "mateus-cavalcanti": 0,
+          "paula-siqueira": 1
+        }
+      },
+      {
+        "semana": "2026-11-02",
+        "commits": {
+          "renata-albuquerque": 2,
+          "igor-batista": 5,
+          "sofia-lins": 4,
+          "mateus-cavalcanti": 0,
+          "paula-siqueira": 1
+        }
+      },
+      {
+        "semana": "2026-11-09",
+        "commits": {
+          "renata-albuquerque": 1,
+          "igor-batista": 1,
+          "sofia-lins": 1,
+          "mateus-cavalcanti": 1,
+          "paula-siqueira": 2
+        }
+      }
+    ]
+  },
+  "metalurgica-mezzalira": {
+    "indice": {
+      "pesos": {
+        "efetivas": 0.5,
+        "commits": 0.2,
+        "brutas": 0.15,
+        "recentes": 0.15
+      },
+      "meiaVidaDias": 45
+    },
+    "totais": {
+      "efetivas": 9789,
+      "brutas": 21242,
+      "commits": 127
+    },
+    "porMembro": {
+      "bruno-tavares": {
+        "total": {
+          "efetivas": 2994,
+          "brutas": 5329,
+          "commits": 27
+        },
+        "porEtapa": {
+          "limpeza": {
+            "efetivas": 2270,
+            "brutas": 3834,
+            "commits": 16
+          },
+          "agente-dados": {
+            "efetivas": 708,
+            "brutas": 1471,
+            "commits": 8
+          },
+          "agente-manual": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          },
+          "interface": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          },
+          "infra": {
+            "efetivas": 16,
+            "brutas": 24,
+            "commits": 3
+          }
+        },
+        "icProjeto": 27
+      },
+      "yasmin-freitas": {
+        "total": {
+          "efetivas": 1763,
+          "brutas": 8099,
+          "commits": 34
+        },
+        "porEtapa": {
+          "limpeza": {
+            "efetivas": 1084,
+            "brutas": 6633,
+            "commits": 22
+          },
+          "agente-dados": {
+            "efetivas": 679,
+            "brutas": 1466,
+            "commits": 12
+          },
+          "agente-manual": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          },
+          "interface": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          },
+          "infra": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          }
+        },
+        "icProjeto": 22.2
+      },
+      "henrique-pacheco": {
+        "total": {
+          "efetivas": 3279,
+          "brutas": 4693,
+          "commits": 33
+        },
+        "porEtapa": {
+          "limpeza": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          },
+          "agente-dados": {
+            "efetivas": 294,
+            "brutas": 728,
+            "commits": 6
+          },
+          "agente-manual": {
+            "efetivas": 2922,
+            "brutas": 3796,
+            "commits": 24
+          },
+          "interface": {
+            "efetivas": 63,
+            "brutas": 169,
+            "commits": 3
+          },
+          "infra": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          }
+        },
+        "icProjeto": 31.2
+      },
+      "clara-menezes": {
+        "total": {
+          "efetivas": 1753,
+          "brutas": 3121,
+          "commits": 33
+        },
+        "porEtapa": {
+          "limpeza": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          },
+          "agente-dados": {
+            "efetivas": 0,
+            "brutas": 0,
+            "commits": 0
+          },
+          "agente-manual": {
+            "efetivas": 155,
+            "brutas": 498,
+            "commits": 5
+          },
+          "interface": {
+            "efetivas": 1452,
+            "brutas": 2404,
+            "commits": 18
+          },
+          "infra": {
+            "efetivas": 146,
+            "brutas": 219,
+            "commits": 10
+          }
+        },
+        "icProjeto": 19.5
+      }
+    },
+    "porEtapa": {
+      "limpeza": {
+        "total": {
+          "efetivas": 3354,
+          "brutas": 10467,
+          "commits": 38
+        },
+        "ranking": {
+          "efetivas": [
+            {
+              "membroId": "bruno-tavares",
+              "valor": 2270,
+              "pct": 67.7
+            },
+            {
+              "membroId": "yasmin-freitas",
+              "valor": 1084,
+              "pct": 32.3
+            }
+          ],
+          "brutas": [
+            {
+              "membroId": "yasmin-freitas",
+              "valor": 6633,
+              "pct": 63.4
+            },
+            {
+              "membroId": "bruno-tavares",
+              "valor": 3834,
+              "pct": 36.6
+            }
+          ],
+          "commits": [
+            {
+              "membroId": "yasmin-freitas",
+              "valor": 22,
+              "pct": 57.9
+            },
+            {
+              "membroId": "bruno-tavares",
+              "valor": 16,
+              "pct": 42.1
+            }
+          ]
+        },
+        "lider": {
+          "efetivas": "bruno-tavares",
+          "brutas": "yasmin-freitas",
+          "commits": "yasmin-freitas"
+        },
+        "ic": {
+          "bruno-tavares": 58.4,
+          "yasmin-freitas": 41.6,
+          "henrique-pacheco": 0,
+          "clara-menezes": 0
+        },
+        "concentracao": 0.51
+      },
+      "agente-dados": {
+        "total": {
+          "efetivas": 1681,
+          "brutas": 3665,
+          "commits": 26
+        },
+        "ranking": {
+          "efetivas": [
+            {
+              "membroId": "bruno-tavares",
+              "valor": 708,
+              "pct": 42.1
+            },
+            {
+              "membroId": "yasmin-freitas",
+              "valor": 679,
+              "pct": 40.4
+            },
+            {
+              "membroId": "henrique-pacheco",
+              "valor": 294,
+              "pct": 17.5
+            }
+          ],
+          "brutas": [
+            {
+              "membroId": "bruno-tavares",
+              "valor": 1471,
+              "pct": 40.1
+            },
+            {
+              "membroId": "yasmin-freitas",
+              "valor": 1466,
+              "pct": 40
+            },
+            {
+              "membroId": "henrique-pacheco",
+              "valor": 728,
+              "pct": 19.9
+            }
+          ],
+          "commits": [
+            {
+              "membroId": "yasmin-freitas",
+              "valor": 12,
+              "pct": 46.2
+            },
+            {
+              "membroId": "bruno-tavares",
+              "valor": 8,
+              "pct": 30.8
+            },
+            {
+              "membroId": "henrique-pacheco",
+              "valor": 6,
+              "pct": 23.1
+            }
+          ]
+        },
+        "lider": {
+          "efetivas": "bruno-tavares",
+          "brutas": "bruno-tavares",
+          "commits": "yasmin-freitas"
+        },
+        "ic": {
+          "bruno-tavares": 39.7,
+          "yasmin-freitas": 41.5,
+          "henrique-pacheco": 18.8,
+          "clara-menezes": 0
+        },
+        "concentracao": 0.37
+      },
+      "agente-manual": {
+        "total": {
+          "efetivas": 3077,
+          "brutas": 4294,
+          "commits": 29
+        },
+        "ranking": {
+          "efetivas": [
+            {
+              "membroId": "henrique-pacheco",
+              "valor": 2922,
+              "pct": 95
+            },
+            {
+              "membroId": "clara-menezes",
+              "valor": 155,
+              "pct": 5
+            }
+          ],
+          "brutas": [
+            {
+              "membroId": "henrique-pacheco",
+              "valor": 3796,
+              "pct": 88.4
+            },
+            {
+              "membroId": "clara-menezes",
+              "valor": 498,
+              "pct": 11.6
+            }
+          ],
+          "commits": [
+            {
+              "membroId": "henrique-pacheco",
+              "valor": 24,
+              "pct": 82.8
+            },
+            {
+              "membroId": "clara-menezes",
+              "valor": 5,
+              "pct": 17.2
+            }
+          ]
+        },
+        "lider": {
+          "efetivas": "henrique-pacheco",
+          "brutas": "henrique-pacheco",
+          "commits": "henrique-pacheco"
+        },
+        "ic": {
+          "bruno-tavares": 0,
+          "yasmin-freitas": 0,
+          "henrique-pacheco": 91.7,
+          "clara-menezes": 8.3
+        },
+        "concentracao": 0.85
+      },
+      "interface": {
+        "total": {
+          "efetivas": 1515,
+          "brutas": 2573,
+          "commits": 21
+        },
+        "ranking": {
+          "efetivas": [
+            {
+              "membroId": "clara-menezes",
+              "valor": 1452,
+              "pct": 95.8
+            },
+            {
+              "membroId": "henrique-pacheco",
+              "valor": 63,
+              "pct": 4.2
+            }
+          ],
+          "brutas": [
+            {
+              "membroId": "clara-menezes",
+              "valor": 2404,
+              "pct": 93.4
+            },
+            {
+              "membroId": "henrique-pacheco",
+              "valor": 169,
+              "pct": 6.6
+            }
+          ],
+          "commits": [
+            {
+              "membroId": "clara-menezes",
+              "valor": 18,
+              "pct": 85.7
+            },
+            {
+              "membroId": "henrique-pacheco",
+              "valor": 3,
+              "pct": 14.3
+            }
+          ]
+        },
+        "lider": {
+          "efetivas": "clara-menezes",
+          "brutas": "clara-menezes",
+          "commits": "clara-menezes"
+        },
+        "ic": {
+          "bruno-tavares": 0,
+          "yasmin-freitas": 0,
+          "henrique-pacheco": 6.6,
+          "clara-menezes": 93.4
+        },
+        "concentracao": 0.88
+      },
+      "infra": {
+        "total": {
+          "efetivas": 162,
+          "brutas": 243,
+          "commits": 13
+        },
+        "ranking": {
+          "efetivas": [
+            {
+              "membroId": "clara-menezes",
+              "valor": 146,
+              "pct": 90.1
+            },
+            {
+              "membroId": "bruno-tavares",
+              "valor": 16,
+              "pct": 9.9
+            }
+          ],
+          "brutas": [
+            {
+              "membroId": "clara-menezes",
+              "valor": 219,
+              "pct": 90.1
+            },
+            {
+              "membroId": "bruno-tavares",
+              "valor": 24,
+              "pct": 9.9
+            }
+          ],
+          "commits": [
+            {
+              "membroId": "clara-menezes",
+              "valor": 10,
+              "pct": 76.9
+            },
+            {
+              "membroId": "bruno-tavares",
+              "valor": 3,
+              "pct": 23.1
+            }
+          ]
+        },
+        "lider": {
+          "efetivas": "clara-menezes",
+          "brutas": "clara-menezes",
+          "commits": "clara-menezes"
+        },
+        "ic": {
+          "bruno-tavares": 13.2,
+          "yasmin-freitas": 0,
+          "henrique-pacheco": 0,
+          "clara-menezes": 86.8
+        },
+        "concentracao": 0.77
+      }
+    },
+    "semanas": [
+      {
+        "semana": "2026-08-10",
+        "commits": {
+          "bruno-tavares": 2,
+          "yasmin-freitas": 3,
+          "henrique-pacheco": 0,
+          "clara-menezes": 0
+        }
+      },
+      {
+        "semana": "2026-08-17",
+        "commits": {
+          "bruno-tavares": 0,
+          "yasmin-freitas": 2,
+          "henrique-pacheco": 0,
+          "clara-menezes": 1
+        }
+      },
+      {
+        "semana": "2026-08-24",
+        "commits": {
+          "bruno-tavares": 2,
+          "yasmin-freitas": 6,
+          "henrique-pacheco": 0,
+          "clara-menezes": 1
+        }
+      },
+      {
+        "semana": "2026-08-31",
+        "commits": {
+          "bruno-tavares": 1,
+          "yasmin-freitas": 3,
+          "henrique-pacheco": 0,
+          "clara-menezes": 1
+        }
+      },
+      {
+        "semana": "2026-09-07",
+        "commits": {
+          "bruno-tavares": 4,
+          "yasmin-freitas": 3,
+          "henrique-pacheco": 3,
+          "clara-menezes": 2
+        }
+      },
+      {
+        "semana": "2026-09-14",
+        "commits": {
+          "bruno-tavares": 3,
+          "yasmin-freitas": 1,
+          "henrique-pacheco": 0,
+          "clara-menezes": 1
+        }
+      },
+      {
+        "semana": "2026-09-21",
+        "commits": {
+          "bruno-tavares": 4,
+          "yasmin-freitas": 3,
+          "henrique-pacheco": 3,
+          "clara-menezes": 5
+        }
+      },
+      {
+        "semana": "2026-09-28",
+        "commits": {
+          "bruno-tavares": 3,
+          "yasmin-freitas": 5,
+          "henrique-pacheco": 3,
+          "clara-menezes": 3
+        }
+      },
+      {
+        "semana": "2026-10-05",
+        "commits": {
+          "bruno-tavares": 1,
+          "yasmin-freitas": 2,
+          "henrique-pacheco": 4,
+          "clara-menezes": 5
+        }
+      },
+      {
+        "semana": "2026-10-12",
+        "commits": {
+          "bruno-tavares": 1,
+          "yasmin-freitas": 1,
+          "henrique-pacheco": 4,
+          "clara-menezes": 0
+        }
+      },
+      {
+        "semana": "2026-10-19",
+        "commits": {
+          "bruno-tavares": 1,
+          "yasmin-freitas": 3,
+          "henrique-pacheco": 6,
+          "clara-menezes": 4
+        }
+      },
+      {
+        "semana": "2026-10-26",
+        "commits": {
+          "bruno-tavares": 2,
+          "yasmin-freitas": 1,
+          "henrique-pacheco": 4,
+          "clara-menezes": 5
+        }
+      },
+      {
+        "semana": "2026-11-02",
+        "commits": {
+          "bruno-tavares": 1,
+          "yasmin-freitas": 1,
+          "henrique-pacheco": 5,
+          "clara-menezes": 4
+        }
+      },
+      {
+        "semana": "2026-11-09",
+        "commits": {
+          "bruno-tavares": 2,
+          "yasmin-freitas": 0,
+          "henrique-pacheco": 1,
+          "clara-menezes": 1
+        }
+      }
+    ]
+  }
+}
