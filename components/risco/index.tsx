@@ -1,20 +1,10 @@
-"use client";
-
-// Selos e alertas de risco e urgência. Dependem dos legados registrados (localStorage),
-// por isso rodam no navegador: registrar o legado mitiga o risco na hora.
+// Selos de status, risco e urgência, e a lista de alertas de um projeto.
 
 import type { Membro, Projeto } from "@/data";
-import { useLegados } from "@/lib/legados";
-import {
-  alertasAbertos,
-  alertasMitigados,
-  avaliarEtapa,
-  nivelUrgencia,
-  textoAlerta,
-  type Nivel,
-  type NivelUrgencia,
-} from "@/lib/indice";
+import { avaliarEtapa, nivelUrgencia, type Nivel, type NivelUrgencia } from "@/lib/indice";
+import { alertas, diasParada, statusEtapa, statusProjeto } from "@/lib/status";
 import { Alerta, Selo } from "@/components/ui";
+import { formatarMesAno } from "@/data/formatos";
 
 export function SeloRisco({ nivel }: { nivel: Nivel }) {
   return <Selo forte={nivel === "Alto"}>Risco {nivel.toLowerCase()}</Selo>;
@@ -24,75 +14,76 @@ export function SeloUrgencia({ nivel }: { nivel: NivelUrgencia }) {
   return <Selo forte={nivel === "Alta"}>Urgência {nivel.toLowerCase()}</Selo>;
 }
 
-function SeloMitigado() {
-  return <Selo forte>✓ Mitigado pelo legado</Selo>;
+export function SeloStatusProjeto({ projeto }: { projeto: Projeto }) {
+  const s = statusProjeto(projeto);
+  return <Selo forte={s === "Atrasado"}>{s}</Selo>;
 }
 
-/** Risco e urgência de uma etapa (ou "mitigado", se o legado de quem mais sabe já foi registrado). */
-export function RiscoDaEtapa({ projeto, etapaId }: { projeto: Projeto; etapaId: string }) {
-  const legados = useLegados();
-  const a = avaliarEtapa(projeto, etapaId, legados);
-  if (a.mitigado) return <SeloMitigado />;
+export function SeloStatusEtapa({ projeto, etapaId }: { projeto: Projeto; etapaId: string }) {
+  const etapa = projeto.etapas.find((e) => e.id === etapaId)!;
+  const s = statusEtapa(projeto, etapa);
+  const parada = diasParada(projeto, etapa);
   return (
     <span className="inline-flex flex-wrap gap-1">
-      <SeloRisco nivel={a.risco} />
-      <SeloUrgencia nivel={a.urgencia} />
+      <Selo forte={s === "Atrasada"}>{s}</Selo>
+      {parada !== null && <Selo forte>Parada há {parada} dias</Selo>}
     </span>
   );
 }
 
-/** Situação do projeto: a etapa mais grave entre as que têm alerta aberto. */
-export function RiscoDoProjeto({ projeto }: { projeto: Projeto }) {
-  const legados = useLegados();
-  const [pior] = alertasAbertos(projeto, legados);
-  if (pior) {
-    return (
-      <span className="inline-flex flex-wrap gap-1">
-        <SeloRisco nivel={pior.risco} />
-        <SeloUrgencia nivel={pior.urgencia} />
-      </span>
-    );
-  }
-  if (alertasMitigados(projeto, legados).length) return <SeloMitigado />;
-  return <Selo>Sem saídas próximas</Selo>;
+/** Risco e urgência de uma etapa (em projetos concluídos, só o risco). */
+export function RiscoDaEtapa({ projeto, etapaId }: { projeto: Projeto; etapaId: string }) {
+  const a = avaliarEtapa(projeto, etapaId);
+  return (
+    <span className="inline-flex flex-wrap gap-1">
+      <SeloRisco nivel={a.risco} />
+      {projeto.status !== "concluido" && <SeloUrgencia nivel={a.urgencia} />}
+    </span>
+  );
 }
 
-/** Urgência de um membro, a partir da data de saída (sem data = baixa). */
-export function UrgenciaDoMembro({ membro }: { membro: Membro }) {
+/** Situação da pessoa na empresa: saída prevista (com urgência) ou já saiu. */
+export function SituacaoDaPessoa({ membro, comUrgencia = true }: { membro: Membro; comUrgencia?: boolean }) {
+  if (membro.saiuEm) return <Selo>Saiu em {formatarMesAno(membro.saiuEm.slice(0, 7))}</Selo>;
   if (!membro.saidaPrevista) return null;
   return (
     <>
       <Selo>Sai {membro.saidaPrevista}</Selo>
-      <SeloUrgencia nivel={nivelUrgencia(membro)} />
+      {comUrgencia && <SeloUrgencia nivel={nivelUrgencia(membro)} />}
     </>
   );
 }
 
-/** Alertas do projeto: abertos em destaque, os já resolvidos pelo legado em seguida. */
+/** Alertas do projeto (do mais grave para o menos grave). */
 export function AlertasDoProjeto({ projeto, limite }: { projeto: Projeto; limite?: number }) {
-  const legados = useLegados();
-  const abertos = alertasAbertos(projeto, legados).slice(0, limite);
-  const mitigados = alertasMitigados(projeto, legados);
-  if (!abertos.length && !mitigados.length) return <div className="text-sm text-gray-500">Sem saídas próximas</div>;
+  const lista = alertas(projeto);
+  const visiveis = lista.slice(0, limite);
+  if (!lista.length) {
+    return (
+      <div className="text-sm text-gray-500">
+        {projeto.status === "concluido" ? "Todos que mais sabem de cada etapa ainda estão na empresa" : "Sem alertas"}
+      </div>
+    );
+  }
   return (
     <div className="space-y-2">
-      {abertos.map((a) => (
-        <Alerta key={a.etapaId}>
-          {textoAlerta(a)} · risco {a.risco.toLowerCase()}, urgência {a.urgencia.toLowerCase()}
-        </Alerta>
-      ))}
-      {mitigados.map((a) => (
-        <div key={a.etapaId} className="text-sm text-gray-600">
-          ✓ {textoAlerta(a)} · legado registrado
+      {visiveis.map((a) =>
+        a.tipo === "conhecimento-saiu" ? (
+          <div key={`${a.tipo}-${a.etapaId}`} className="text-sm text-gray-600">
+            ℹ {a.texto}
+          </div>
+        ) : (
+          <Alerta key={`${a.tipo}-${a.etapaId}`}>
+            {a.texto}
+            {a.tipo === "saida" && ` · risco ${a.risco!.toLowerCase()}, urgência ${a.urgencia!.toLowerCase()}`}
+          </Alerta>
+        ),
+      )}
+      {limite !== undefined && lista.length > limite && (
+        <div className="text-xs text-gray-500">
+          + {lista.length - limite} {lista.length - limite === 1 ? "alerta" : "alertas"}
         </div>
-      ))}
+      )}
     </div>
   );
-}
-
-/** Quantos projetos ainda têm alerta aberto (para o subtítulo da lista). */
-export function ContagemEmRisco({ projetos }: { projetos: Projeto[] }) {
-  const legados = useLegados();
-  const n = projetos.filter((p) => alertasAbertos(p, legados).length > 0).length;
-  return <>{n === 1 ? "1 com saída próxima de quem detém conhecimento" : `${n} com saída próxima de quem detém conhecimento`}</>;
 }

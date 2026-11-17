@@ -1,68 +1,190 @@
 {
   "dataReferencia": "2026-11-17",
+  "pessoas": [
+    {
+      "id": "helena-duarte",
+      "nome": "Helena Duarte",
+      "entrada": "2025-08"
+    },
+    {
+      "id": "caio-ferraz",
+      "nome": "Caio Ferraz",
+      "entrada": "2025-03",
+      "saida": "2026-12-08",
+      "saidaTexto": "em 3 semanas",
+      "diasParaSaida": 21
+    },
+    {
+      "id": "livia-rocha",
+      "nome": "Lívia Rocha",
+      "entrada": "2025-09"
+    },
+    {
+      "id": "davi-moura",
+      "nome": "Davi Moura",
+      "entrada": "2026-08"
+    },
+    {
+      "id": "renata-albuquerque",
+      "nome": "Renata Albuquerque",
+      "entrada": "2025-02"
+    },
+    {
+      "id": "igor-batista",
+      "nome": "Igor Batista",
+      "entrada": "2025-08"
+    },
+    {
+      "id": "sofia-lins",
+      "nome": "Sofia Lins",
+      "entrada": "2025-03",
+      "saida": "2026-12-01",
+      "saidaTexto": "em 2 semanas",
+      "diasParaSaida": 14
+    },
+    {
+      "id": "mateus-cavalcanti",
+      "nome": "Mateus Cavalcanti",
+      "entrada": "2026-02"
+    },
+    {
+      "id": "paula-siqueira",
+      "nome": "Paula Siqueira",
+      "entrada": "2026-02"
+    },
+    {
+      "id": "bruno-tavares",
+      "nome": "Bruno Tavares",
+      "entrada": "2025-08"
+    },
+    {
+      "id": "yasmin-freitas",
+      "nome": "Yasmin Freitas",
+      "entrada": "2026-02"
+    },
+    {
+      "id": "henrique-pacheco",
+      "nome": "Henrique Pacheco",
+      "entrada": "2025-03",
+      "saida": "2026-12-15",
+      "saidaTexto": "em 4 semanas",
+      "diasParaSaida": 28
+    },
+    {
+      "id": "clara-menezes",
+      "nome": "Clara Menezes",
+      "entrada": "2025-02"
+    },
+    {
+      "id": "otavio-neves",
+      "nome": "Otávio Neves",
+      "entrada": "2025-08",
+      "saida": "2027-01-29",
+      "saidaTexto": "em 10 semanas",
+      "diasParaSaida": 73
+    },
+    {
+      "id": "larissa-campos",
+      "nome": "Larissa Campos",
+      "entrada": "2026-02"
+    },
+    {
+      "id": "felipe-arruda",
+      "nome": "Felipe Arruda",
+      "entrada": "2026-02"
+    },
+    {
+      "id": "marcos-vilela",
+      "nome": "Marcos Vilela",
+      "entrada": "2024-08",
+      "saiuEm": "2026-07-15"
+    },
+    {
+      "id": "gustavo-lemos",
+      "nome": "Gustavo Lemos",
+      "entrada": "2024-09",
+      "saiuEm": "2026-06-30"
+    },
+    {
+      "id": "tatiana-rego",
+      "nome": "Tatiana Rêgo",
+      "entrada": "2024-08",
+      "saiuEm": "2026-07-15"
+    },
+    {
+      "id": "bianca-prado",
+      "nome": "Bianca Prado",
+      "entrada": "2025-02"
+    }
+  ],
   "projetos": [
     {
       "id": "folhagem-cia",
       "nome": "Folhagem & Cia",
       "cliente": "Folhagem & Cia · loja de plantas",
       "descricao": "Sistema de gestão (CRUD) de uma loja de plantas: catálogo, estoque e pedidos.",
+      "caseReal": false,
+      "status": "andamento",
       "inicio": "2026-08-03",
-      "fim": "2026-11-13",
-      "etapaAtual": "pedidos",
+      "fimPrevisto": "2026-12-18",
       "etapas": [
         {
           "id": "autenticacao",
           "nome": "Autenticação",
-          "descricao": "Login de funcionários e permissões"
+          "descricao": "Login de funcionários e permissões",
+          "inicioPrevisto": "2026-08-03",
+          "fimPrevisto": "2026-09-11",
+          "progresso": 100
         },
         {
           "id": "catalogo",
           "nome": "Catálogo de plantas",
-          "descricao": "CRUD de plantas, categorias e fotos"
+          "descricao": "CRUD de plantas, categorias e fotos",
+          "inicioPrevisto": "2026-08-10",
+          "fimPrevisto": "2026-10-16",
+          "progresso": 100
         },
         {
           "id": "estoque",
           "nome": "Estoque",
-          "descricao": "Entradas, saídas, alertas de reposição"
+          "descricao": "Entradas, saídas, alertas de reposição",
+          "inicioPrevisto": "2026-09-01",
+          "fimPrevisto": "2026-11-27",
+          "progresso": 75
         },
         {
           "id": "pedidos",
           "nome": "Pedidos e checkout",
-          "descricao": "Carrinho, pedidos e status de entrega"
+          "descricao": "Carrinho, pedidos e status de entrega",
+          "inicioPrevisto": "2026-09-28",
+          "fimPrevisto": "2026-12-11",
+          "progresso": 55
         },
         {
           "id": "infra",
           "nome": "Infra/Deploy",
-          "descricao": "CI, banco e deploy"
+          "descricao": "CI, banco e deploy",
+          "inicioPrevisto": "2026-08-03",
+          "fimPrevisto": "2026-12-18",
+          "progresso": 60
         }
       ],
       "membros": [
         {
           "id": "helena-duarte",
-          "nome": "Helena Duarte",
-          "papel": "Tech lead",
-          "entrada": "2025-08"
+          "papel": "Tech lead"
         },
         {
           "id": "caio-ferraz",
-          "nome": "Caio Ferraz",
-          "papel": "Dev back-end",
-          "entrada": "2025-03",
-          "saida": "2026-12-08",
-          "saidaTexto": "em 3 semanas",
-          "diasParaSaida": 21
+          "papel": "Dev back-end"
         },
         {
           "id": "livia-rocha",
-          "nome": "Lívia Rocha",
-          "papel": "Dev front-end",
-          "entrada": "2026-02"
+          "papel": "Dev front-end"
         },
         {
           "id": "davi-moura",
-          "nome": "Davi Moura",
-          "papel": "Dev full-stack (trainee)",
-          "entrada": "2026-08"
+          "papel": "Dev full-stack (trainee)"
         }
       ]
     },
@@ -71,69 +193,72 @@
       "nome": "Clínica Movimento",
       "cliente": "Clínica Movimento · unidades Boa Viagem (BV) e Casa Forte (CF)",
       "descricao": "Sistema da clínica com duas unidades (BV e CF): agenda, pacientes, financeiro e multiunidade.",
+      "caseReal": false,
+      "status": "andamento",
       "inicio": "2026-07-27",
-      "fim": "2026-11-14",
-      "etapaAtual": "financeiro",
+      "fimPrevisto": "2026-12-11",
       "etapas": [
         {
           "id": "agendamento",
           "nome": "Agendamento",
-          "descricao": "Agenda de profissionais e marcação de sessões"
+          "descricao": "Agenda de profissionais e marcação de sessões",
+          "inicioPrevisto": "2026-07-27",
+          "fimPrevisto": "2026-10-02",
+          "progresso": 100
         },
         {
           "id": "pacientes",
           "nome": "Pacientes e prontuário",
-          "descricao": "Cadastro, prontuário e evolução"
+          "descricao": "Cadastro, prontuário e evolução",
+          "inicioPrevisto": "2026-08-10",
+          "fimPrevisto": "2026-10-30",
+          "progresso": 90
         },
         {
           "id": "unidades",
           "nome": "Multiunidade (BV/CF)",
-          "descricao": "Separação de agendas, salas e dados entre BV e CF"
+          "descricao": "Separação de agendas, salas e dados entre BV e CF",
+          "inicioPrevisto": "2026-09-07",
+          "fimPrevisto": "2026-12-04",
+          "progresso": 70
         },
         {
           "id": "financeiro",
           "nome": "Financeiro",
-          "descricao": "Pagamentos, convênios e repasses"
+          "descricao": "Pagamentos, convênios e repasses",
+          "inicioPrevisto": "2026-09-28",
+          "fimPrevisto": "2026-12-11",
+          "progresso": 45
         },
         {
           "id": "infra",
           "nome": "Infra/Deploy",
-          "descricao": "CI, banco e deploy"
+          "descricao": "CI, banco e deploy",
+          "inicioPrevisto": "2026-07-27",
+          "fimPrevisto": "2026-12-11",
+          "progresso": 60
         }
       ],
       "membros": [
         {
           "id": "renata-albuquerque",
-          "nome": "Renata Albuquerque",
-          "papel": "Tech lead",
-          "entrada": "2025-02"
+          "papel": "Tech lead"
         },
         {
           "id": "igor-batista",
-          "nome": "Igor Batista",
-          "papel": "Dev back-end",
-          "entrada": "2025-08"
+          "papel": "Dev back-end"
         },
         {
           "id": "sofia-lins",
-          "nome": "Sofia Lins",
-          "papel": "Dev back-end",
-          "entrada": "2025-03",
-          "saida": "2026-12-01",
-          "saidaTexto": "em 2 semanas",
-          "diasParaSaida": 14
+          "papel": "Dev back-end"
         },
         {
           "id": "mateus-cavalcanti",
-          "nome": "Mateus Cavalcanti",
-          "papel": "Dev front-end",
-          "entrada": "2026-02"
+          "papel": "Dev front-end"
         },
         {
           "id": "paula-siqueira",
-          "nome": "Paula Siqueira",
-          "papel": "Dev full-stack",
-          "entrada": "2026-02"
+          "papel": "Dev full-stack"
         }
       ]
     },
@@ -142,63 +267,304 @@
       "nome": "Metalúrgica Mezzalira",
       "cliente": "Metalúrgica Mezzalira · indústria",
       "descricao": "Limpeza dos dados da indústria e dois agentes de IA: um que lê e responde sobre os dados e outro que responde sobre o manual de instrução.",
+      "caseReal": false,
+      "status": "andamento",
       "inicio": "2026-08-10",
-      "fim": "2026-11-13",
-      "etapaAtual": "agente-manual",
+      "fimPrevisto": "2026-12-18",
       "etapas": [
         {
           "id": "limpeza",
           "nome": "Limpeza de dados",
-          "descricao": "Padronização das planilhas de produção e pipeline ETL"
+          "descricao": "Padronização das planilhas de produção e pipeline ETL",
+          "inicioPrevisto": "2026-08-10",
+          "fimPrevisto": "2026-10-09",
+          "progresso": 100
         },
         {
           "id": "agente-dados",
           "nome": "Agente de leitura de dados",
-          "descricao": "Agente que consulta os dados limpos e responde perguntas"
+          "descricao": "Agente que consulta os dados limpos e responde perguntas",
+          "inicioPrevisto": "2026-09-14",
+          "fimPrevisto": "2026-11-27",
+          "progresso": 65
         },
         {
           "id": "agente-manual",
           "nome": "Agente do manual",
-          "descricao": "Agente (RAG) que responde sobre o manual de instrução"
+          "descricao": "Agente (RAG) que responde sobre o manual de instrução",
+          "inicioPrevisto": "2026-09-07",
+          "fimPrevisto": "2026-12-11",
+          "progresso": 70
         },
         {
           "id": "interface",
           "nome": "Interface de chat",
-          "descricao": "Tela de conversa com os dois agentes"
+          "descricao": "Tela de conversa com os dois agentes",
+          "inicioPrevisto": "2026-10-05",
+          "fimPrevisto": "2026-12-18",
+          "progresso": 50
         },
         {
           "id": "infra",
           "nome": "Infra/Deploy",
-          "descricao": "CI, chaves de API e deploy"
+          "descricao": "CI, chaves de API e deploy",
+          "inicioPrevisto": "2026-08-10",
+          "fimPrevisto": "2026-12-18",
+          "progresso": 55
         }
       ],
       "membros": [
         {
           "id": "bruno-tavares",
-          "nome": "Bruno Tavares",
-          "papel": "Engenheiro de dados",
-          "entrada": "2025-08"
+          "papel": "Engenheiro de dados"
         },
         {
           "id": "yasmin-freitas",
-          "nome": "Yasmin Freitas",
-          "papel": "Analista de dados",
-          "entrada": "2026-02"
+          "papel": "Analista de dados"
         },
         {
           "id": "henrique-pacheco",
-          "nome": "Henrique Pacheco",
-          "papel": "Dev IA",
-          "entrada": "2025-03",
-          "saida": "2026-12-15",
-          "saidaTexto": "em 4 semanas",
-          "diasParaSaida": 28
+          "papel": "Dev IA"
         },
         {
           "id": "clara-menezes",
-          "nome": "Clara Menezes",
-          "papel": "Tech lead",
-          "entrada": "2025-02"
+          "papel": "Tech lead"
+        }
+      ]
+    },
+    {
+      "id": "plataforma-voluntariado",
+      "nome": "Plataforma de Voluntariado",
+      "cliente": "Instituto Capibaribe · ONG educacional",
+      "descricao": "Plataforma para a ONG divulgar oportunidades, receber inscrições de voluntários e emitir certificados de horas.",
+      "caseReal": false,
+      "status": "andamento",
+      "inicio": "2026-07-20",
+      "fimPrevisto": "2026-11-06",
+      "etapas": [
+        {
+          "id": "cadastro",
+          "nome": "Cadastro de voluntários",
+          "descricao": "Cadastro, perfil e disponibilidade",
+          "inicioPrevisto": "2026-07-20",
+          "fimPrevisto": "2026-08-28",
+          "progresso": 100
+        },
+        {
+          "id": "oportunidades",
+          "nome": "Mural de oportunidades",
+          "descricao": "Publicação e busca de vagas de voluntariado",
+          "inicioPrevisto": "2026-08-10",
+          "fimPrevisto": "2026-09-25",
+          "progresso": 100
+        },
+        {
+          "id": "inscricoes",
+          "nome": "Inscrições",
+          "descricao": "Inscrição, aprovação e lista de presença",
+          "inicioPrevisto": "2026-09-01",
+          "fimPrevisto": "2026-10-23",
+          "progresso": 70
+        },
+        {
+          "id": "certificados",
+          "nome": "Certificados de horas",
+          "descricao": "Cálculo de horas e emissão de certificados em PDF",
+          "inicioPrevisto": "2026-10-01",
+          "fimPrevisto": "2026-11-06",
+          "progresso": 30
+        },
+        {
+          "id": "painel",
+          "nome": "Painel da ONG",
+          "descricao": "Indicadores de voluntários e horas por projeto",
+          "inicioPrevisto": "2026-10-12",
+          "fimPrevisto": "2026-11-06",
+          "progresso": 40
+        },
+        {
+          "id": "infra",
+          "nome": "Infra/Deploy",
+          "descricao": "CI, banco e deploy",
+          "inicioPrevisto": "2026-07-20",
+          "fimPrevisto": "2026-11-06",
+          "progresso": 80
+        }
+      ],
+      "membros": [
+        {
+          "id": "otavio-neves",
+          "papel": "Tech lead"
+        },
+        {
+          "id": "larissa-campos",
+          "papel": "Dev full-stack"
+        },
+        {
+          "id": "felipe-arruda",
+          "papel": "Dev front-end"
+        }
+      ]
+    },
+    {
+      "id": "neoenergia-galt",
+      "nome": "GALT · Gestão e Análise de Linhas de Transmissão",
+      "cliente": "Neoenergia · transmissão de energia",
+      "descricao": "Plataforma em parceria com a Neoenergia que usa machine learning para indicar as possíveis causas e a localização provável de falhas em linhas de transmissão, a partir das oscilografias do evento.",
+      "contexto": "A Neoenergia opera linhas de transmissão de centenas de quilômetros, nas quais um desligamento precisa ser investigado em campo. Saber que uma falha aconteceu não basta: é preciso reduzir a área de busca e indicar onde procurar primeiro.",
+      "resultados": "Erro médio de localização de 1,73% do comprimento da linha, avaliado em 37 casos reais, com fases, impedâncias e causas diferentes.",
+      "caseReal": true,
+      "status": "concluido",
+      "inicio": "2025-09-01",
+      "fimPrevisto": "2026-03-13",
+      "entrega": "2026-03-20",
+      "etapas": [
+        {
+          "id": "ingestao",
+          "nome": "Ingestão de oscilografias",
+          "descricao": "Leitura e padronização dos registros elétricos do evento",
+          "inicioPrevisto": "2025-09-01",
+          "fimPrevisto": "2025-10-17",
+          "progresso": 100
+        },
+        {
+          "id": "sinais",
+          "nome": "Processamento de sinais",
+          "descricao": "Filtragem, fasores e instante da falta",
+          "inicioPrevisto": "2025-09-22",
+          "fimPrevisto": "2025-11-21",
+          "progresso": 100
+        },
+        {
+          "id": "localizacao",
+          "nome": "Modelo de localização",
+          "descricao": "Machine learning para estimar onde a falha ocorreu na linha",
+          "inicioPrevisto": "2025-10-20",
+          "fimPrevisto": "2026-02-13",
+          "progresso": 100
+        },
+        {
+          "id": "causas",
+          "nome": "Classificação de causas",
+          "descricao": "Indicação das causas prováveis da ocorrência",
+          "inicioPrevisto": "2025-11-17",
+          "fimPrevisto": "2026-02-27",
+          "progresso": 100
+        },
+        {
+          "id": "plataforma",
+          "nome": "Plataforma web",
+          "descricao": "Envio do evento, resultado na linha e apoio à inspeção",
+          "inicioPrevisto": "2025-11-03",
+          "fimPrevisto": "2026-03-13",
+          "progresso": 100
+        },
+        {
+          "id": "validacao",
+          "nome": "Validação em casos reais",
+          "descricao": "Avaliação do erro de localização em ocorrências reais",
+          "inicioPrevisto": "2026-01-19",
+          "fimPrevisto": "2026-03-13",
+          "progresso": 100
+        }
+      ],
+      "membros": [
+        {
+          "id": "marcos-vilela",
+          "papel": "Tech lead · ML"
+        },
+        {
+          "id": "gustavo-lemos",
+          "papel": "Engenheiro de dados"
+        },
+        {
+          "id": "bruno-tavares",
+          "papel": "Dev de dados"
+        },
+        {
+          "id": "renata-albuquerque",
+          "papel": "Dev full-stack"
+        }
+      ]
+    },
+    {
+      "id": "riachuelo-omnichannel",
+      "nome": "Plataforma omnichannel Riachuelo",
+      "cliente": "Riachuelo · Grupo Guararapes · varejo",
+      "descricao": "Ecossistema que une loja física e digital: personal shopper no app, escaneamento de peças na loja, carrinho virtual integrado, checkout simplificado, cadastro de clientes no ponto de venda e painel administrativo com vendas por canal.",
+      "contexto": "A Riachuelo controla da fábrica à venda final e opera centenas de lojas físicas, além do canal digital. O desafio era fortalecer a presença digital, integrar os canais físico e digital, estruturar um design voltado para conversão e manter alta performance técnica.",
+      "resultados": "Resultados qualitativos: jornada do usuário otimizada, mais conversão e engajamento, marca fortalecida e base para evolução contínua. O material do case não traz números.",
+      "caseReal": true,
+      "status": "concluido",
+      "inicio": "2025-10-06",
+      "fimPrevisto": "2026-04-24",
+      "entrega": "2026-04-17",
+      "etapas": [
+        {
+          "id": "ux",
+          "nome": "Imersão e design de interface",
+          "descricao": "Mapeamento da dor, protótipos e testes de usabilidade no celular",
+          "inicioPrevisto": "2025-10-06",
+          "fimPrevisto": "2025-12-12",
+          "progresso": 100
+        },
+        {
+          "id": "app",
+          "nome": "App com personal shopper",
+          "descricao": "Atendimento de personal shopper dentro do app",
+          "inicioPrevisto": "2025-11-10",
+          "fimPrevisto": "2026-03-06",
+          "progresso": 100
+        },
+        {
+          "id": "loja",
+          "nome": "Escaneamento e carrinho integrado",
+          "descricao": "Escanear peças na loja e levar ao carrinho virtual",
+          "inicioPrevisto": "2025-11-24",
+          "fimPrevisto": "2026-03-20",
+          "progresso": 100
+        },
+        {
+          "id": "checkout",
+          "nome": "Checkout simplificado",
+          "descricao": "Otimização do checkout com foco em conversão e performance",
+          "inicioPrevisto": "2026-01-05",
+          "fimPrevisto": "2026-04-10",
+          "progresso": 100
+        },
+        {
+          "id": "pdv",
+          "nome": "Cadastro no ponto de venda",
+          "descricao": "Cadastro de clientes direto no PDV da loja",
+          "inicioPrevisto": "2026-01-12",
+          "fimPrevisto": "2026-03-27",
+          "progresso": 100
+        },
+        {
+          "id": "admin",
+          "nome": "Painel administrativo",
+          "descricao": "Vendas por canal e acompanhamento da operação",
+          "inicioPrevisto": "2026-01-26",
+          "fimPrevisto": "2026-04-24",
+          "progresso": 100
+        }
+      ],
+      "membros": [
+        {
+          "id": "tatiana-rego",
+          "papel": "Tech lead"
+        },
+        {
+          "id": "bianca-prado",
+          "papel": "Dev front-end · UX"
+        },
+        {
+          "id": "helena-duarte",
+          "papel": "Dev back-end"
+        },
+        {
+          "id": "livia-rocha",
+          "papel": "Dev mobile"
         }
       ]
     }

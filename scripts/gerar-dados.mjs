@@ -3,27 +3,27 @@
 //   node scripts/gerar-dados.mjs
 //
 // Saída em data/:
-//   projetos.json  projetos, etapas e membros
+//   projetos.json  pessoas, projetos (status, prazos, progresso das etapas) e membros
 //   commits.json   commits fictícios (autor, data, mensagem, etapa, linhas)
 //   analises.json  participação pré-calculada por membro × etapa nas três métricas,
-//                  líderes de cada etapa, IC, concentração e atividade semanal
+//                  IC, concentração, primeiro/último commit das etapas e atividade semanal
 //
 // Métricas:
 //   linhas brutas   = adicionadas + removidas (todo o volume que a pessoa mexeu)
 //   linhas efetivas = linhas adicionadas que ainda existem no código hoje
 //   commits         = quantidade de commits
 //
-// A partir delas, calcula o Índice de Conhecimento (IC) e o risco de saída (ver abaixo).
+// A partir delas, calcula o Índice de Conhecimento (IC) (ver abaixo).
+// Projetos em andamento têm commits até a véspera da data de referência; os concluídos, até a entrega.
 //
 // O gerador é determinístico (semente fixa): rodar de novo produz os mesmos dados.
 
 import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { cenarios, dataReferencia } from "./cenarios.mjs";
+import { cenarios, dataReferencia, pessoas } from "./cenarios.mjs";
 
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
-const METRICAS = ["efetivas", "brutas", "commits"];
 
 /* ---------- aleatoriedade determinística ---------- */
 
@@ -55,7 +55,7 @@ const hash = () => Array.from({ length: 7 }, () => "0123456789abcdef"[inteiro(0,
 
 /* ---------- mensagens ---------- */
 
-const multiplicadorTipo = { feat: 1.3, fix: 0.4, refactor: 1.0, test: 0.8, docs: 0.4, style: 0.5, chore: 0.4 };
+const multiplicadorTipo = { feat: 1.3, fix: 0.4, refactor: 1.0, perf: 0.8, test: 0.8, docs: 0.4, style: 0.5, chore: 0.4 };
 
 const genericas = {
   fix: ["ajustes da revisão do PR #{pr}", "corrige bug reportado pelo cliente", "corrige teste quebrado"],
@@ -133,8 +133,8 @@ function textoSaida(saida) {
 export const PESOS_IC = { efetivas: 0.5, commits: 0.2, brutas: 0.15, recentes: 0.15 };
 const MEIA_VIDA_DIAS = 45;
 
-function indiceConhecimento(lista, membroIds) {
-  const ref = paraData(dataReferencia);
+// ref = data de referência do projeto (hoje, ou a entrega se já foi concluído)
+function indiceConhecimento(lista, membroIds, ref) {
   const sinais = {
     efetivas: (k) => k.efetivas,
     commits: () => 1,
@@ -168,7 +168,8 @@ const analisesSaida = {};
 
 for (const c of cenarios) {
   const inicio = paraData(c.inicio);
-  const fim = paraData(c.fim);
+  // último dia com commits: a entrega (concluído) ou a véspera de hoje (em andamento)
+  const fim = c.status === "concluido" ? paraData(c.entrega) : new Date(paraData(dataReferencia).getTime() - DIA);
   const filas = Object.fromEntries(Object.entries(c.mensagens).map(([e, t]) => [e, criarFila(t)]));
   // 1) esqueleto: quem commitou, em qual etapa e quando
   const esqueletos = [];
@@ -234,18 +235,10 @@ for (const c of cenarios) {
     semanas[s][k.autor] += 1;
   }
 
-  const pct = (v, t) => (t ? Math.round((v / t) * 1000) / 10 : 0);
   for (const e of c.etapas) {
-    const reg = porEtapa[e.id];
-    reg.ranking = {};
-    reg.lider = {};
-    for (const met of METRICAS) {
-      reg.ranking[met] = c.membros
-        .map((m) => ({ membroId: m.id, valor: porMembro[m.id].porEtapa[e.id][met], pct: pct(porMembro[m.id].porEtapa[e.id][met], reg.total[met]) }))
-        .filter((r) => r.valor > 0)
-        .sort((a, b) => b.valor - a.valor);
-      reg.lider[met] = reg.ranking[met][0]?.membroId ?? null;
-    }
+    const daEtapa = commits.filter((k) => k.etapa === e.id);
+    porEtapa[e.id].primeiroCommit = daEtapa[0]?.data.slice(0, 10) ?? null;
+    porEtapa[e.id].ultimoCommit = daEtapa.at(-1)?.data.slice(0, 10) ?? null;
   }
 
   // todas as semanas do projeto (inclusive as sem commits), de segunda a segunda
@@ -255,7 +248,7 @@ for (const c of cenarios) {
   }
 
   /* ----- Índice de Conhecimento (IC) e concentração ----- */
-  const icDe = (lista) => indiceConhecimento(lista, c.membros.map((m) => m.id));
+  const icDe = (lista) => indiceConhecimento(lista, c.membros.map((m) => m.id), fim);
   const icProjeto = icDe(commits).ic;
   for (const m of c.membros) porMembro[m.id].icProjeto = icProjeto[m.id];
 
@@ -292,23 +285,35 @@ for (const c of cenarios) {
     nome: c.nome,
     cliente: c.cliente,
     descricao: c.descricao,
+    ...(c.contexto ? { contexto: c.contexto } : {}),
+    ...(c.resultados ? { resultados: c.resultados } : {}),
+    caseReal: !!c.caseReal,
+    status: c.status,
     inicio: c.inicio,
-    fim: c.fim,
-    etapaAtual: c.etapaAtual,
-    etapas: c.etapas.map(({ id, nome, descricao }) => ({ id, nome, descricao })),
-    membros: c.membros.map(({ id, nome, papel, entrada, saida }) => ({
+    fimPrevisto: c.fimPrevisto,
+    ...(c.entrega ? { entrega: c.entrega } : {}),
+    etapas: c.etapas.map(({ id, nome, descricao, previsto, progresso }) => ({
       id,
       nome,
-      papel,
-      entrada,
-      ...(saida ? { saida, saidaTexto: textoSaida(saida), diasParaSaida: diasAte(saida) } : {}),
+      descricao,
+      inicioPrevisto: previsto[0],
+      fimPrevisto: previsto[1],
+      progresso,
     })),
+    membros: c.membros.map(({ id, papel }) => ({ id, papel })),
   });
 }
 
+const pessoasSaida = pessoas.map((p) => ({
+  ...p,
+  ...(p.saida ? { saidaTexto: textoSaida(p.saida), diasParaSaida: diasAte(p.saida) } : {}),
+}));
+
 mkdirSync(join(raiz, "data"), { recursive: true });
 const salvar = (nome, dados) => writeFileSync(join(raiz, "data", nome), JSON.stringify(dados, null, 2) + "\n");
-salvar("projetos.json", { dataReferencia, projetos: projetosSaida });
+salvar("projetos.json", { dataReferencia, pessoas: pessoasSaida, projetos: projetosSaida });
+// arquivo mínimo, importável no navegador sem carregar os demais dados
+salvar("referencia.json", { dataReferencia });
 salvar("commits.json", commitsSaida);
 salvar("analises.json", analisesSaida);
 
@@ -319,8 +324,8 @@ for (const p of projetosSaida) {
   for (const e of p.etapas) {
     const reg = a.porEtapa[e.id];
     const ic = Object.entries(reg.ic).filter(([, v]) => v > 0).sort(([, x], [, y]) => y - x)
-      .map(([id, v]) => `${p.membros.find((m) => m.id === id).nome.split(" ")[0]} ${Math.round(v)}%`).join(" · ");
-    console.log(`  ${e.nome.padEnd(28)} IC: ${ic.padEnd(40)} conc. ${Math.round(reg.concentracao * 100)}%`);
+      .map(([id, v]) => `${pessoas.find((m) => m.id === id).nome.split(" ")[0]} ${Math.round(v)}%`).join(" · ");
+    console.log(`  ${e.nome.slice(0, 30).padEnd(30)} ${String(e.progresso).padStart(3)}%  ${e.fimPrevisto}  último ${reg.ultimoCommit}  IC: ${ic}`);
   }
-  for (const m of p.membros.filter((m) => m.saida)) console.log(`  ⏳ ${m.nome} sai ${m.saidaTexto} (${m.diasParaSaida} dias)`);
+  console.log(`  status ${p.status} · ${p.inicio} → previsto ${p.fimPrevisto}${p.entrega ? ` · entregue ${p.entrega}` : ""}`);
 }

@@ -262,3 +262,48 @@ As escolhas, feitas num questionário de múltipla escolha montado pela IA:
 - **Papel da IA no produto:** um resumo do projeto, um status report gerado a partir dos commits e indicadores.
 - **Checkpoint:** a etapa 2 foi commitada antes da mudança (`6a838d4`), para poder voltar se preciso.
 
+
+### Plano ajustado e implementação da nova direção (17/11)
+
+**O que pedi:** a IA apresentou o plano da nova direção, e eu ajustei:
+- **O nome continua CITi Legacy**, agora como um visualizador interno de todos os projetos, concluídos e em andamento, que guarda o legado da empresa.
+- **Projetos em andamento:** os 3 que já existiam.
+- **Projeto atrasado:** a IA cria um novo.
+- **Projetos concluídos:** dois cases reais do CITi com commits fictícios, **Neoenergia GALT** (localização de falhas em linhas de transmissão com machine learning; erro médio de 1,73% em 37 casos reais) e **Riachuelo** (plataforma omnichannel; resultados só qualitativos).
+- **Membros que já saíram:** podem ser marcados.
+- **Tagline:** adaptada ao novo sentido.
+
+**O que a IA gerou:**
+- **Cenários:**
+  - 20 pessoas compartilhadas entre projetos; Bruno, Renata, Helena e Lívia aparecem em mais de um.
+  - 3 pessoas que já saíram, todas dos cases concluídos.
+  - Cada etapa ganhou período previsto e progresso informado.
+  - Um projeto novo e atrasado, a **Plataforma de Voluntariado** de uma ONG fictícia.
+  - Os dois cases reais, com etapas e mensagens de commit coerentes com o que o material descreve (oscilografias e COMTRADE, fasores, modelo de localização, classificação de causas, validação em 37 casos; design e testes de usabilidade, personal shopper, escaneamento de peças, carrinho integrado, checkout, cadastro no PDV, painel por canal).
+  - Não foi inventado nenhum número de resultado além dos que constam nos cases.
+- **Gerador:**
+  - projetos em andamento têm commits até a véspera de hoje, e os concluídos, até a entrega;
+  - o IC dos concluídos usa a data de entrega como referência de recência;
+  - grava o primeiro e o último commit de cada etapa;
+  - gera um `referencia.json` mínimo, para o navegador conhecer "hoje" sem carregar os dados.
+  - No total, 808 commits.
+- **`lib/status.ts`:** status de etapa (concluída, em andamento, atrasada, não iniciada, mais o sinal "parada" após 14 dias sem commits) e de projeto, progresso, texto de prazo e alertas ordenados por gravidade.
+- **Removido:** o legado, as perguntas, o documento, o rascunho e a mitigação de risco pelo legado (`components/legado`, `lib/legados.ts` e as rotas de legado).
+- **Telas:**
+  - **Início:** reescrito, com números do acervo.
+  - **Projetos:** filtros por status e busca, sem acento nem maiúscula.
+  - **Painel:** andamento, espaço do resumo por IA (etapa 3), **cronograma** (gráfico novo, tipo Gantt, com previsto, progresso, período real de commits e linha de hoje), conhecimento e risco, matriz, atividade, equipe, e contexto e resultados nos cases reais.
+  - **Etapa:** andamento e prazo; nos concluídos, o bloco "Quem procurar" indica a próxima pessoa quando quem mais sabe já saiu.
+  - **Membros** e **página do membro:** projetos, IC, período, atividade mensal por projeto e últimos commits.
+- **`LinhaDoTempo`:** passou a aceitar qualquer série (membros ou projetos) e período (semana ou mês).
+
+**Problema encontrado pela IA no teste:** os alertas mostravam "sai undefined", porque o gerador grava `saidaTexto` e o app lia `saidaPrevista`. Ela corrigiu o mapeamento na camada de dados. Também limitou a 3 os alertas no topo do painel, porque o projeto atrasado tinha 5.
+
+**Verificação:** testado no navegador:
+- **lista:** 3 em andamento, 1 atrasado e 2 concluídos; os filtros e a busca funcionam;
+- **projeto atrasado:** "atrasado há 11 dias", 4 etapas atrasadas e 1 parada no cronograma;
+- **GALT:** na etapa de sinais aparece "Gustavo Lemos já saiu. Próxima pessoa: Marcos Vilela, que também já saiu";
+- **Bruno:** página com 2 projetos e atividade mensal;
+- **celular:** largura conferida, sem rolagem horizontal.
+
+Build (74 páginas), tipos e lint passam.

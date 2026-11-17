@@ -1,16 +1,28 @@
 // Camada de dados do protótipo: lê os JSONs gerados por `npm run dados`
 // (scripts/gerar-dados.mjs) e entrega no formato que as telas usam.
 //
-// As telas mostram só o Índice de Conhecimento (IC), o risco e a urgência;
+// As telas mostram o progresso, o Índice de Conhecimento (IC), o risco e a urgência;
 // as métricas brutas (linhas efetivas, brutas, commits) ficam no analises.json.
 
 import projetosJson from "./projetos.json";
 import analisesJson from "./analises.json";
 
+/** Os quatro sinais que compõem o IC, em % (fatia do membro no total da etapa). */
+export type Sinais = { efetivas: number; commits: number; brutas: number; recentes: number };
+
+/** Commits de cada membro numa semana (semana = segunda-feira, "aaaa-mm-dd"). */
+export type Semana = { semana: string; commits: Record<string, number> };
+
 export type Etapa = {
   id: string;
   nome: string;
   descricao: string;
+  inicioPrevisto: string; // "aaaa-mm-dd"
+  fimPrevisto: string;
+  /** Progresso informado pelo gerente do projeto (0 a 100). */
+  progresso: number;
+  primeiroCommit: string | null;
+  ultimoCommit: string | null;
   /** IC de cada membro na etapa (0 a 100; a soma da etapa é 100). */
   ic: Record<string, number>;
   /** Concentração do conhecimento (HHI, 0 a 1): 1 = uma pessoa sabe tudo. */
@@ -21,20 +33,19 @@ export type Etapa = {
   semanas: Semana[];
 };
 
-/** Os quatro sinais que compõem o IC, em % (fatia do membro no total da etapa). */
-export type Sinais = { efetivas: number; commits: number; brutas: number; recentes: number };
-
-/** Commits de cada membro numa semana (semana = segunda-feira, "aaaa-mm-dd"). */
-export type Semana = { semana: string; commits: Record<string, number> };
-
-export type Membro = {
+export type Pessoa = {
   id: string;
   nome: string;
-  papel: string;
   entrada: string; // "aaaa-mm"
-  saida?: string; // "aaaa-mm-dd"
+  saida?: string; // saída prevista, "aaaa-mm-dd"
   saidaPrevista?: string; // texto relativo, ex.: "em 3 semanas"
-  diasParaSaida?: number; // dias entre a data de referência e a saída
+  diasParaSaida?: number;
+  saiuEm?: string; // já saiu da empresa, "aaaa-mm-dd"
+};
+
+/** Uma pessoa dentro de um projeto. */
+export type Membro = Pessoa & {
+  papel: string;
   /** IC do membro no projeto inteiro (0 a 100). */
   icProjeto: number;
 };
@@ -44,9 +55,14 @@ export type Projeto = {
   nome: string;
   cliente: string;
   descricao: string;
+  contexto?: string;
+  resultados?: string;
+  /** Case real do CITi (pessoas e commits continuam fictícios). */
+  caseReal: boolean;
+  status: "andamento" | "concluido";
   inicio: string;
-  fim: string;
-  etapaAtual: string; // nome da etapa
+  fimPrevisto: string;
+  entrega?: string;
   etapas: Etapa[];
   membros: Membro[];
   /** Commits por semana no projeto inteiro. */
@@ -58,34 +74,37 @@ export type Projeto = {
 type Analise = {
   indice: { pesos: Sinais; meiaVidaDias: number };
   porMembro: Record<string, { icProjeto: number }>;
-  porEtapa: Record<string, { ic: Record<string, number>; concentracao: number; fatias: Record<string, Sinais>; semanas: Semana[] }>;
+  porEtapa: Record<
+    string,
+    {
+      ic: Record<string, number>;
+      concentracao: number;
+      fatias: Record<string, Sinais>;
+      semanas: Semana[];
+      primeiroCommit: string | null;
+      ultimoCommit: string | null;
+    }
+  >;
   semanas: Semana[];
 };
 
 const analises = analisesJson as unknown as Record<string, Analise>;
 
 export const dataReferencia = projetosJson.dataReferencia;
-export const parametrosIndice = Object.values(analises)[0].indice;
+export const pessoas: Pessoa[] = projetosJson.pessoas.map(({ saidaTexto, ...p }) => ({
+  ...p,
+  ...(saidaTexto ? { saidaPrevista: saidaTexto } : {}),
+}));
 
 export const projetos: Projeto[] = projetosJson.projetos.map((p) => {
   const a = analises[p.id];
   return {
-    id: p.id,
-    nome: p.nome,
-    cliente: p.cliente,
-    descricao: p.descricao,
-    inicio: p.inicio,
-    fim: p.fim,
-    etapaAtual: p.etapas.find((e) => e.id === p.etapaAtual)?.nome ?? p.etapaAtual,
+    ...p,
+    status: p.status as Projeto["status"],
     etapas: p.etapas.map((e) => ({ ...e, ...a.porEtapa[e.id] })),
     membros: p.membros.map((m) => ({
-      id: m.id,
-      nome: m.nome,
+      ...pessoas.find((x) => x.id === m.id)!,
       papel: m.papel,
-      entrada: m.entrada,
-      ...("saida" in m && m.saida
-        ? { saida: m.saida, saidaPrevista: m.saidaTexto, diasParaSaida: m.diasParaSaida }
-        : {}),
       icProjeto: a.porMembro[m.id].icProjeto,
     })),
     semanas: a.semanas,
@@ -97,17 +116,19 @@ export function getProjeto(id: string) {
   return projetos.find((p) => p.id === id);
 }
 
-export function getMembro(projetoId: string, membroId: string) {
-  return getProjeto(projetoId)?.membros.find((m) => m.id === membroId);
+export function getPessoa(id: string) {
+  return pessoas.find((p) => p.id === id);
+}
+
+/** Projetos de que a pessoa participou, com o papel e o IC dela em cada um. */
+export function projetosDaPessoa(pessoaId: string) {
+  return projetos
+    .map((projeto) => ({ projeto, membro: projeto.membros.find((m) => m.id === pessoaId) }))
+    .filter((x): x is { projeto: Projeto; membro: Membro } => !!x.membro);
 }
 
 export function nomeEtapa(projeto: Projeto, etapaId: string) {
   return projeto.etapas.find((e) => e.id === etapaId)?.nome ?? etapaId;
 }
 
-/** "2025-03" → "mar/2025" */
-export function formatarMesAno(aaaaMm: string) {
-  const meses = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
-  const [ano, mes] = aaaaMm.split("-");
-  return `${meses[Number(mes) - 1]}/${ano}`;
-}
+export { formatarData, formatarMesAno } from "./formatos";

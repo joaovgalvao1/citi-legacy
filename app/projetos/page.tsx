@@ -1,44 +1,41 @@
-// Tela 1 — Projetos da diretoria
+// Lista de todos os projetos da empresa (em andamento, atrasados e concluídos)
 
-import Link from "next/link";
 import { projetos } from "@/data";
-import { AlertasDoProjeto, ContagemEmRisco, RiscoDoProjeto } from "@/components/risco";
+import { alertas, progressoProjeto, statusProjeto, textoPrazo } from "@/lib/status";
+import { ListaProjetos, type ResumoProjeto } from "@/components/projetos/lista";
 
-export default function ProjetosDaDiretoria() {
+export default function Projetos() {
+  // resumo calculado no servidor: o navegador recebe só o necessário para a lista
+  const resumos: ResumoProjeto[] = projetos.map((p) => {
+    const lista = alertas(p);
+    return {
+      id: p.id,
+      nome: p.nome,
+      cliente: p.cliente,
+      descricao: p.descricao,
+      caseReal: p.caseReal,
+      status: statusProjeto(p),
+      progresso: progressoProjeto(p),
+      prazo: textoPrazo(p),
+      membros: p.membros.length,
+      etapas: p.etapas.length,
+      alertaPrincipal: lista[0] ? { texto: lista[0].texto, informativo: lista[0].tipo === "conhecimento-saiu" } : null,
+      totalAlertas: lista.filter((a) => a.tipo !== "conhecimento-saiu").length,
+    };
+  });
+
+  const n = (s: ResumoProjeto["status"]) => resumos.filter((r) => r.status === s).length;
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Projetos da diretoria</h1>
+        <h1 className="text-2xl font-bold">Projetos</h1>
         <p className="text-sm text-gray-600">
-          {projetos.length} projetos ativos · <ContagemEmRisco projetos={projetos} />
+          {resumos.length} projetos · {n("Em andamento")} em andamento · {n("Atrasado")} atrasado
+          {n("Atrasado") === 1 ? "" : "s"} · {n("Concluído")} concluído{n("Concluído") === 1 ? "" : "s"}
         </p>
       </div>
-
-      <ul className="grid gap-4 md:grid-cols-2">
-        {projetos.map((p) => (
-          <li key={p.id}>
-            <Link
-              href={`/projetos/${p.id}`}
-              className="block h-full border border-gray-400 bg-white p-4 hover:border-gray-800"
-            >
-              <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
-                <span className="text-lg font-semibold">{p.nome}</span>
-                <RiscoDoProjeto projeto={p} />
-              </div>
-              <div className="mb-1 text-sm text-gray-600">Cliente: {p.cliente}</div>
-              <p className="mb-3 text-sm text-gray-700">{p.descricao}</p>
-              <dl className="mb-3 grid grid-cols-2 gap-1 text-sm">
-                <dt className="text-gray-500">Membros</dt>
-                <dd>{p.membros.length}</dd>
-                <dt className="text-gray-500">Etapa atual</dt>
-                <dd>{p.etapaAtual}</dd>
-              </dl>
-              <AlertasDoProjeto projeto={p} limite={1} />
-              <div className="mt-3 text-sm text-gray-700 underline">Abrir painel →</div>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <ListaProjetos projetos={resumos} />
     </div>
   );
 }

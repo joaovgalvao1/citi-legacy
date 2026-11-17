@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "CITi Legacy",
-  description: "Quem sai deixa um legado. Quem chega não começa do zero.",
+  description: "Todo projeto deixa um legado. Quem chega não começa do zero.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -16,9 +16,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <Link href="/" className="text-lg font-bold">
               CITi Legacy
             </Link>
-            <nav className="text-sm">
+            <nav className="flex gap-4 text-sm">
               <Link href="/projetos" className="text-gray-700 underline hover:text-gray-900">
                 Projetos
+              </Link>
+              <Link href="/membros" className="text-gray-700 underline hover:text-gray-900">
+                Membros
               </Link>
             </nav>
           </div>

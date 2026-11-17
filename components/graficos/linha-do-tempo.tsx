@@ -1,26 +1,38 @@
 "use client";
 
-// Linha do tempo: commits por semana, empilhados por membro (SVG próprio).
-// Passar o mouse numa semana mostra o detalhe; clicar na legenda destaca um membro.
+// Linha do tempo: commits por período (semana ou mês), empilhados por série (SVG próprio).
+// As séries são os membros (painel e etapa) ou os projetos (página do membro).
+// Passar o mouse num período mostra o detalhe; clicar na legenda destaca a série.
 
 import { useState } from "react";
-import type { Projeto, Semana } from "@/data";
-import { corDoMembro } from "./cores";
+import type { Semana } from "@/data";
 import { useDestaque } from "./destaque";
 
-type Props = { projeto: Projeto; semanas: Semana[]; titulo: string };
+export type Serie = { id: string; nome: string; cor: string };
+
+type Props = {
+  series: Serie[];
+  /** Um item por período; a chave "semana" é a data de início do período. */
+  semanas: Semana[];
+  titulo: string;
+  periodo?: "semana" | "mes";
+};
 
 const L = 640; // largura do desenho (o SVG escala para a largura disponível)
 const A = 200; // altura
 const M = { topo: 10, dir: 8, base: 26, esq: 28 };
 
-const ddmm = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
+const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
 
-export function LinhaDoTempo({ projeto, semanas, titulo }: Props) {
+export function LinhaDoTempo({ series, semanas, titulo, periodo = "semana" }: Props) {
   const { membroId, alternar } = useDestaque();
   const [hover, setHover] = useState<number | null>(null);
+  const ddmm = (iso: string) =>
+    periodo === "mes" ? `${MESES[Number(iso.slice(5, 7)) - 1]}/${iso.slice(2, 4)}` : `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
+  const cor = (id: string) => series.find((x) => x.id === id)?.cor ?? "#999";
 
-  const membros = projeto.membros.filter((m) => semanas.some((s) => (s.commits[m.id] ?? 0) > 0));
+  if (!semanas.length) return <p className="text-sm text-gray-500">Sem commits.</p>;
+  const membros = series.filter((m) => semanas.some((s) => (s.commits[m.id] ?? 0) > 0));
   const totais = semanas.map((s) => membros.reduce((soma, m) => soma + (s.commits[m.id] ?? 0), 0));
   const max = Math.max(1, ...totais);
   const passoY = max <= 5 ? 1 : max <= 12 ? 2 : 5;
@@ -32,10 +44,11 @@ export function LinhaDoTempo({ projeto, semanas, titulo }: Props) {
   const larg = Math.min(24, col * 0.7);
   const y = (v: number) => M.topo + areaA - (v / topoY) * areaA;
   const ticks = Array.from({ length: topoY / passoY + 1 }, (_, i) => i * passoY);
-  const cadaRotulo = semanas.length > 10 ? 2 : 1;
+  const cadaRotulo = Math.max(1, Math.ceil(semanas.length / 12));
 
   const total = totais.reduce((a, b) => a + b, 0);
-  const resumo = `${titulo}: ${total} commits em ${semanas.length} semanas, de ${ddmm(semanas[0].semana)} a ${ddmm(semanas.at(-1)!.semana)}.`;
+  const unidade = periodo === "mes" ? "meses" : "semanas";
+  const resumo = `${titulo}: ${total} commits em ${semanas.length} ${unidade}, de ${ddmm(semanas[0].semana)} a ${ddmm(semanas.at(-1)!.semana)}.`;
 
   return (
     <div className="space-y-2">
@@ -48,7 +61,7 @@ export function LinhaDoTempo({ projeto, semanas, titulo }: Props) {
             aria-pressed={membroId === m.id}
             className={`flex cursor-pointer items-center gap-1.5 ${membroId && membroId !== m.id ? "opacity-40" : ""}`}
           >
-            <span className="inline-block h-2.5 w-2.5" style={{ backgroundColor: corDoMembro(projeto, m.id) }} />
+            <span className="inline-block h-2.5 w-2.5" style={{ backgroundColor: cor(m.id) }} />
             {m.nome}
           </button>
         ))}
@@ -83,7 +96,7 @@ export function LinhaDoTempo({ projeto, semanas, titulo }: Props) {
                       y={y1}
                       width={larg}
                       height={Math.max(h - 1, 0.5)}
-                      fill={corDoMembro(projeto, m.id)}
+                      fill={cor(m.id)}
                       opacity={membroId && membroId !== m.id ? 0.2 : 1}
                     />
                   );
@@ -118,15 +131,15 @@ export function LinhaDoTempo({ projeto, semanas, titulo }: Props) {
             }}
           >
             <div className="mb-1 font-semibold">
-              Semana de {ddmm(semanas[hover].semana)} · {totais[hover]} commits
+              {periodo === "mes" ? "Mês" : "Semana"} de {ddmm(semanas[hover].semana)} · {totais[hover]} commits
             </div>
             {membros
               .filter((m) => (semanas[hover].commits[m.id] ?? 0) > 0)
               .map((m) => (
                 <div key={m.id} className="flex items-center justify-between gap-3">
                   <span className="flex items-center gap-1.5">
-                    <span className="inline-block h-2 w-2" style={{ backgroundColor: corDoMembro(projeto, m.id) }} />
-                    {m.nome.split(" ")[0]}
+                    <span className="inline-block h-2 w-2" style={{ backgroundColor: cor(m.id) }} />
+                    {m.nome.length > 22 ? m.nome.split(" ")[0] : m.nome}
                   </span>
                   <span className="tabular-nums">{semanas[hover].commits[m.id]}</span>
                 </div>

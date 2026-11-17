@@ -1,10 +1,7 @@
-// Commits fictícios e as perguntas do legado derivadas deles.
-// Só é importado por páginas do servidor (o JSON de commits não vai para o navegador).
+// Commits fictícios. Só é importado por páginas do servidor
+// (o JSON de commits não vai para o navegador).
 
 import commitsJson from "./commits.json";
-import type { Membro, Projeto } from "./index";
-import type { Pergunta } from "@/lib/legados";
-import { etapasLideradas, icDe } from "@/lib/indice";
 
 export type Commit = {
   hash: string;
@@ -21,92 +18,44 @@ export type Commit = {
 
 export const commits = commitsJson as Commit[];
 
-export function commitsDoMembro(projetoId: string, membroId: string) {
-  return commits.filter((c) => c.projetoId === projetoId && c.autor === membroId);
+/** Commits de uma pessoa (em todos os projetos ou em um), do mais recente para o mais antigo. */
+export function commitsDaPessoa(pessoaId: string, projetoId?: string) {
+  return commits
+    .filter((c) => c.autor === pessoaId && (!projetoId || c.projetoId === projetoId))
+    .sort((a, b) => b.data.localeCompare(a.data));
 }
 
-/** Etapa em que o membro é mais importante: a de maior IC (priorizando as que lidera). */
-export function etapaPrincipal(projeto: Projeto, membro: Membro) {
-  const candidatas = etapasLideradas(projeto, membro);
-  const lista = candidatas.length ? candidatas : projeto.etapas.map((e) => e.id);
-  return [...lista].sort((a, b) => icDe(projeto, membro.id, b) - icDe(projeto, membro.id, a))[0];
+/** Commits mais recentes de um projeto (ou de uma etapa dele). */
+export function commitsRecentes(projetoId: string, etapaId?: string, limite = 8) {
+  return commits
+    .filter((c) => c.projetoId === projetoId && (!etapaId || c.etapa === etapaId))
+    .sort((a, b) => b.data.localeCompare(a.data))
+    .slice(0, limite);
 }
 
-/** Commits da etapa principal que as perguntas citam. */
-export function commitsCitados(projeto: Projeto, membro: Membro) {
-  const etapaId = etapaPrincipal(projeto, membro);
-  const doMembro = commitsDoMembro(projeto.id, membro.id).filter((c) => c.etapa === etapaId);
-  return {
-    maior: [...doMembro].filter((c) => c.mensagem.startsWith("feat")).sort((a, b) => b.efetivas - a.efetivas)[0],
-    refatoracao: doMembro.find((c) => c.mensagem.startsWith("refactor")),
-    correcao: doMembro.find((c) => c.mensagem.startsWith("fix")),
-  };
-}
-
-/** Até `limite` commits da etapa principal: primeiro os citados, depois os de maior volume efetivo. */
-export function commitsEmDestaque(projeto: Projeto, membro: Membro, limite = 6) {
-  const etapaId = etapaPrincipal(projeto, membro);
-  const citados = Object.values(commitsCitados(projeto, membro)).filter((c): c is Commit => !!c);
-  const resto = commitsDoMembro(projeto.id, membro.id)
-    .filter((c) => c.etapa === etapaId && !citados.includes(c))
-    .sort((a, b) => b.efetivas - a.efetivas);
-  return [...citados.map((c) => ({ ...c, citado: true })), ...resto.map((c) => ({ ...c, citado: false }))].slice(
-    0,
-    limite,
-  );
-}
-
-const semPrefixo = (mensagem: string) => mensagem.replace(/^\w+\([^)]*\):\s*/, "");
-
-/**
- * Perguntas para registrar o legado, agrupadas pelas seções do documento.
- * Por enquanto montadas por regras a partir dos commits; na etapa 3, a IA gera as perguntas.
- */
-export function perguntasPara(projeto: Projeto, membro: Membro): Pergunta[] {
-  const etapaId = etapaPrincipal(projeto, membro);
-  const etapa = projeto.etapas.find((e) => e.id === etapaId);
-  const nome = etapa?.nome ?? "suas etapas";
-  const { maior, refatoracao, correcao } = commitsCitados(projeto, membro);
-
-  const perguntas: Pergunta[] = [
-    {
-      secao: "Decisões e porquês",
-      texto: `Quais decisões em ${nome} não estão óbvias no código, e por que foram tomadas assim?`,
-      commits: [],
-    },
-  ];
-  if (maior) {
-    perguntas.push({
-      secao: "Decisões e porquês",
-      texto: `No commit ${maior.hash} ("${semPrefixo(maior.mensagem)}"), o que motivou essa abordagem e que alternativas foram descartadas?`,
-      commits: [maior.hash],
-    });
+/** Commits por mês de uma pessoa, separados por projeto (para a página do membro). */
+export function commitsPorMes(pessoaId: string) {
+  const meses = new Map<string, Record<string, number>>();
+  for (const c of commitsDaPessoa(pessoaId)) {
+    const mes = c.data.slice(0, 7);
+    const linha = meses.get(mes) ?? {};
+    linha[c.projetoId] = (linha[c.projetoId] ?? 0) + 1;
+    meses.set(mes, linha);
   }
-  if (refatoracao) {
-    perguntas.push({
-      secao: "Decisões e porquês",
-      texto: `Por que foi preciso ${semPrefixo(refatoracao.mensagem).replace(/^\w/, (l) => l.toLowerCase())} (${refatoracao.hash})? O que estava ruim antes?`,
-      commits: [refatoracao.hash],
-    });
+  if (!meses.size) return [];
+  // preenche os meses sem commits entre o primeiro e o último
+  const chaves = [...meses.keys()].sort();
+  const lista: { semana: string; commits: Record<string, number> }[] = [];
+  let [ano, mes] = chaves[0].split("-").map(Number);
+  const [anoFim, mesFim] = chaves.at(-1)!.split("-").map(Number);
+  while (ano < anoFim || (ano === anoFim && mes <= mesFim)) {
+    const chave = `${ano}-${String(mes).padStart(2, "0")}`;
+    lista.push({ semana: `${chave}-01`, commits: meses.get(chave) ?? {} });
+    mes++;
+    if (mes > 12) {
+      mes = 1;
+      ano++;
+    }
   }
-  if (correcao) {
-    perguntas.push({
-      secao: "Pontos de atenção",
-      texto: `O bug corrigido em ${correcao.hash} ("${semPrefixo(correcao.mensagem)}") pode voltar? O que alguém novo precisa saber para não reintroduzi-lo?`,
-      commits: [correcao.hash],
-    });
-  }
-  perguntas.push(
-    {
-      secao: "Combinados com o cliente",
-      texto: `Que combinados com o cliente (${projeto.cliente.split(" · ")[0]}) explicam regras de ${nome}?`,
-      commits: [],
-    },
-    {
-      secao: "Sucessão e próximos passos",
-      texto: `Quem do time deveria assumir ${nome} e o que essa pessoa precisa estudar primeiro?`,
-      commits: [],
-    },
-  );
-  return perguntas;
+  return lista;
 }

@@ -1,29 +1,82 @@
 "use client";
 
-// Painel do projeto e página de etapa. Rodam no navegador porque o risco,
-// os selos e o destaque de membro mudam com a interação.
+// Painel do projeto e página de etapa. Rodam no navegador por causa do destaque de membro
+// compartilhado entre barras, matriz e linha do tempo.
 
 import Link from "next/link";
 import type { Projeto } from "@/data";
+import { formatarData } from "@/data/formatos";
 import { avaliarEtapa, emPct, etapasLideradas, lider, ranking } from "@/lib/indice";
-import { useLegados, type Origem } from "@/lib/legados";
-import { Alerta, Caixa } from "@/components/ui";
-import { AcaoLegado, SeloLegado } from "@/components/legado/acoes";
-import { RiscoDaEtapa, SeloRisco, SeloUrgencia, UrgenciaDoMembro } from "@/components/risco";
+import { diasParada, progressoProjeto, statusEtapa, textoPrazo } from "@/lib/status";
+import { Caixa, Placeholder } from "@/components/ui";
+import { RiscoDaEtapa, SeloRisco, SeloStatusEtapa, SeloUrgencia, SituacaoDaPessoa } from "@/components/risco";
 import { BarrasIC } from "@/components/graficos/barras-ic";
 import { LinhaDoTempo } from "@/components/graficos/linha-do-tempo";
+import { Cronograma } from "@/components/graficos/cronograma";
 import { DestaqueProvider } from "@/components/graficos/destaque";
+import { seriesDosMembros } from "@/components/graficos/cores";
+import { BarraProgresso } from "@/components/ui/progresso";
 import { MatrizIC } from "./matriz";
 import { CalculoIC, ComoLerIndice } from "./calculo-ic";
 
 const linkEtapa = (projetoId: string, etapaId: string) => `/projetos/${projetoId}/etapas/${etapaId}`;
+const linkPessoa = (id: string) => `/membros/${id}`;
 
 /* ---------- Painel do projeto ---------- */
 
 export function PainelInterativo({ projeto }: { projeto: Projeto }) {
-  const origem: Origem = { href: `/projetos/${projeto.id}`, rotulo: projeto.nome };
+  const concluido = projeto.status === "concluido";
+  const contagem = projeto.etapas.reduce<Record<string, number>>((acc, e) => {
+    const s = statusEtapa(projeto, e);
+    acc[s] = (acc[s] ?? 0) + 1;
+    return acc;
+  }, {});
+  const paradas = projeto.etapas.filter((e) => diasParada(projeto, e) !== null).length;
+
   return (
     <DestaqueProvider>
+      <Caixa titulo="Andamento">
+        <div className="grid gap-4 sm:grid-cols-[2fr_1fr]">
+          <div className="space-y-2">
+            <BarraProgresso valor={progressoProjeto(projeto)} rotulo="Progresso do projeto" />
+            <p className="text-sm text-gray-600">
+              {formatarData(projeto.inicio)} → previsto {formatarData(projeto.fimPrevisto)} · {textoPrazo(projeto)}
+            </p>
+          </div>
+          <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+            {(["Concluída", "Em andamento", "Atrasada", "Não iniciada"] as const)
+              .filter((s) => contagem[s])
+              .map((s) => (
+                <div key={s} className="contents">
+                  <dt className="text-gray-500">{s === "Concluída" ? "Concluídas" : s === "Atrasada" ? "Atrasadas" : s === "Não iniciada" ? "Não iniciadas" : "Em andamento"}</dt>
+                  <dd className="text-right tabular-nums">{contagem[s]}</dd>
+                </div>
+              ))}
+            {paradas > 0 && (
+              <div className="contents">
+                <dt className="text-gray-500">Paradas</dt>
+                <dd className="text-right tabular-nums">{paradas}</dd>
+              </div>
+            )}
+          </dl>
+        </div>
+      </Caixa>
+
+      <Caixa titulo={concluido ? "Retrospectiva gerada por IA" : "Resumo gerado por IA"}>
+        <Placeholder
+          texto={
+            concluido
+              ? "etapa 3: a IA lê os commits e indicadores e escreve a retrospectiva do projeto (o que foi feito, quem procurar)"
+              : "etapa 3: a IA lê os commits e indicadores e escreve o status report da semana (andamento, riscos, próximos passos)"
+          }
+          altura="h-24"
+        />
+      </Caixa>
+
+      <Caixa titulo="Cronograma">
+        <Cronograma projeto={projeto} />
+      </Caixa>
+
       <Caixa titulo="Conhecimento e risco por etapa">
         <p className="mb-3 text-xs text-gray-500">Clique num membro para destacá-lo em todos os gráficos.</p>
         <ul className="grid gap-4 sm:grid-cols-2">
@@ -35,19 +88,23 @@ export function PainelInterativo({ projeto }: { projeto: Projeto }) {
                   <Link href={linkEtapa(projeto.id, e.id)} className="font-semibold underline">
                     {e.nome}
                   </Link>
-                  <RiscoDaEtapa projeto={projeto} etapaId={e.id} />
+                  <SeloStatusEtapa projeto={projeto} etapaId={e.id} />
                 </div>
+                <RiscoDaEtapa projeto={projeto} etapaId={e.id} />
                 {top && (
                   <div className="flex flex-wrap items-center gap-2 text-sm">
                     <span className="text-gray-500">Maior conhecimento:</span>
-                    <span className="font-semibold">{top.membro.nome}</span>
-                    <UrgenciaDoMembro membro={top.membro} />
-                    <SeloLegado projetoId={projeto.id} membroId={top.membro.id} />
+                    <Link href={linkPessoa(top.membro.id)} className="font-semibold underline">
+                      {top.membro.nome}
+                    </Link>
+                    <SituacaoDaPessoa membro={top.membro} comUrgencia={!concluido} />
                   </div>
                 )}
                 <BarrasIC projeto={projeto} etapaId={e.id} compacto />
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500">Concentração {emPct(e.concentracao * 100)}</span>
+                  <span className="text-gray-500">
+                    {emPct(e.progresso)} concluído · concentração {emPct(e.concentracao * 100)}
+                  </span>
                   <Link href={linkEtapa(projeto.id, e.id)} className="text-gray-700 underline">
                     Ver etapa →
                   </Link>
@@ -65,11 +122,11 @@ export function PainelInterativo({ projeto }: { projeto: Projeto }) {
         </div>
       </Caixa>
 
-      <Caixa titulo="Linha do tempo · commits por semana">
-        <LinhaDoTempo projeto={projeto} semanas={projeto.semanas} titulo={`Commits por semana em ${projeto.nome}`} />
+      <Caixa titulo="Atividade · commits por semana">
+        <LinhaDoTempo series={seriesDosMembros(projeto)} semanas={projeto.semanas} titulo={`Commits por semana em ${projeto.nome}`} />
       </Caixa>
 
-      <Caixa titulo="Membros · Índice de Conhecimento no projeto">
+      <Caixa titulo="Equipe">
         <ul className="divide-y divide-gray-300">
           {[...projeto.membros]
             .sort((a, b) => b.icProjeto - a.icProjeto)
@@ -81,8 +138,7 @@ export function PainelInterativo({ projeto }: { projeto: Projeto }) {
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="font-semibold">{m.nome}</span>
                       <span className="text-sm text-gray-600">{m.papel}</span>
-                      <UrgenciaDoMembro membro={m} />
-                      <SeloLegado projetoId={projeto.id} membroId={m.id} />
+                      <SituacaoDaPessoa membro={m} comUrgencia={!concluido} />
                     </div>
                     <div className="text-sm text-gray-600">
                       IC no projeto {emPct(m.icProjeto)} ·{" "}
@@ -91,7 +147,9 @@ export function PainelInterativo({ projeto }: { projeto: Projeto }) {
                         : "Sem etapa principal"}
                     </div>
                   </div>
-                  <AcaoLegado projetoId={projeto.id} membroId={m.id} origem={origem} />
+                  <Link href={linkPessoa(m.id)} className="text-sm text-gray-700 underline">
+                    Ver membro →
+                  </Link>
                 </li>
               );
             })}
@@ -112,27 +170,52 @@ export function EtapaInterativa({ projeto, etapaId }: { projeto: Projeto; etapaI
 }
 
 function ConteudoEtapa({ projeto, etapaId }: { projeto: Projeto; etapaId: string }) {
-  const legados = useLegados();
   const etapa = projeto.etapas.find((e) => e.id === etapaId)!;
+  const concluido = projeto.status === "concluido";
   const linhas = ranking(projeto, etapaId);
-  const av = avaliarEtapa(projeto, etapaId, legados);
+  const av = avaliarEtapa(projeto, etapaId);
   const quemMaisSabe = av.lider?.membro;
-  const origem: Origem = { href: linkEtapa(projeto.id, etapaId), rotulo: `${etapa.nome} · ${projeto.nome}` };
 
   return (
     <>
-      {!av.mitigado && av.urgencia !== "Baixa" && quemMaisSabe && (
-        <Alerta>
-          {quemMaisSabe.nome} sai {quemMaisSabe.saidaPrevista} e tem IC {emPct(av.lider!.ic)} em {etapa.nome} · risco{" "}
-          {av.risco.toLowerCase()}, urgência {av.urgencia.toLowerCase()}
-        </Alerta>
-      )}
+      <Caixa titulo="Andamento da etapa">
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <SeloStatusEtapa projeto={projeto} etapaId={etapaId} />
+          </div>
+          <BarraProgresso valor={etapa.progresso} rotulo="Progresso informado" />
+          <dl className="grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
+            <div>
+              <dt className="text-gray-500">Previsto</dt>
+              <dd>
+                {formatarData(etapa.inicioPrevisto)} a {formatarData(etapa.fimPrevisto)}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-gray-500">Commits (real)</dt>
+              <dd>
+                {etapa.primeiroCommit
+                  ? `${formatarData(etapa.primeiroCommit)} a ${formatarData(etapa.ultimoCommit!)}`
+                  : "sem commits"}
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </Caixa>
 
-      <Caixa titulo="Resumo da etapa">
+      <Caixa titulo={concluido ? "Quem procurar" : "Conhecimento e risco"}>
         <dl className="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-3">
           <div>
             <dt className="text-gray-500">Maior conhecimento</dt>
-            <dd>{av.lider ? `${av.lider.membro.nome} · IC ${emPct(av.lider.ic)}` : "—"}</dd>
+            <dd>
+              {av.lider ? (
+                <Link href={linkPessoa(av.lider.membro.id)} className="underline">
+                  {av.lider.membro.nome} · IC {emPct(av.lider.ic)}
+                </Link>
+              ) : (
+                "—"
+              )}
+            </dd>
           </div>
           <div>
             <dt className="text-gray-500">Risco · pela concentração ({emPct(etapa.concentracao * 100)})</dt>
@@ -140,22 +223,38 @@ function ConteudoEtapa({ projeto, etapaId }: { projeto: Projeto; etapaId: string
               <SeloRisco nivel={av.risco} />
             </dd>
           </div>
-          <div>
-            <dt className="text-gray-500">
-              Urgência ·{" "}
-              {quemMaisSabe?.saidaPrevista
-                ? `${quemMaisSabe.nome.split(" ")[0]} sai ${quemMaisSabe.saidaPrevista}`
-                : "sem data de saída registrada"}
-            </dt>
-            <dd className="mt-1">
-              <SeloUrgencia nivel={av.urgencia} />
-            </dd>
-          </div>
+          {concluido ? (
+            <div>
+              <dt className="text-gray-500">Situação de quem mais sabe</dt>
+              <dd className="mt-1">
+                {quemMaisSabe?.saiuEm ? (
+                  <SituacaoDaPessoa membro={quemMaisSabe} comUrgencia={false} />
+                ) : (
+                  "ainda está na empresa"
+                )}
+              </dd>
+            </div>
+          ) : (
+            <div>
+              <dt className="text-gray-500">
+                Urgência ·{" "}
+                {quemMaisSabe?.saidaPrevista
+                  ? `${quemMaisSabe.nome.split(" ")[0]} sai ${quemMaisSabe.saidaPrevista}`
+                  : "sem data de saída registrada"}
+              </dt>
+              <dd className="mt-1">
+                <SeloUrgencia nivel={av.urgencia} />
+              </dd>
+            </div>
+          )}
         </dl>
-        {av.mitigado && (
+        {concluido && quemMaisSabe?.saiuEm && linhas[1] && (
           <p className="mt-3 text-sm text-gray-600">
-            ✓ Mitigado: o legado de {quemMaisSabe?.nome} já foi registrado, então o conhecimento desta etapa não se
-            perde com a saída.
+            {quemMaisSabe.nome} já saiu. Próxima pessoa com mais conhecimento:{" "}
+            <Link href={linkPessoa(linhas[1].membro.id)} className="underline">
+              {linhas[1].membro.nome}
+            </Link>{" "}
+            (IC {emPct(linhas[1].ic)}){linhas[1].membro.saiuEm ? ", que também já saiu" : ""}.
           </p>
         )}
       </Caixa>
@@ -172,20 +271,21 @@ function ConteudoEtapa({ projeto, etapaId }: { projeto: Projeto; etapaId: string
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="font-semibold">{m.nome}</span>
                     <span className="text-sm text-gray-600">{m.papel}</span>
-                    <UrgenciaDoMembro membro={m} />
-                    <SeloLegado projetoId={projeto.id} membroId={m.id} />
+                    <SituacaoDaPessoa membro={m} comUrgencia={!concluido} />
                   </div>
                   <div className="text-sm text-gray-600">IC {emPct(ic)} nesta etapa</div>
                 </div>
               </div>
-              <AcaoLegado projetoId={projeto.id} membroId={m.id} origem={origem} />
+              <Link href={linkPessoa(m.id)} className="text-sm text-gray-700 underline">
+                Ver membro →
+              </Link>
             </li>
           ))}
         </ol>
       </Caixa>
 
-      <Caixa titulo="Linha do tempo da etapa · commits por semana">
-        <LinhaDoTempo projeto={projeto} semanas={etapa.semanas} titulo={`Commits por semana em ${etapa.nome}`} />
+      <Caixa titulo="Atividade da etapa · commits por semana">
+        <LinhaDoTempo series={seriesDosMembros(projeto)} semanas={etapa.semanas} titulo={`Commits por semana em ${etapa.nome}`} />
       </Caixa>
 
       <Caixa titulo="Como o IC foi calculado">
