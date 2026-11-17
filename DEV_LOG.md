@@ -248,5 +248,17 @@ Respondi "faça todos": tudo, inclusive os opcionais.
 
 Também conferido na largura de celular, sem rolagem horizontal. Build (62 páginas), tipos e lint passam.
 
-**O que ajustei:** _(preencher após minha revisão)_
+**O que ajustei:** nenhum ajuste; a etapa foi commitada como ponto de restauração antes da mudança de rota (abaixo).
+
+---
+
+## Mudança de rota: de passagem de conhecimento para acompanhamento de projetos (17/11)
+
+**O que decidi:** perguntei à IA como treinar o modelo para fazer perguntas melhores. Ela explicou que não é preciso treinar; bastaria dar contexto no prompt. Depois disso, mudei a direção do produto: **a plataforma passa a ser de acompanhamento de projetos**, e as perguntas e o legado saem.
+
+As escolhas, feitas num questionário de múltipla escolha montado pela IA:
+- **O que mostrar:** progresso das etapas, atividade da equipe, conhecimento e risco (IC, risco e urgência continuam) e uma visão por membro.
+- **Legado:** removido por completo (telas, botão e mitigação de risco pelo legado).
+- **Papel da IA no produto:** um resumo do projeto, um status report gerado a partir dos commits e indicadores.
+- **Checkpoint:** a etapa 2 foi commitada antes da mudança (`6a838d4`), para poder voltar se preciso.
 
