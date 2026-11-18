@@ -91,3 +91,7 @@ export async function carregarCommits(filtro: { projetoId?: string; autor?: stri
   const linhas = await db.select().from(esquema.commits).orderBy(desc(esquema.commits.data));
   return linhas.filter((c) => (!filtro.projetoId || c.projetoId === filtro.projetoId) && (!filtro.autor || c.autor === filtro.autor));
 }
+
+export async function carregarClientes() {
+  return db.select().from(esquema.clientes).orderBy(asc(esquema.clientes.nome));
+}

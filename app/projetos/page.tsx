@@ -4,6 +4,7 @@ import { obterProjetos } from "@/data";
 import { formatarData } from "@/data/formatos";
 import { alertaDoCard, duracaoEmMeses, progressoProjeto, statusProjeto, textoPrazo } from "@/lib/status";
 import { ListaProjetos, type ResumoProjeto } from "@/components/projetos/lista";
+import { BotaoLink } from "@/components/ui";
 
 export default async function Projetos() {
   const projetos = await obterProjetos();
@@ -26,7 +27,10 @@ export default async function Projetos() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Projetos</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-bold">Projetos</h1>
+        <BotaoLink href="/projetos/novo">+ Novo projeto</BotaoLink>
+      </div>
       <ListaProjetos projetos={resumos} />
     </div>
   );

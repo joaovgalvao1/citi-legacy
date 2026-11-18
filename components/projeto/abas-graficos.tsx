@@ -53,7 +53,7 @@ export function AbaParticipacao({ projeto }: { projeto: Projeto }) {
               </details>
             </>
           ) : (
-            <p className="text-sm text-gray-500">Esta etapa ainda não tem commits.</p>
+            <p className="text-sm text-gray-500">{etapa ? "Esta etapa" : "Este projeto"} ainda não tem commits.</p>
           )}
         </Caixa>
 

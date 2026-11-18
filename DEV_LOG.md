@@ -661,3 +661,27 @@ Ficaram de fora o boletim da empresa inteira e a imagem para WhatsApp/Slack.
 **Verificação:**
 - vi a página na tela, com a Clínica Movimento: resumo, etapas, 3 semanas anteriores e rodapé;
 - testei o PDF salvo pelo navegador e funcionou.
+
+### Novo projeto pelo admin (18/11)
+
+**O que pedi:** o cadastro de projetos pelo admin (o item que estava pendente). Também pedi os acabamentos: boletim da empresa em PDF e envio por e-mail.
+
+**Decisões:**
+- os caminhos do repositório vêm sugeridos a partir do nome da etapa, e o admin pode editar;
+- o e-mail será enviado pelo Resend;
+- editar e excluir projetos ficaram fora do escopo.
+
+**O que a IA fez:**
+- `/projetos/novo`, com as seções Projeto, Equipe e Etapas, e o botão "+ Novo projeto" na lista;
+- etapas adicionáveis e removíveis;
+- o caminho sugerido acompanha o nome da etapa até o admin editar o campo;
+- validação compartilhada entre navegador e servidor (`lib/novo-projeto.ts`), com mensagens em pt-BR ("Etapa 1: escreva pelo menos uma task.");
+- a ação `criarProjeto` grava tudo numa transação: cliente novo, se houver, projeto, equipe, etapas e tasks. O id vem do nome, com sufixo se já existir;
+- ajuste de texto: com "Projeto todo" selecionado na Participação, o aviso agora diz "Este projeto ainda não tem commits".
+
+**Verificação (pela tela, no banco local):**
+- salvar vazio mostra a lista do que falta;
+- criei o "Portal do Aluno", para o cliente novo "Colégio Recife", com 2 etapas e 1 pessoa;
+- a página abriu com "faltam 100 dias", uma etapa em andamento e outra "começa em 47 dias", e "Ainda sem commits";
+- conferi as abas Sobre e Participação, o PDF, o card na lista e a página do membro;
+- depois apaguei o projeto de teste.

@@ -8,7 +8,7 @@ import { desc, eq } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { db, esquema } from "@/db/conexao";
 import type { Semana, Sinais } from "@/lib/analise";
-import { carregarCommits, carregarTudo } from "./carregar";
+import { carregarClientes, carregarCommits, carregarTudo } from "./carregar";
 
 export type { Semana, Sinais };
 
@@ -141,6 +141,14 @@ export async function projetosDaPessoa(pessoaId: string) {
   return (await obterProjetos())
     .map((projeto) => ({ projeto, membro: projeto.membros.find((m) => m.id === pessoaId) }))
     .filter((x): x is { projeto: Projeto; membro: Membro } => !!x.membro);
+}
+
+/** Clientes cadastrados (para o formulário de novo projeto). */
+export async function obterClientes(): Promise<{ id: string; nome: string; segmento: string | null }[]> {
+  "use cache";
+  cacheTag("dados");
+  cacheLife("hours");
+  return carregarClientes();
 }
 
 /** Commits (de um projeto, de uma pessoa, ou ambos), do mais recente para o mais antigo. */

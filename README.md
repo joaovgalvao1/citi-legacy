@@ -20,6 +20,7 @@ Tudo é calculado a partir dos commits.
 | Entrada do site (pública) | `/` |
 | Login | `/login` |
 | Projetos (abas Em andamento / Concluídos, busca) | `/projetos` |
+| Novo projeto (cadastro pelo admin) | `/projetos/novo` |
 | Projeto · Visão geral | `/projetos/[projetoId]` |
 | Projeto · Sobre | `/projetos/[projetoId]/sobre` |
 | Projeto · Participação (IC e commits por semana) | `/projetos/[projetoId]/participacao?etapa=…` |
@@ -69,6 +70,17 @@ Os provedores são tentados nesta ordem:
 3. o **resumo automático pelas regras**.
 
 A tela sempre indica a fonte.
+
+## Novo projeto
+
+O botão **+ Novo projeto** (em Projetos) abre um formulário com três partes:
+- **Projeto:** nome, cliente (existente ou novo, com segmento), descrição, contexto, início e fim previsto.
+- **Equipe:** pessoas que estão na empresa, cada uma com o seu papel.
+- **Etapas:** nome, descrição e datas previstas; os **caminhos do repositório** (sugeridos como `src/<etapa>/**` a partir do nome, editáveis); as **tasks**, uma por linha.
+
+A validação (`lib/novo-projeto.ts`) roda no navegador, para avisar na hora, e de novo no servidor, que é a que vale. O projeto nasce em andamento e sem commits. Status, prazos, tasks, conclusão automática e resumo semanal funcionam desde o primeiro dia.
+
+`npm run banco:carregar` recria os dados de demonstração e **apaga os projetos cadastrados pelo formulário**.
 
 ## Exportar resumo em PDF
 
