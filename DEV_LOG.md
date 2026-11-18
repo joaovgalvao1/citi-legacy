@@ -517,3 +517,15 @@ A IA recomendou fazer primeiro o que mais aparece na demo e cabe no prazo. Pedi 
 **Verificação:**
 - **Clínica Movimento:** resumo **gerado pelo Gemini (`gemini-3.5-flash-lite`)**, específico e sem inventar fatos. Exemplo: "Destravar a etapa Pacientes e prontuário com Mateus Cavalcanti para finalizar o Consentimento LGPD."
 - **GALT:** no mesmo minuto, os três modelos estavam sobrecarregados e entrou o resumo automático, como previsto.
+
+### Chave nova e teste único (18/11)
+
+**O que pedi:** verificar se a chave aparecia em algum commit ou histórico, para eu decidir se gerava outra.
+
+**O que a IA encontrou:** comparou com o valor da chave, sem exibi-lo.
+- Ela **não aparecia em nenhum commit**, mensagem ou arquivo do projeto.
+- Mas **aparecia na transcrição local da sessão**: o app que executa a IA registrou automaticamente a mudança no `.env.example` (onde a chave foi colada por engano) e incluiu o conteúdo na conversa.
+
+A IA recomendou trocar a chave. Gerei uma nova e coloquei direto no `.env.local`.
+
+**Teste:** a pedido meu, um teste só, para economizar cota. Antes disso, a IA pôs o `gemini-3.5-flash-lite` (500 pedidos por dia no plano gratuito) como o primeiro modelo da lista, para o teste gastar um pedido só. Resultado: o resumo da Folhagem & Cia foi **gerado pelo Gemini (`gemini-3.5-flash-lite`) num único pedido**, citando as tasks pendentes reais de Estoque e de Pedidos.

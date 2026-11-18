@@ -118,9 +118,9 @@ async function comTempoLimite(url: string, init: RequestInit, ms = 12000) {
 
 /**
  * Modelos do Gemini tentados em ordem. GEMINI_MODEL aceita um ou vários, separados por vírgula.
- * Padrão: o flash mais novo e, se estiver sobrecarregado (503) ou indisponível (404), os seguintes.
+ * Padrão: o Flash Lite (maior cota gratuita: 500 pedidos/dia) e, se ele falhar, os seguintes.
  */
-const MODELOS_GEMINI_PADRAO = ["gemini-3.8-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite"];
+const MODELOS_GEMINI_PADRAO = ["gemini-3.5-flash-lite", "gemini-3.8-flash", "gemini-3.5-flash"];
 
 async function gemini(texto: string): Promise<{ secoes: Secao[]; modelo: string } | null> {
   const chave = process.env.GEMINI_API_KEY;
