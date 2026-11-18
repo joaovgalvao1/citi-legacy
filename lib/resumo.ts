@@ -1,90 +1,134 @@
-// Resumo do projeto: monta o contexto a partir dos dados, pede à IA (Gemini, com Groq de reserva)
-// e, se nenhuma IA responder, gera um resumo automático pelas regras. Só roda no servidor.
+// Resumos da IA. Só roda no servidor (cron semanal e script de carga), nunca a cada visita.
+//
+//   • Projeto em andamento → resumo SEMANAL. O contexto é a semana (commits daquela semana) mais os
+//     resumos das semanas anteriores, com a instrução de não repetir o que já foi dito.
+//   • Projeto concluído → resumo FINAL, gerado uma única vez e guardado.
+//
+// Provedores em ordem: Gemini (lista de modelos) → Groq → resumo automático pelas regras.
 
-import type { Projeto } from "@/data";
-import { commits } from "@/data/commits";
-import { dataReferencia } from "@/data/referencia.json";
+import { and, desc, eq } from "drizzle-orm";
+import { db, esquema } from "@/db/conexao";
+import type { Commit, Projeto, Resumo } from "@/data";
+import { inicioDaSemana } from "./analise";
 import { emPct, lider, ranking } from "./indice";
 import { alertas, diasEntre, progressoProjeto, statusEtapa, statusProjeto, textoPrazo, textoPrazoEtapa } from "./status";
 
 export type Secao = { titulo: string; itens: string[] };
-export type Resumo = { secoes: Secao[]; fonte: "gemini" | "groq" | "regras"; modelo?: string; geradoEm: string };
+type Gerado = { secoes: Secao[]; fonte: Resumo["fonte"]; modelo: string | null; aviso?: string };
 
-const TITULOS_ANDAMENTO = ["O que andou", "O que travou", "O que fazer primeiro"];
-const TITULOS_CONCLUIDO = ["O que foi entregue", "Como foi o projeto", "Quem procurar"];
+const TITULOS_SEMANA = ["O que andou", "O que travou", "O que fazer primeiro"];
+const TITULOS_FINAL = ["O que foi entregue", "Como foi o projeto", "Quem procurar"];
+const DIA = 86400000;
+
+const ddmm = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
+const somarDias = (iso: string, n: number) => new Date(new Date(`${iso}T12:00:00Z`).getTime() + n * DIA).toISOString().slice(0, 10);
+const nomeDe = (projeto: Projeto, id: string) => projeto.membros.find((m) => m.id === id)?.nome ?? id;
 
 /* ---------- contexto ---------- */
 
-const nomeDe = (projeto: Projeto, id: string) => projeto.membros.find((m) => m.id === id)?.nome ?? id;
+function cabecalho(projeto: Projeto) {
+  return [
+    `Projeto: ${projeto.nome} (cliente: ${projeto.cliente})`,
+    `Objetivo: ${projeto.descricao}`,
+    ...(projeto.contexto ? [`Contexto: ${projeto.contexto}`] : []),
+  ];
+}
 
-export function montarContexto(projeto: Projeto) {
-  const concluido = projeto.status === "concluido";
-  const doProjeto = commits.filter((c) => c.projetoId === projeto.id).sort((a, b) => b.data.localeCompare(a.data));
-  const janela = concluido ? doProjeto : doProjeto.filter((c) => diasEntre(c.data, dataReferencia) <= 21);
-
-  const linhas: string[] = [];
-  linhas.push(`Projeto: ${projeto.nome} (cliente: ${projeto.cliente})`);
-  linhas.push(`Objetivo: ${projeto.descricao}`);
-  linhas.push(
-    `Status: ${statusProjeto(projeto)} · progresso ${emPct(progressoProjeto(projeto))} (média das tasks das etapas) · ${textoPrazo(projeto)}`,
-  );
-  if (projeto.resultados) linhas.push(`Resultados: ${projeto.resultados}`);
-  linhas.push(`Data de hoje: ${dataReferencia}`);
-
-  linhas.push("", "Etapas:");
-  for (const e of projeto.etapas) {
+function linhasEtapas(projeto: Projeto, comPendentes: boolean) {
+  return projeto.etapas.map((e) => {
     const top = lider(projeto, e.id);
     const pendentes = e.tasks.filter((t) => !t.feita).map((t) => t.titulo);
-    const feitas = e.tasks.filter((t) => t.feita).length;
-    linhas.push(
-      `- ${e.nome}: ${statusEtapa(projeto, e)}, ${feitas}/${e.tasks.length} tasks (${emPct(e.progresso)})` +
-        `${textoPrazoEtapa(projeto, e) ? `, ${textoPrazoEtapa(projeto, e)}` : ""}` +
-        `${top ? `; quem mais sabe: ${top.membro.nome} (IC ${emPct(top.ic)})` : "; sem commits"}` +
-        `${pendentes.length && !concluido ? `; pendentes: ${pendentes.join("; ")}` : ""}`,
+    return (
+      `- ${e.nome}: ${statusEtapa(projeto, e)}, ${e.tasks.filter((t) => t.feita).length}/${e.tasks.length} tasks (${emPct(e.progresso)})` +
+      `${textoPrazoEtapa(projeto, e) ? `, ${textoPrazoEtapa(projeto, e)}` : ""}` +
+      `${top ? `; quem mais sabe: ${top.membro.nome} (IC ${emPct(top.ic)})` : "; sem commits"}` +
+      `${comPendentes && pendentes.length ? `; pendentes: ${pendentes.join("; ")}` : ""}`
     );
+  });
+}
+
+function contextoSemanal(projeto: Projeto, commits: Commit[], semana: string, anteriores: Resumo[], atual: boolean) {
+  const fim = somarDias(semana, 7);
+  const daSemana = commits.filter((c) => c.data.slice(0, 10) >= semana && c.data.slice(0, 10) < fim);
+  const linhas = [...cabecalho(projeto), `Semana: ${ddmm(semana)} a ${ddmm(somarDias(semana, 6))}`, ""];
+
+  if (atual) {
+    linhas.push(`Situação atual: ${statusProjeto(projeto)} · progresso ${emPct(progressoProjeto(projeto))} · ${textoPrazo(projeto)}`, "Etapas:");
+    linhas.push(...linhasEtapas(projeto, true));
+    const lista = alertas(projeto);
+    if (lista.length) linhas.push("Alertas:", ...lista.map((a) => `- ${a.texto}`));
+  } else {
+    linhas.push("Etapas (prazos previstos):", ...projeto.etapas.map((e) => `- ${e.nome}: de ${ddmm(e.inicioPrevisto)} a ${ddmm(e.fimPrevisto)}`));
   }
 
-  const lista = alertas(projeto);
-  if (lista.length) {
-    linhas.push("", "Alertas:");
-    for (const a of lista) linhas.push(`- ${a.texto}`);
-  }
+  linhas.push("", `Commits desta semana (${daSemana.length}):`);
+  for (const c of daSemana) linhas.push(`- ${c.data.slice(0, 10)} ${nomeDe(projeto, c.autor)} [${c.etapas.join(", ")}]: ${c.mensagem}`);
+  if (!daSemana.length) linhas.push("- nenhum commit nesta semana");
 
-  linhas.push("", "Equipe (IC no projeto):");
-  for (const l of ranking(projeto)) {
-    linhas.push(`- ${l.membro.nome}, ${l.membro.papel}: IC ${emPct(l.ic)}${l.membro.saiuEm ? " (já saiu da empresa)" : ""}`);
+  if (anteriores.length) {
+    linhas.push("", "Resumos das semanas anteriores (do mais recente ao mais antigo; NÃO repita o que já foi dito):");
+    for (const r of anteriores) {
+      linhas.push(`Semana de ${ddmm(r.semana)}:`);
+      for (const s of r.secoes) linhas.push(`  ${s.titulo}: ${s.itens.join(" | ")}`);
+    }
   }
-
-  linhas.push("", concluido ? "Commits do projeto (mais recentes primeiro, amostra):" : "Commits das últimas 3 semanas:");
-  for (const c of janela.slice(0, concluido ? 30 : 40)) {
-    linhas.push(`- ${c.data.slice(0, 10)} ${nomeDe(projeto, c.autor)}: ${c.mensagem}`);
-  }
-  if (!janela.length) linhas.push("- nenhum commit no período");
-
   return linhas.join("\n");
 }
 
-/* ---------- prompt ---------- */
+function contextoFinal(projeto: Projeto, commits: Commit[]) {
+  const linhas = [
+    ...cabecalho(projeto),
+    `Status: ${statusProjeto(projeto)} · ${textoPrazo(projeto)}`,
+    ...(projeto.resultados ? [`Resultados: ${projeto.resultados}`] : []),
+    "",
+    "Etapas:",
+    ...linhasEtapas(projeto, false),
+    "",
+    "Equipe (IC no projeto):",
+    ...ranking(projeto).map((l) => `- ${l.membro.nome}, ${l.membro.papel}: IC ${emPct(l.ic)}${l.membro.saiuEm ? " (já saiu da empresa)" : ""}`),
+    "",
+    `Commits do projeto (${commits.length}; amostra dos mais recentes):`,
+    ...commits.slice(0, 40).map((c) => `- ${c.data.slice(0, 10)} ${nomeDe(projeto, c.autor)}: ${c.mensagem}`),
+  ];
+  return linhas.join("\n");
+}
 
-function prompt(projeto: Projeto, contexto: string) {
-  const concluido = projeto.status === "concluido";
-  const titulos = concluido ? TITULOS_CONCLUIDO : TITULOS_ANDAMENTO;
-  return `Você é o assistente do diretor de projetos de uma empresa júnior de tecnologia (o CITi).
-Escreva ${concluido ? "a retrospectiva" : "o resumo da semana"} do projeto abaixo, em português do Brasil, para o diretor ler em 30 segundos.
+function formato(titulos: string[]) {
+  return `Responda APENAS com JSON no formato:
+{"secoes":[{"titulo":"${titulos[0]}","itens":["..."]},{"titulo":"${titulos[1]}","itens":["..."]},{"titulo":"${titulos[2]}","itens":["..."]}]}`;
+}
 
-Regras:
+const REGRAS = `Regras:
 - Use só as informações do contexto; não invente fatos, números, datas ou pessoas.
 - Seja específico: cite etapas, tasks e pessoas pelo nome.
-- Cada item tem no máximo 25 palavras, sem jargão desnecessário.
-- 2 ou 3 itens por seção.
-- Responda APENAS com JSON no formato:
-{"secoes":[{"titulo":"${titulos[0]}","itens":["..."]},{"titulo":"${titulos[1]}","itens":["..."]},{"titulo":"${titulos[2]}","itens":["..."]}]}
+- Cada item tem no máximo 25 palavras. 2 ou 3 itens por seção.`;
+
+function promptSemanal(contexto: string, temAnteriores: boolean) {
+  return `Você é o assistente do diretor de projetos de uma empresa júnior de tecnologia (o CITi).
+Escreva o resumo DESTA SEMANA do projeto abaixo, em português do Brasil, para o diretor ler em 30 segundos.
+
+${REGRAS}
 ${
-  concluido
-    ? `- "${titulos[2]}": quem mais sabe das etapas principais e se ainda está na empresa.`
-    : `- "${titulos[1]}": etapas atrasadas ou paradas e tasks pendentes importantes; se não houver, diga que está tudo em dia.
-- "${titulos[2]}": ações concretas e priorizadas para esta semana.`
+  temAnteriores
+    ? `- Os resumos das semanas anteriores estão no contexto. NÃO repita o que já foi dito: foque no que é novo ou mudou nesta semana.
+- Se algo já citado continua travado, diga em poucas palavras que "continua", sem repetir os detalhes.`
+    : ""
 }
+- "O que travou": etapas atrasadas, paradas ou sem avanço; se não houver, diga que não há bloqueios novos.
+- "O que fazer primeiro": ações concretas e priorizadas para a próxima semana.
+${formato(TITULOS_SEMANA)}
+
+Contexto:
+${contexto}`;
+}
+
+function promptFinal(contexto: string) {
+  return `Você é o assistente do diretor de projetos de uma empresa júnior de tecnologia (o CITi).
+Escreva a retrospectiva final do projeto concluído abaixo, em português do Brasil. Ela fica guardada como o legado do projeto.
+
+${REGRAS}
+- "Quem procurar": quem mais sabe das etapas principais e se ainda está na empresa.
+${formato(TITULOS_FINAL)}
 
 Contexto:
 ${contexto}`;
@@ -106,7 +150,7 @@ function validar(texto: string): Secao[] | null {
   }
 }
 
-async function comTempoLimite(url: string, init: RequestInit, ms = 12000) {
+async function comTempoLimite(url: string, init: RequestInit, ms = 15000) {
   const controle = new AbortController();
   const t = setTimeout(() => controle.abort(), ms);
   try {
@@ -142,7 +186,7 @@ async function gemini(texto: string): Promise<{ secoes: Secao[]; modelo: string 
     if (!r) continue;
     if (!r.ok) {
       falhas.push(`${modelo}: ${r.status}`);
-      continue; // sobrecarregado, indisponível ou limite: tenta o próximo modelo
+      continue; // sobrecarregado (503), cota (429) ou indisponível (404): tenta o próximo
     }
     const dados = (await r.json()) as { candidates?: { content?: { parts?: { text?: string; thought?: boolean }[] } }[] };
     const saida =
@@ -178,47 +222,34 @@ async function groq(texto: string): Promise<{ secoes: Secao[]; modelo: string } 
   return { secoes, modelo };
 }
 
+async function pedirIA(texto: string, reserva: () => Secao[]): Promise<Gerado> {
+  const falhas: string[] = [];
+  for (const [fonte, provedor] of [
+    ["gemini", gemini],
+    ["groq", groq],
+  ] as const) {
+    try {
+      const r = await provedor(texto);
+      if (r) return { secoes: r.secoes, fonte, modelo: r.modelo };
+    } catch (erro) {
+      falhas.push(erro instanceof Error ? erro.message : String(erro));
+    }
+  }
+  return {
+    secoes: reserva(),
+    fonte: "regras",
+    modelo: null,
+    aviso: falhas.length ? `IA indisponível (${falhas.join("; ")})` : "Nenhuma chave de IA configurada",
+  };
+}
+
 /* ---------- reserva: resumo automático pelas regras ---------- */
 
-export function resumoPorRegras(projeto: Projeto): Secao[] {
-  const concluido = projeto.status === "concluido";
-  const doProjeto = commits.filter((c) => c.projetoId === projeto.id);
-
-  if (concluido) {
-    const principais = [...projeto.etapas]
-      .map((e) => ({ e, n: doProjeto.filter((c) => c.etapas.includes(e.id)).length }))
-      .sort((a, b) => b.n - a.n);
-    return [
-      {
-        titulo: TITULOS_CONCLUIDO[0],
-        itens: [
-          `${projeto.etapas.length} etapas concluídas: ${projeto.etapas.map((e) => e.nome).join(", ")}.`,
-          ...(projeto.resultados ? [projeto.resultados] : []),
-        ],
-      },
-      {
-        titulo: TITULOS_CONCLUIDO[1],
-        itens: [
-          `${textoPrazo(projeto).replace(/^./, (l) => l.toUpperCase())}.`,
-          `${doProjeto.length} commits; as etapas com mais atividade foram ${principais
-            .slice(0, 2)
-            .map((x) => `${x.e.nome} (${x.n})`)
-            .join(" e ")}.`,
-        ],
-      },
-      {
-        titulo: TITULOS_CONCLUIDO[2],
-        itens: principais.slice(0, 3).flatMap(({ e }) => {
-          const top = lider(projeto, e.id);
-          return top ? [`${e.nome}: ${top.membro.nome} (IC ${emPct(top.ic)})${top.membro.saiuEm ? ", que já saiu da empresa" : ""}.`] : [];
-        }),
-      },
-    ];
-  }
-
-  const recentes = doProjeto.filter((c) => diasEntre(c.data, dataReferencia) <= 14);
+function regrasSemana(projeto: Projeto, commits: Commit[], semana: string): Secao[] {
+  const fim = somarDias(semana, 7);
+  const daSemana = commits.filter((c) => c.data.slice(0, 10) >= semana && c.data.slice(0, 10) < fim);
   const porEtapa = projeto.etapas
-    .map((e) => ({ e, n: recentes.filter((c) => c.etapas.includes(e.id)).length }))
+    .map((e) => ({ e, n: daSemana.filter((c) => c.etapas.includes(e.id)).length }))
     .filter((x) => x.n > 0)
     .sort((a, b) => b.n - a.n);
   const lista = alertas(projeto);
@@ -226,52 +257,86 @@ export function resumoPorRegras(projeto: Projeto): Secao[] {
     .filter((e) => statusEtapa(projeto, e) !== "Concluída" && statusEtapa(projeto, e) !== "Em planejamento")
     .sort((a, b) => a.fimPrevisto.localeCompare(b.fimPrevisto))
     .slice(0, 3);
-
   return [
     {
-      titulo: TITULOS_ANDAMENTO[0],
-      itens: porEtapa.length
-        ? porEtapa.slice(0, 3).map((x) => `${x.e.nome}: ${x.n} commits nas últimas 2 semanas, ${emPct(x.e.progresso)} das tasks concluídas.`)
-        : ["Nenhum commit nas últimas 2 semanas."],
+      titulo: TITULOS_SEMANA[0],
+      itens: porEtapa.length ? porEtapa.slice(0, 3).map((x) => `${x.e.nome}: ${x.n} commits na semana.`) : ["Nenhum commit nesta semana."],
     },
+    { titulo: TITULOS_SEMANA[1], itens: lista.length ? lista.slice(0, 3).map((a) => `${a.texto}.`) : ["Nenhuma etapa atrasada ou parada."] },
     {
-      titulo: TITULOS_ANDAMENTO[1],
-      itens: lista.length ? lista.slice(0, 3).map((a) => `${a.texto}.`) : ["Nenhuma etapa atrasada ou parada."],
-    },
-    {
-      titulo: TITULOS_ANDAMENTO[2],
+      titulo: TITULOS_SEMANA[2],
       itens: proximas.map((e) => {
         const pendente = e.tasks.find((t) => !t.feita);
         const top = lider(projeto, e.id);
-        return `${e.nome} (${textoPrazoEtapa(projeto, e)}): ${pendente ? `concluir "${pendente.titulo}"` : "revisar a entrega"}${top ? ` com ${top.membro.nome}` : ""}.`;
+        return `${e.nome}: ${pendente ? `concluir "${pendente.titulo}"` : "revisar a entrega"}${top ? ` com ${top.membro.nome}` : ""}.`;
       }),
     },
   ].filter((s) => s.itens.length);
 }
 
-/* ---------- ponto de entrada ---------- */
-
-export async function gerarResumo(projeto: Projeto): Promise<Resumo & { aviso?: string }> {
-  const geradoEm = new Date().toISOString();
-  const texto = prompt(projeto, montarContexto(projeto));
-  const falhas: string[] = [];
-
-  for (const [fonte, provedor] of [
-    ["gemini", gemini],
-    ["groq", groq],
-  ] as const) {
-    try {
-      const r = await provedor(texto);
-      if (r) return { secoes: r.secoes, fonte, modelo: r.modelo, geradoEm };
-    } catch (erro) {
-      falhas.push(erro instanceof Error ? erro.message : String(erro));
-    }
-  }
-
-  return {
-    secoes: resumoPorRegras(projeto),
-    fonte: "regras",
-    geradoEm,
-    aviso: falhas.length ? `IA indisponível (${falhas.join("; ")})` : "Nenhuma chave de IA configurada",
-  };
+function regrasFinal(projeto: Projeto, commits: Commit[]): Secao[] {
+  const principais = projeto.etapas
+    .map((e) => ({ e, n: commits.filter((c) => c.etapas.includes(e.id)).length }))
+    .sort((a, b) => b.n - a.n);
+  return [
+    { titulo: TITULOS_FINAL[0], itens: [`${projeto.etapas.length} etapas concluídas.`, ...(projeto.resultados ? [projeto.resultados] : [])] },
+    { titulo: TITULOS_FINAL[1], itens: [`${textoPrazo(projeto).replace(/^./, (l) => l.toUpperCase())}.`, `${commits.length} commits no total.`] },
+    {
+      titulo: TITULOS_FINAL[2],
+      itens: principais.slice(0, 3).flatMap(({ e }) => {
+        const top = lider(projeto, e.id);
+        return top ? [`${e.nome}: ${top.membro.nome}${top.membro.saiuEm ? " (já saiu da empresa)" : ""}.`] : [];
+      }),
+    },
+  ];
 }
+
+/* ---------- geração e gravação ---------- */
+
+async function anterioresDe(projetoId: string, semana: string, limite = 4): Promise<Resumo[]> {
+  const linhas = await db
+    .select()
+    .from(esquema.resumos)
+    .where(and(eq(esquema.resumos.projetoId, projetoId), eq(esquema.resumos.tipo, "semanal")))
+    .orderBy(desc(esquema.resumos.semana));
+  return linhas
+    .filter((r) => r.semana < semana)
+    .slice(0, limite)
+    .map((r) => ({ tipo: "semanal", semana: r.semana, secoes: r.secoes, fonte: r.fonte as Resumo["fonte"], modelo: r.modelo, geradoEm: r.geradoEm.toISOString() }));
+}
+
+async function gravar(projetoId: string, tipo: "semanal" | "final", semana: string, g: Gerado) {
+  await db
+    .insert(esquema.resumos)
+    .values({ projetoId, tipo, semana, secoes: g.secoes, fonte: g.fonte, modelo: g.modelo })
+    .onConflictDoUpdate({
+      target: [esquema.resumos.projetoId, esquema.resumos.tipo, esquema.resumos.semana],
+      set: { secoes: g.secoes, fonte: g.fonte, modelo: g.modelo, geradoEm: new Date() },
+    });
+}
+
+/** Gera e grava o resumo de uma semana (segunda-feira "aaaa-mm-dd") de um projeto em andamento. */
+export async function gerarResumoSemanal(projeto: Projeto, commits: Commit[], semana: string) {
+  const anteriores = await anterioresDe(projeto.id, semana);
+  const atual = semana >= inicioDaSemana(somarDias(projeto.hoje, -7));
+  const texto = promptSemanal(contextoSemanal(projeto, commits, semana, anteriores, atual), anteriores.length > 0);
+  const g = await pedirIA(texto, () => regrasSemana(projeto, commits, semana));
+  await gravar(projeto.id, "semanal", semana, g);
+  return g;
+}
+
+/** Gera e grava o resumo final de um projeto concluído (só se ainda não existir, a menos que forcar=true). */
+export async function gerarResumoFinal(projeto: Projeto, commits: Commit[], forcar = false) {
+  if (!forcar) {
+    const existe = await db
+      .select({ id: esquema.resumos.id })
+      .from(esquema.resumos)
+      .where(and(eq(esquema.resumos.projetoId, projeto.id), eq(esquema.resumos.tipo, "final")));
+    if (existe.length) return null;
+  }
+  const g = await pedirIA(promptFinal(contextoFinal(projeto, commits)), () => regrasFinal(projeto, commits));
+  await gravar(projeto.id, "final", "", g);
+  return g;
+}
+
+export { diasEntre };

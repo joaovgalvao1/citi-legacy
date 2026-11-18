@@ -529,3 +529,58 @@ A IA recomendou fazer primeiro o que mais aparece na demo e cabe no prazo. Pedi 
 A IA recomendou trocar a chave. Gerei uma nova e coloquei direto no `.env.local`.
 
 **Teste:** a pedido meu, um teste só, para economizar cota. Antes disso, a IA pôs o `gemini-3.5-flash-lite` (500 pedidos por dia no plano gratuito) como o primeiro modelo da lista, para o teste gastar um pedido só. Resultado: o resumo da Folhagem & Cia foi **gerado pelo Gemini (`gemini-3.5-flash-lite`) num único pedido**, citando as tasks pendentes reais de Estoque e de Pedidos.
+
+---
+
+## Banco de dados e resumos semanais com memória (18/11)
+
+**O que decidi:**
+- Revisamos a etapa 3 e discutimos onde hospedar. Escolhi a **Vercel**, em vez da Cloudflare e do GitHub Pages, que a IA comparou.
+- Pedi um **banco de dados** (com Docker) para guardar commits, clientes, projetos e os resumos da IA.
+- Defini que:
+  - **projetos concluídos** têm um **resumo geral fixo** guardado no banco;
+  - **projetos em andamento** têm **resumos semanais**, e não diários, com o contexto guardado semana após semana para as informações não se repetirem.
+- O objetivo era não ter imprevistos na demo: nenhuma chamada de IA acontece quando alguém visita a página.
+
+**O que a IA fez:**
+- **Banco:**
+  - **Postgres** no Docker (`docker-compose.yml`, porta 5433) para o desenvolvimento e **Neon** na Vercel, com a mesma `DATABASE_URL`;
+  - **Drizzle**, com o esquema em `db/esquema.ts`, para clientes, pessoas, projetos, membros, etapas, tasks, commits e resumos;
+  - a tabela de resumos não tem chave estrangeira de propósito: recarregar os dados nunca apaga resumos, que custam chamadas à IA.
+- **Carga:** `npm run banco:preparar` cria as tabelas e carrega os 6 projetos, as 20 pessoas e os 808 commits.
+- **Camada de dados:**
+  - lê o banco com `'use cache'` e `cacheTag`;
+  - **IC, concentração, semanas e primeiro e último commit passaram a ser calculados na hora a partir dos commits** (`lib/analise.ts`), em vez de vir pré-calculados num JSON;
+  - todas as páginas viraram consultas assíncronas ao banco.
+- **Tasks no banco:** uma ação do servidor grava a mudança e invalida o cache (`updateTag`). A tela atualiza na hora (`useOptimistic`), e a marcação vale para todos os usuários. O armazenamento no navegador foi removido.
+- **Resumos (`lib/resumo.ts`):**
+  - **semanal:** o contexto é a semana (os commits daqueles 7 dias, mais tasks, prazos e alertas atuais no resumo mais recente) e **os 4 resumos anteriores**, com a instrução de **não repetir** e de destacar o que mudou;
+  - **final:** gerado uma vez só, e não é refeito se já existir.
+  - A ordem dos provedores continua Gemini (Flash Lite primeiro), Groq e regras.
+- **Rota `/api/cron/resumos`** (protegida por `CRON_SECRET`) e **Vercel Cron** em `vercel.json`, toda **sexta às 23h** (02h UTC de sábado).
+- **Histórico inicial (`npm run banco:resumos`):** as 4 últimas semanas de cada projeto em andamento, em ordem, cada uma usando as anteriores como contexto, e o resumo final dos concluídos, com uma pausa entre pedidos por causa do limite por minuto.
+- **Tela:**
+  - a Visão geral lê os resumos do banco: a semana mais recente em destaque, mais "Semanas anteriores (N)";
+  - nos concluídos, o "Resumo final do projeto";
+  - o "Gerar de novo" e a chamada ao vivo saíram.
+
+**Verificação:**
+- **Páginas:** todas as páginas respondem com os dados do banco.
+- **Tasks:** marcar uma task na Plataforma de Voluntariado gravou no banco (conferido no Postgres). A etapa foi de 33% para 67% e o cabeçalho, que vem do servidor, de 70% para 76%. Depois o teste foi desfeito.
+- **Rota do cron:** recusa chamadas sem o segredo (401).
+- **Histórico inicial:** 18 resumos gerados. Dois caíram no resumo automático porque os três modelos do Gemini estavam sobrecarregados (503) naquele momento. A IA criou a opção `--so-regras`, que refaz só esses dois, e na segunda tentativa os 18 ficaram com o Gemini.
+- **Memória entre semanas:** nos resumos da Clínica, "O que andou" traz fatos novos a cada semana, e na semana mais recente aparece "Pacientes e prontuário **continua** atrasada", em vez de repetir os detalhes. Ponto a melhorar: "O que fazer primeiro" ainda se repete entre as semanas mais antigas, que não tinham a lista de tasks pendentes no contexto.
+- **Build de produção:** passa. Ele roda com o servidor de desenvolvimento parado, porque os dois juntos corrompem o cache.
+
+### Banco como fonte única e data real (18/11)
+
+**O que pedi:** apagar os arquivos de dados que ficaram fora do banco e atualizar a data.
+
+**O que a IA fez:**
+- **Fonte única:** o gerador (`scripts/gerar-dados.mjs`) não grava mais arquivos e exporta os dados. `npm run banco:carregar` gera e grava direto no banco. Foram apagados `analises.json`, que já não tinha uso, `projetos.json`, `commits.json` e `referencia.json`. O cálculo de análises que só servia ao JSON saiu do gerador.
+- **Data real:** o "hoje" das telas passou de 17/11/2026 fixo para a **data real no fuso de Recife** (`lib/hoje.ts`).
+  - Ele é calculado na leitura do banco e vai junto com cada projeto (`projeto.hoje`). Assim servidor e navegador usam a mesma data e as páginas em cache se atualizam ao longo do dia.
+  - Prazos, atrasos, "parada" e a semana atual dos resumos usam essa data.
+  - Os commits fictícios continuam terminando em 16/11 (data dos dados em `cenarios.mjs`), para não desalinhar dos resumos já gerados.
+
+**Verificação:** os dados gerados são idênticos aos que estavam no banco (mesmos hashes e datas). A carga refeita manteve os 18 resumos.

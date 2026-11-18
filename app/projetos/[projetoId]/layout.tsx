@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { getProjeto, projetoEnxuto, projetos } from "@/data";
+import { obterProjeto, obterProjetos, projetoEnxuto } from "@/data";
 import { formatarData } from "@/data/formatos";
 import { textoEntrega } from "@/lib/status";
 import { Voltar } from "@/components/ui";
@@ -10,13 +10,13 @@ import { ProgressoDoProjeto } from "@/components/projeto/progresso";
 import { SeloStatusProjeto } from "@/components/projeto/status";
 import { AbasDoProjeto } from "@/components/projeto/abas";
 
-export function generateStaticParams() {
-  return projetos.map((p) => ({ projetoId: p.id }));
+export async function generateStaticParams() {
+  return (await obterProjetos()).map((p) => ({ projetoId: p.id }));
 }
 
 async function Cabecalho({ params }: { params: LayoutProps<"/projetos/[projetoId]">["params"] }) {
   const { projetoId } = await params;
-  const projeto = getProjeto(projetoId);
+  const projeto = await obterProjeto(projetoId);
   if (!projeto) notFound();
   const concluido = projeto.status === "concluido";
 

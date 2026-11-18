@@ -1,8 +1,7 @@
 // Entrada do site: apresenta o CITi Legacy antes do login
 
 import Link from "next/link";
-import { getProjeto, pessoas, projetos } from "@/data";
-import { commits } from "@/data/commits";
+import { obterPessoas, obterProjeto, obterProjetos, totalDeCommits } from "@/data";
 import { ranking } from "@/lib/indice";
 import { PreviaPainel } from "@/components/entrada/previa";
 import { progressoProjeto, statusProjeto, textoPrazo } from "@/lib/status";
@@ -33,9 +32,10 @@ const PASSOS = [
   { titulo: "Tasks mostram o progresso", texto: "Marcar uma task atualiza a etapa, o projeto e os avisos.", codigo: "6 de 8 tasks · 75%" },
 ];
 
-export default function Entrada() {
+export default async function Entrada() {
+  const [projetos, pessoas, commits] = await Promise.all([obterProjetos(), obterPessoas(), totalDeCommits()]);
   const andamento = projetos.filter((p) => statusProjeto(p) !== "Concluído").length;
-  const exemplo = getProjeto("clinica-movimento")!;
+  const exemplo = (await obterProjeto("clinica-movimento"))!;
   const etapaExemplo = exemplo.etapas.find((e) => e.id === "unidades")!;
   const conhecimento = ranking(exemplo, etapaExemplo.id).slice(0, 3);
 
@@ -104,7 +104,7 @@ export default function Entrada() {
             [andamento, "projetos em andamento"],
             [projetos.length - andamento, "projetos concluídos"],
             [pessoas.length, "pessoas no histórico"],
-            [commits.length, "commits analisados"],
+            [commits, "commits analisados"],
           ].map(([valor, rotulo]) => (
             <div key={rotulo} className="space-y-1">
               <dd className="dado text-3xl font-semibold text-verde">{valor}</dd>

@@ -2,18 +2,25 @@
 
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { getProjeto, projetoEnxuto, projetos } from "@/data";
+import { obterProjeto, obterProjetos, obterResumos, projetoEnxuto } from "@/data";
 import { VisaoGeral } from "@/components/projeto/visao-geral";
+import { ResumosDoProjeto } from "@/components/projeto/resumos";
 
-export function generateStaticParams() {
-  return projetos.map((p) => ({ projetoId: p.id }));
+export async function generateStaticParams() {
+  return (await obterProjetos()).map((p) => ({ projetoId: p.id }));
 }
 
 async function Conteudo({ params }: { params: PageProps<"/projetos/[projetoId]">["params"] }) {
   const { projetoId } = await params;
-  const projeto = getProjeto(projetoId);
+  const projeto = await obterProjeto(projetoId);
   if (!projeto) notFound();
-  return <VisaoGeral projeto={projetoEnxuto(projeto)} />;
+  const resumos = await obterResumos(projeto.id);
+  return (
+    <VisaoGeral
+      projeto={projetoEnxuto(projeto)}
+      resumo={<ResumosDoProjeto resumos={resumos} concluido={projeto.status === "concluido"} />}
+    />
+  );
 }
 
 export default function PaginaVisaoGeral(props: PageProps<"/projetos/[projetoId]">) {

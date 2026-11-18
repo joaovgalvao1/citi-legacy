@@ -33,18 +33,39 @@ O login é de demonstração e tem um único usuário administrador, definido em
 
 As credenciais ficam no código do front-end e a sessão fica no navegador, então não há segurança real. O login só serve para simular a entrada na ferramenta interna. Sem login, qualquer página leva de volta à tela de login.
 
-## IA: resumo do projeto
+## Banco de dados
 
-Na Visão geral, cada projeto tem um **resumo gerado por IA**:
-- **projetos em andamento:** "Resumo da semana", com o que andou, o que travou e o que fazer primeiro;
-- **projetos concluídos:** "Retrospectiva", com o que foi entregue, como foi o projeto e quem procurar.
+Os dados ficam num **Postgres**:
+- **local:** um container Docker;
+- **na Vercel:** o **Neon**, gratuito.
 
-**Como funciona:**
-- A rota `POST /api/resumo` (`lib/resumo.ts`) monta o contexto do projeto: status, progresso, tasks feitas e pendentes, prazos, alertas, equipe com IC e commits recentes. Ela inclui as tasks marcadas no navegador.
-- O contexto vai para o **Gemini**. Se ele falhar, vai para o **Groq**. Se nenhum responder, a tela mostra um **resumo automático montado pelas regras**, sem IA.
-- A tela sempre diz de onde veio o texto. O resumo fica guardado no navegador até as tasks mudarem, e o botão "Gerar de novo" força uma nova chamada.
+O acesso é feito com o **Drizzle**, e o esquema está em `db/esquema.ts`. As tabelas são: `clientes`, `pessoas`, `projetos`, `membros_projeto`, `etapas` (com os caminhos do repositório), `tasks`, `commits` (com os arquivos alterados e as etapas) e `resumos` (resumos da IA).
 
-Para ativar a IA, copie `.env.example` para `.env.local` e preencha `GEMINI_API_KEY`; `GROQ_API_KEY` é opcional. Na Vercel, cadastre as mesmas variáveis em *Settings → Environment Variables*.
+O IC, a concentração, a atividade semanal e o primeiro e último commit de cada etapa são **calculados a partir dos commits do banco** (`lib/analise.ts`), com cache do Next. Marcar uma task grava no banco e vale para todos os usuários.
+
+```bash
+docker compose up -d        # sobe o Postgres local (porta 5433)
+npm run banco:preparar      # cria as tabelas e carrega os dados fictícios
+npm run banco:resumos       # gera o histórico inicial de resumos da IA (precisa da GEMINI_API_KEY)
+npm run banco:resumos -- --so-regras   # refaz só os que caíram no resumo automático
+```
+
+## IA: resumos do projeto
+
+Os resumos são gerados **fora da visita** e guardados no banco. A tela só lê, sem chamar a IA.
+
+- **Projeto em andamento: resumo semanal.**
+  - Toda **sexta-feira às 23h**, a **Vercel Cron** chama `/api/cron/resumos`, rota protegida por `CRON_SECRET`.
+  - O contexto é **a semana** (commits daqueles 7 dias, mais tasks, prazos e alertas atuais) e os **resumos das semanas anteriores**, com a instrução de **não repetir** o que já foi dito.
+  - A Visão geral mostra a semana mais recente e o **histórico das semanas anteriores**.
+- **Projeto concluído: resumo final**, gerado **uma única vez** e mantido fixo.
+
+Os provedores são tentados nesta ordem:
+1. **Gemini**, que tenta uma lista de modelos começando pelo `gemini-3.5-flash-lite`, o de maior cota gratuita;
+2. **Groq**;
+3. o **resumo automático pelas regras**.
+
+A tela sempre indica a fonte.
 
 ## Rodando localmente
 
@@ -53,11 +74,13 @@ npm install
 npm run dev
 ```
 
-Abra http://localhost:3000 e entre com o usuário de demonstração. Para gerar os dados de novo: `npm run dados`.
+Antes, suba o banco: `docker compose up -d` e `npm run banco:preparar`, e copie `.env.example` para `.env.local`.
+
+Abra http://localhost:3000 e entre com o usuário de demonstração. Para gerar os dados fictícios de novo e regravar no banco: `npm run banco:carregar` (os resumos da IA são mantidos).
 
 ## Dados
 
-São gerados por `npm run dados` a partir de `scripts/cenarios.mjs`. A data de referência ("hoje") é 17/11/2026.
+São gerados a partir de `scripts/cenarios.mjs` e gravados direto no banco por `npm run banco:carregar`, sem arquivos intermediários: o banco é a única fonte dos dados. O "hoje" das telas é a **data real** (fuso de Recife), então os prazos se atualizam sozinhos. Os commits fictícios vão até 16/11/2026.
 
 | Projeto | Status | Origem |
 |---|---|---|
@@ -142,14 +165,19 @@ components/membros/        cards de membros com abas e busca
 components/layout/         cabeçalho e proteção das páginas
 components/login/          formulário de login
 config/acesso.ts           usuário e senha de demonstração
-data/*.json                dados gerados (projetos e pessoas, commits, análises, data de referência)
-data/index.ts              leitura dos JSONs no formato usado pelas telas
-data/commits.ts            consultas aos commits (só no servidor)
+db/                        esquema do banco (Drizzle) e conexão
+data/index.ts              consultas ao banco, com cache, no formato usado pelas telas
+data/carregar.ts           leitura do banco e cálculo de IC/semanas por projeto
+lib/analise.ts             IC, concentração e atividade semanal a partir dos commits
+lib/hoje.ts                data de hoje (fuso de Recife)
 lib/indice.ts              Índice de Conhecimento
 lib/sessao.ts              sessão de demonstração (login/sair)
-lib/resumo.ts              contexto e chamada à IA (Gemini → Groq → regras)
-lib/tasks.ts               tasks marcadas no navegador e progresso
+lib/resumo.ts              resumos semanais (com memória) e final; Gemini → Groq → regras
+lib/tasks.ts               marcar tasks (ação do servidor + atualização otimista)
+app/api/cron/resumos/      rota do cron semanal
+scripts/carregar-banco.ts  gera os dados fictícios e grava no banco
+scripts/gerar-resumos.ts   histórico inicial de resumos
 lib/status.ts              status de etapas e projetos, progresso, prazo e alertas
-scripts/                   cenários e gerador dos dados (npm run dados)
+scripts/                   cenários, gerador dos dados fictícios e scripts do banco
 DEV_LOG.md                 como a IA foi usada em cada etapa
 ```

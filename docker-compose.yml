@@ -1,0 +1,23 @@
+# Banco de dados local do CITi Legacy (Postgres).
+#   docker compose up -d      sobe o banco
+#   npm run banco:preparar    cria as tabelas e carrega os dados
+services:
+  banco:
+    image: postgres:17-alpine
+    container_name: citi-legacy-banco
+    environment:
+      POSTGRES_USER: citi
+      POSTGRES_PASSWORD: citi
+      POSTGRES_DB: citi_legacy
+    ports:
+      - "5433:5432"
+    volumes:
+      - dados-banco:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U citi -d citi_legacy"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+volumes:
+  dados-banco:

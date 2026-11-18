@@ -3,23 +3,23 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { formatarData, formatarMesAno, getPessoa, pessoas, projetosDaPessoa } from "@/data";
-import { commitsDaPessoa } from "@/data/commits";
+import { formatarData, formatarMesAno, obterCommits, obterPessoa, obterPessoas, projetosDaPessoa } from "@/data";
 import { emPct } from "@/lib/indice";
 import { Selo, Voltar } from "@/components/ui";
 import { SeloStatusProjeto } from "@/components/projeto/status";
 
-export function generateStaticParams() {
-  return pessoas.map((p) => ({ membroId: p.id }));
+export async function generateStaticParams() {
+  return (await obterPessoas()).map((p) => ({ membroId: p.id }));
 }
 
 async function MembroConteudo({ params }: { params: PageProps<"/membros/[membroId]">["params"] }) {
   const { membroId } = await params;
-  const pessoa = getPessoa(membroId);
+  const pessoa = await obterPessoa(membroId);
   if (!pessoa) notFound();
 
-  const participacoes = projetosDaPessoa(pessoa.id);
-  const total = commitsDaPessoa(pessoa.id).length;
+  const participacoes = await projetosDaPessoa(pessoa.id);
+  const todos = await obterCommits({ autor: pessoa.id });
+  const total = todos.length;
 
   return (
     <div className="space-y-6">
@@ -37,7 +37,7 @@ async function MembroConteudo({ params }: { params: PageProps<"/membros/[membroI
 
       <ul className="grid gap-4 md:grid-cols-2">
         {participacoes.map(({ projeto, membro }) => {
-          const meus = commitsDaPessoa(pessoa.id, projeto.id);
+          const meus = todos.filter((c) => c.projetoId === projeto.id);
           return (
             <li key={projeto.id}>
               <Link href={`/projetos/${projeto.id}`} className="block h-full space-y-3 rounded-2xl border border-gray-300 bg-white p-5 transition-colors hover:border-verde/60">

@@ -1,81 +1,34 @@
 "use client";
 
-// Tasks marcadas/desmarcadas pelo admin, guardadas no navegador (localStorage).
-// O progresso de cada etapa é recalculado a partir delas.
+// Tasks marcadas pelo admin: gravadas no banco (ação do servidor) e aplicadas na tela na hora
+// (atualização otimista), antes mesmo de o servidor responder.
 
-import { useSyncExternalStore } from "react";
+import { useOptimistic, useTransition } from "react";
 import type { Projeto } from "@/data";
+import { alternarTask } from "@/app/acoes";
 
-const CHAVE = "citi-legacy:tasks";
-const EVENTO = "citi-legacy:tasks-mudou";
+type Mudanca = { etapaId: string; ordem: number; feita: boolean };
 
-/** Alterações feitas pelo admin: "<projeto>/<etapa>/<índice>" → feita? */
-type Marcadas = Record<string, boolean>;
-
-function ler(): string | null {
-  try {
-    return window.localStorage.getItem(CHAVE);
-  } catch {
-    return null;
-  }
-}
-
-function assinar(callback: () => void) {
-  window.addEventListener(EVENTO, callback);
-  window.addEventListener("storage", callback);
-  return () => {
-    window.removeEventListener(EVENTO, callback);
-    window.removeEventListener("storage", callback);
-  };
-}
-
-let cacheBruto: string | null = null;
-let cache: Marcadas = {};
-function parse(bruto: string | null): Marcadas {
-  if (bruto !== cacheBruto) {
-    cacheBruto = bruto;
-    try {
-      cache = bruto ? (JSON.parse(bruto) as Marcadas) : {};
-    } catch {
-      cache = {};
-    }
-  }
-  return cache;
-}
-
-const vazio: Marcadas = {};
-
-export function useMarcadas(): Marcadas {
-  const bruto = useSyncExternalStore(assinar, ler, () => null);
-  return bruto === null ? vazio : parse(bruto);
-}
-
-export function alternarTask(projetoId: string, etapaId: string, indice: number, feita: boolean) {
-  const atual = { ...parse(ler()), [`${projetoId}/${etapaId}/${indice}`]: feita };
-  try {
-    window.localStorage.setItem(CHAVE, JSON.stringify(atual));
-  } catch {
-    // sem armazenamento: a marcação não persiste
-  }
-  window.dispatchEvent(new Event(EVENTO));
-}
-
-/** Projeto com as tasks e o progresso das etapas atualizados pelas marcações do admin. */
-export function aplicarMarcadas(projeto: Projeto, marcadas: Marcadas): Projeto {
-  if (marcadas === vazio || !Object.keys(marcadas).some((k) => k.startsWith(`${projeto.id}/`))) return projeto;
+function aplicar(projeto: Projeto, m: Mudanca): Projeto {
   return {
     ...projeto,
     etapas: projeto.etapas.map((e) => {
-      const tasks = e.tasks.map((t, i) => {
-        const v = marcadas[`${projeto.id}/${e.id}/${i}`];
-        return v === undefined ? t : { ...t, feita: v };
-      });
+      if (e.id !== m.etapaId) return e;
+      const tasks = e.tasks.map((t, i) => (i === m.ordem ? { ...t, feita: m.feita } : t));
       return { ...e, tasks, progresso: Math.round((tasks.filter((t) => t.feita).length / tasks.length) * 100) };
     }),
   };
 }
 
-/** Atalho: o projeto já com as marcações do navegador. */
-export function useProjetoComTasks(projeto: Projeto) {
-  return aplicarMarcadas(projeto, useMarcadas());
+/** Projeto com as mudanças ainda não confirmadas aplicadas, e a função para marcar/desmarcar. */
+export function useTasks(projeto: Projeto) {
+  const [atual, aplicarOtimista] = useOptimistic(projeto, aplicar);
+  const [salvando, iniciar] = useTransition();
+  function alternar(etapaId: string, ordem: number, feita: boolean) {
+    iniciar(async () => {
+      aplicarOtimista({ etapaId, ordem, feita });
+      await alternarTask(projeto.id, etapaId, ordem, feita);
+    });
+  }
+  return { projeto: atual, alternar, salvando };
 }

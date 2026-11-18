@@ -7,10 +7,15 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "dados": "node scripts/gerar-dados.mjs"
+    "banco:migrar": "node --env-file-if-exists=.env.local node_modules/drizzle-kit/bin.cjs push --force",
+    "banco:carregar": "tsx --env-file-if-exists=.env.local scripts/carregar-banco.ts",
+    "banco:preparar": "npm run banco:migrar && npm run banco:carregar",
+    "banco:resumos": "tsx --env-file-if-exists=.env.local scripts/gerar-resumos.ts"
   },
   "dependencies": {
+    "drizzle-orm": "^0.45.4",
     "next": "16.4.6",
+    "postgres": "^4.1.1",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
@@ -19,9 +24,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.11",
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
     "tailwindcss": "4.3.3",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   }
 }

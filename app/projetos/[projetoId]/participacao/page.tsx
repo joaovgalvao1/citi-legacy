@@ -3,16 +3,16 @@
 
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { getProjeto, projetos } from "@/data";
+import { obterProjeto, obterProjetos } from "@/data";
 import { AbaParticipacao } from "@/components/projeto/abas-graficos";
 
-export function generateStaticParams() {
-  return projetos.map((p) => ({ projetoId: p.id }));
+export async function generateStaticParams() {
+  return (await obterProjetos()).map((p) => ({ projetoId: p.id }));
 }
 
 async function Conteudo({ params }: { params: PageProps<"/projetos/[projetoId]/participacao">["params"] }) {
   const { projetoId } = await params;
-  const projeto = getProjeto(projetoId);
+  const projeto = await obterProjeto(projetoId);
   if (!projeto) notFound();
   // a etapa escolhida vem da URL (?etapa=...), lida no navegador
   return (

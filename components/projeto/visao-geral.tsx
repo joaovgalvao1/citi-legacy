@@ -1,6 +1,6 @@
 "use client";
 
-// Conteúdo da aba "Visão geral". Roda no navegador porque o admin marca/desmarca tasks,
+// Conteúdo da aba "Visão geral". Roda no navegador porque o admin marca/desmarca tasks (gravadas no banco),
 // e o progresso, o status das etapas e os alertas mudam na hora.
 
 import Link from "next/link";
@@ -8,14 +8,14 @@ import type { Projeto } from "@/data";
 import { formatarData } from "@/data/formatos";
 import { emPct, lider } from "@/lib/indice";
 import { alertas, statusEtapa, textoPrazoEtapa } from "@/lib/status";
-import { alternarTask, useProjetoComTasks } from "@/lib/tasks";
+import { useTasks } from "@/lib/tasks";
 import { Alerta, Caixa } from "@/components/ui";
-import { ResumoIA } from "./resumo-ia";
+import type { ReactNode } from "react";
 import { BarraProgresso } from "@/components/ui/progresso";
 import { SeloStatusEtapa } from "./status";
 
-export function VisaoGeral({ projeto: original }: { projeto: Projeto }) {
-  const projeto = useProjetoComTasks(original);
+export function VisaoGeral({ projeto: original, resumo }: { projeto: Projeto; resumo: ReactNode }) {
+  const { projeto, alternar } = useTasks(original);
   const concluido = projeto.status === "concluido";
   const lista = alertas(projeto);
 
@@ -41,7 +41,7 @@ export function VisaoGeral({ projeto: original }: { projeto: Projeto }) {
         </Caixa>
       )}
 
-      <ResumoIA projetoId={projeto.id} concluido={concluido} />
+      {resumo}
 
       <Caixa titulo={`Etapas · ${projeto.etapas.length}`}>
         <ul className="divide-y divide-gray-300">
@@ -98,7 +98,7 @@ export function VisaoGeral({ projeto: original }: { projeto: Projeto }) {
                               type="checkbox"
                               checked={t.feita}
                               disabled={concluido}
-                              onChange={(ev) => alternarTask(projeto.id, e.id, i, ev.target.checked)}
+                              onChange={(ev) => alternar(e.id, i, ev.target.checked)}
                               className="mt-0.5 accent-[#00db58]"
                             />
                             <span className={t.feita ? "text-gray-500 line-through" : ""}>{t.titulo}</span>

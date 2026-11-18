@@ -15,7 +15,6 @@
 // Alertas (só projetos não concluídos): etapa atrasada e/ou parada, um por etapa.
 
 import type { Etapa, Projeto } from "@/data";
-import { dataReferencia } from "@/data/referencia.json";
 import { emPct } from "./indice";
 
 export const DIAS_PARADA = 14;
@@ -23,28 +22,27 @@ export const DIAS_PARADA = 14;
 const DIA = 86400000;
 const data = (iso: string) => new Date(`${iso.slice(0, 10)}T12:00:00Z`).getTime();
 export const diasEntre = (de: string, ate: string) => Math.round((data(ate) - data(de)) / DIA);
-const hoje = dataReferencia;
 
 export type StatusEtapa = "Concluída" | "Em andamento" | "Atrasada" | "Em planejamento";
 export type StatusProjeto = "Concluído" | "Em andamento" | "Atrasado";
 
 export function statusEtapa(projeto: Projeto, etapa: Etapa): StatusEtapa {
   if (etapa.progresso >= 100 || projeto.status === "concluido") return "Concluída";
-  if (hoje > etapa.fimPrevisto) return "Atrasada";
-  if (etapa.progresso === 0 && hoje < etapa.inicioPrevisto) return "Em planejamento";
+  if (projeto.hoje > etapa.fimPrevisto) return "Atrasada";
+  if (etapa.progresso === 0 && projeto.hoje < etapa.inicioPrevisto) return "Em planejamento";
   return "Em andamento";
 }
 
 /** Dias sem commits numa etapa que ainda não acabou (null se não está parada). */
 export function diasParada(projeto: Projeto, etapa: Etapa): number | null {
   if (statusEtapa(projeto, etapa) === "Concluída" || !etapa.ultimoCommit) return null;
-  const dias = diasEntre(etapa.ultimoCommit, hoje);
+  const dias = diasEntre(etapa.ultimoCommit, projeto.hoje);
   return dias >= DIAS_PARADA ? dias : null;
 }
 
 export function statusProjeto(projeto: Projeto): StatusProjeto {
   if (projeto.status === "concluido") return "Concluído";
-  if (hoje > projeto.fimPrevisto) return "Atrasado";
+  if (projeto.hoje > projeto.fimPrevisto) return "Atrasado";
   return "Em andamento";
 }
 
@@ -53,11 +51,11 @@ export function textoPrazoEtapa(projeto: Projeto, etapa: Etapa) {
   const s = statusEtapa(projeto, etapa);
   if (s === "Concluída") return "";
   if (s === "Em planejamento") {
-    const d = diasEntre(hoje, etapa.inicioPrevisto);
+    const d = diasEntre(projeto.hoje, etapa.inicioPrevisto);
     return d <= 0 ? "começa hoje" : `começa em ${d} ${d === 1 ? "dia" : "dias"}`;
   }
-  if (s === "Atrasada") return `atrasada há ${diasEntre(etapa.fimPrevisto, hoje)} dias`;
-  const d = diasEntre(hoje, etapa.fimPrevisto);
+  if (s === "Atrasada") return `atrasada há ${diasEntre(etapa.fimPrevisto, projeto.hoje)} dias`;
+  const d = diasEntre(projeto.hoje, etapa.fimPrevisto);
   return d === 0 ? "prazo termina hoje" : `faltam ${d} ${d === 1 ? "dia" : "dias"}`;
 }
 
@@ -75,7 +73,7 @@ export function textoPrazo(projeto: Projeto) {
     if (d < 0) return `entregue em ${quando}, ${-d} dias antes do previsto`;
     return `entregue em ${quando}, no prazo`;
   }
-  const d = diasEntre(hoje, projeto.fimPrevisto);
+  const d = diasEntre(projeto.hoje, projeto.fimPrevisto);
   if (d < 0) return `atrasado há ${-d} dias`;
   return d === 0 ? "prazo termina hoje" : `faltam ${d} dias`;
 }
@@ -108,7 +106,7 @@ export function alertas(projeto: Projeto): Alerta[] {
     const atrasada = statusEtapa(projeto, etapa) === "Atrasada";
     const parada = diasParada(projeto, etapa);
     if (!atrasada && parada === null) continue;
-    const diasAtraso = atrasada ? diasEntre(etapa.fimPrevisto, hoje) : 0;
+    const diasAtraso = atrasada ? diasEntre(etapa.fimPrevisto, projeto.hoje) : 0;
     const partes = [
       atrasada ? `atrasada há ${diasAtraso} dias (${emPct(etapa.progresso)} concluído)` : null,
       parada !== null ? `sem commits há ${parada} dias` : null,

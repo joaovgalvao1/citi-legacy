@@ -4,17 +4,17 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProjeto, projetos } from "@/data";
+import { obterProjeto, obterProjetos } from "@/data";
 import { formatarData } from "@/data/formatos";
 import { Caixa, Selo } from "@/components/ui";
 
-export function generateStaticParams() {
-  return projetos.map((p) => ({ projetoId: p.id }));
+export async function generateStaticParams() {
+  return (await obterProjetos()).map((p) => ({ projetoId: p.id }));
 }
 
 async function Sobre({ params }: { params: PageProps<"/projetos/[projetoId]/sobre">["params"] }) {
   const { projetoId } = await params;
-  const projeto = getProjeto(projetoId);
+  const projeto = await obterProjeto(projetoId);
   if (!projeto) notFound();
 
   return (
