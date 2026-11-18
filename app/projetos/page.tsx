@@ -29,7 +29,12 @@ export default async function Projetos() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold">Projetos</h1>
-        <BotaoLink href="/projetos/novo">+ Novo projeto</BotaoLink>
+        <div className="flex flex-wrap gap-2">
+          <BotaoLink href="/exportar/boletim" variante="secundario">
+            Boletim da semana (PDF)
+          </BotaoLink>
+          <BotaoLink href="/projetos/novo">+ Novo projeto</BotaoLink>
+        </div>
       </div>
       <ListaProjetos projetos={resumos} />
     </div>

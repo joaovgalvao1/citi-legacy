@@ -11,6 +11,7 @@ import { emPct } from "@/lib/indice";
 import { progressoProjeto, statusEtapa, statusProjeto, textoEntrega, textoPrazo } from "@/lib/status";
 import { ddmm, fimDaSemana, ROTULO_FONTE } from "@/components/projeto/resumos";
 import { BarraDeImpressao } from "@/components/exportar/imprimir";
+import { CabecalhoFolha, Dado, Secoes, Titulo } from "@/components/exportar/folha";
 
 export async function generateStaticParams() {
   return (await obterProjetos()).map((p) => ({ projetoId: p.id }));
@@ -24,40 +25,6 @@ export async function generateMetadata({ params }: PageProps<"/exportar/[projeto
 }
 
 const semana = (r: Resumo) => `${ddmm(r.semana)} a ${ddmm(fimDaSemana(r.semana))}`;
-
-function Dado({ rotulo, valor, destaque }: { rotulo: string; valor: string; destaque?: "ambar" | "verde" }) {
-  const cor = destaque === "ambar" ? "text-[#b86e00]" : destaque === "verde" ? "text-[#00873a]" : "text-[#161616]";
-  return (
-    <div className="rounded-lg border border-[#e4e4e4] px-3 py-2.5">
-      <p className="text-[9px] font-semibold uppercase tracking-[0.14em] text-[#8a8a8a]">{rotulo}</p>
-      <p className={`dado mt-1 text-[12px] font-medium ${cor}`}>{valor}</p>
-    </div>
-  );
-}
-
-function Secoes({ resumo, compacto = false }: { resumo: Resumo; compacto?: boolean }) {
-  return (
-    <div className={compacto ? "grid grid-cols-3 gap-4" : "space-y-4"}>
-      {resumo.secoes.map((s) => (
-        <div key={s.titulo} className={compacto ? "" : "grid grid-cols-[38mm_1fr] gap-4"}>
-          <h4
-            className={`font-semibold uppercase tracking-[0.12em] text-[#00873a] ${compacto ? "mb-1.5 text-[8.5px]" : "pt-0.5 text-[9.5px]"}`}
-          >
-            {s.titulo}
-          </h4>
-          <ul className={compacto ? "space-y-1" : "space-y-1.5"}>
-            {s.itens.map((item, i) => (
-              <li key={i} className={`flex gap-2 leading-snug text-[#2a2a2a] ${compacto ? "text-[9.5px]" : "text-[11.5px]"}`}>
-                <span aria-hidden="true" className="mt-[0.45em] h-1 w-1 shrink-0 rounded-full bg-[#00DB58]" />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 function Etapas({ projeto }: { projeto: Projeto }) {
   return (
@@ -85,10 +52,6 @@ function Etapas({ projeto }: { projeto: Projeto }) {
   );
 }
 
-function Titulo({ children }: { children: React.ReactNode }) {
-  return <h3 className="mb-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a8a8a]">{children}</h3>;
-}
-
 async function Documento({ params }: { params: PageProps<"/exportar/[projetoId]">["params"] }) {
   const { projetoId } = await params;
   const projeto = await obterProjeto(projetoId);
@@ -101,23 +64,10 @@ async function Documento({ params }: { params: PageProps<"/exportar/[projetoId]"
 
   return (
     <>
-      <BarraDeImpressao projetoId={projeto.id} />
+      <BarraDeImpressao voltar={`/projetos/${projeto.id}`} rotuloVoltar="Voltar ao projeto" />
 
       <article className="folha mx-auto w-full max-w-[210mm] rounded-sm bg-[#ffffff] px-[16mm] py-[14mm] text-[#161616] shadow-2xl">
-        {/* cabeçalho */}
-        <header className="flex items-start justify-between gap-6 border-b-2 border-[#00DB58] pb-4">
-          <div className="flex items-center gap-2">
-            {/* eslint-disable-next-line @next/next/no-img-element -- imagem simples para impressão */}
-            <img src="/marca/citi-logo-verde.png" alt="CITi" className="h-7 w-auto" />
-            <span className="text-lg font-bold tracking-tight">Legacy</span>
-          </div>
-          <div className="text-right">
-            <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#00873a]">
-              {concluido ? "Resumo final do projeto" : "Resumo semanal do projeto"}
-            </p>
-            <p className="dado mt-1 text-[10px] text-[#8a8a8a]">exportado em {formatarData(projeto.hoje)}</p>
-          </div>
-        </header>
+        <CabecalhoFolha rotulo={concluido ? "Resumo final do projeto" : "Resumo semanal do projeto"} data={projeto.hoje} />
 
         {/* projeto */}
         <section className="mt-6">

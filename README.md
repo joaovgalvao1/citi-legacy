@@ -27,6 +27,7 @@ Tudo é calculado a partir dos commits.
 | Membros (abas Na empresa / Já saíram, busca) | `/membros` |
 | Membro | `/membros/[membroId]` |
 | Resumo do projeto para PDF | `/exportar/[projetoId]` |
+| Boletim semanal da empresa para PDF | `/exportar/boletim` |
 
 ## Acesso ao protótipo
 
@@ -89,6 +90,14 @@ Na Visão geral de cada projeto, o botão **Exportar PDF** abre a versão de imp
 - cabeçalho com status, progresso, prazo e período do projeto;
 - resumo da semana em destaque, etapas com o progresso e o histórico das semanas anteriores;
 - nos concluídos, o resumo final e os resultados.
+
+Em Projetos, o botão **Boletim da semana (PDF)** abre `/exportar/boletim`, no mesmo visual:
+- a semana do resumo mais recente;
+- quatro números: projetos em andamento, atrasados, etapas paradas e commits na semana;
+- um bloco por projeto em andamento, com status, progresso, prazo, alertas e o resumo da IA. Os atrasados vêm primeiro;
+- no fim, a lista dos concluídos.
+
+Os dados do boletim são montados em `lib/boletim.ts`, que também serve ao e-mail de sexta-feira.
 
 O botão **Salvar como PDF** abre a janela de impressão do navegador. O nome do arquivo sugerido é o título da página (`Resumo · <projeto> · CITi Legacy`).
 

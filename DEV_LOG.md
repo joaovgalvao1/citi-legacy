@@ -685,3 +685,18 @@ Ficaram de fora o boletim da empresa inteira e a imagem para WhatsApp/Slack.
 - a página abriu com "faltam 100 dias", uma etapa em andamento e outra "começa em 47 dias", e "Ainda sem commits";
 - conferi as abas Sobre e Participação, o PDF, o card na lista e a página do membro;
 - depois apaguei o projeto de teste.
+
+### Boletim semanal da empresa em PDF (18/11)
+
+**O que a IA fez:**
+- **`lib/boletim.ts`:** monta o boletim uma vez só, e ele serve ao PDF e ao e-mail:
+  - semana do resumo mais recente;
+  - números da semana: em andamento, atrasados, etapas paradas e commits;
+  - projetos em andamento ordenados com os atrasados primeiro, cada um com os alertas e o resumo da IA;
+  - lista dos concluídos.
+- **`/exportar/boletim`:**
+  - mesmo visual A4 do PDF do projeto;
+  - as peças comuns (cabeçalho, caixas, seções do resumo) foram separadas em `components/exportar/folha.tsx`, para os dois documentos ficarem iguais;
+  - o botão "Boletim da semana (PDF)" fica na tela de Projetos.
+
+**Verificação:** a página abriu pela navegação do app com a semana de 09/11 a 15/11, os números (4 em andamento, 1 atrasado, 4 etapas paradas, 32 commits) e a Plataforma de Voluntariado em primeiro lugar, com os quatro alertas e o resumo.
