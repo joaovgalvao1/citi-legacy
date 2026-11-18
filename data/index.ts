@@ -4,11 +4,9 @@
 // As leituras usam o cache do Next ('use cache' + cacheTag "dados"): as páginas continuam rápidas,
 // e marcar uma task invalida o cache (updateTag) para todos verem a mudança.
 
-import { desc, eq } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
-import { db, esquema } from "@/db/conexao";
 import type { Semana, Sinais } from "@/lib/analise";
-import { carregarClientes, carregarCommits, carregarTudo } from "./carregar";
+import { carregarClientes, carregarCommits, carregarResumos, carregarTudo } from "./carregar";
 
 export type { Semana, Sinais };
 
@@ -164,19 +162,7 @@ export async function obterResumos(projetoId: string): Promise<Resumo[]> {
   "use cache";
   cacheTag("resumos");
   cacheLife("hours");
-  const linhas = await db
-    .select()
-    .from(esquema.resumos)
-    .where(eq(esquema.resumos.projetoId, projetoId))
-    .orderBy(desc(esquema.resumos.semana));
-  return linhas.map((r) => ({
-    tipo: r.tipo as Resumo["tipo"],
-    semana: r.semana,
-    secoes: r.secoes,
-    fonte: r.fonte as Resumo["fonte"],
-    modelo: r.modelo,
-    geradoEm: r.geradoEm.toISOString(),
-  }));
+  return carregarResumos(projetoId);
 }
 
 /* ---------- utilitários ---------- */

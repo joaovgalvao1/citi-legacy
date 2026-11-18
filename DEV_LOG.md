@@ -700,3 +700,15 @@ Ficaram de fora o boletim da empresa inteira e a imagem para WhatsApp/Slack.
   - o botão "Boletim da semana (PDF)" fica na tela de Projetos.
 
 **Verificação:** a página abriu pela navegação do app com a semana de 09/11 a 15/11, os números (4 em andamento, 1 atrasado, 4 etapas paradas, 32 commits) e a Plataforma de Voluntariado em primeiro lugar, com os quatro alertas e o resumo.
+
+### Boletim por e-mail (18/11)
+
+**O que a IA fez:**
+- **`lib/email.ts`:** HTML do e-mail com tabelas e estilos embutidos, o formato que os leitores de e-mail aceitam. Tem o mesmo conteúdo do boletim em PDF, mais um link para cada projeto e o botão "Ver o boletim em PDF". O envio é uma chamada direta à API HTTP do Resend, sem biblioteca, com timeout de 15 s.
+- **Cron de sexta:** depois de gerar os resumos, monta o boletim lendo o banco direto e envia. O cache ainda teria os resumos antigos, por isso a leitura direta (`carregarResumos`, que agora também serve à versão com cache).
+- **`npm run boletim:enviar`:** envia na hora. Com `--html arquivo.html`, só grava o e-mail para conferir.
+- Sem `RESEND_API_KEY` ou `BOLETIM_PARA`, o envio é pulado com o motivo, sem quebrar o cron.
+
+**Verificação:**
+- gerei o HTML com os dados locais e conferi o visual no navegador (um ajuste: a coluna do prazo foi alargada para não quebrar a linha);
+- sem a chave, o script avisa "boletim NÃO enviado: RESEND_API_KEY não configurada".

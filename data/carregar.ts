@@ -1,11 +1,11 @@
 // Leitura direta do banco, sem cache do Next. Usada pela camada de dados (com cache)
 // e pelos scripts (carga de resumos), que rodam fora do Next.
 
-import { asc, desc } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 import { db, esquema } from "@/db/conexao";
 import { hoje as hojeAgora, somarDias } from "@/lib/hoje";
 import { concentracao, indiceConhecimento, listaSemanas, PESOS_IC, semanasDe } from "@/lib/analise";
-import type { Commit, Pessoa, Projeto } from "./index";
+import type { Commit, Pessoa, Projeto, Resumo } from "./index";
 
 
 export async function carregarTudo() {
@@ -94,4 +94,21 @@ export async function carregarCommits(filtro: { projetoId?: string; autor?: stri
 
 export async function carregarClientes() {
   return db.select().from(esquema.clientes).orderBy(asc(esquema.clientes.nome));
+}
+
+/** Resumos da IA de um projeto, do mais recente para o mais antigo. */
+export async function carregarResumos(projetoId: string): Promise<Resumo[]> {
+  const linhas = await db
+    .select()
+    .from(esquema.resumos)
+    .where(eq(esquema.resumos.projetoId, projetoId))
+    .orderBy(desc(esquema.resumos.semana));
+  return linhas.map((r) => ({
+    tipo: r.tipo as Resumo["tipo"],
+    semana: r.semana,
+    secoes: r.secoes,
+    fonte: r.fonte as Resumo["fonte"],
+    modelo: r.modelo,
+    geradoEm: r.geradoEm.toISOString(),
+  }));
 }
