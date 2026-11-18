@@ -9,9 +9,11 @@ Protótipo para o desafio **Inovação no PS** do CITi. O CITi Legacy é um **vi
 
 Tudo é calculado a partir dos commits.
 
+**No ar:** https://citi-legacy.vercel.app (login `admin` / `admin`)
+
 ## Estado atual
 
-**Etapa 3: alta fidelidade, em andamento.** A identidade visual do CITi já está aplicada: fundo escuro, verde `#00DB58` para ações e progresso, âmbar `#FFA630` para alertas, Inter Tight e IBM Plex Mono. O resumo gerado por IA está pronto. Falta o deploy.
+**Etapa 3: alta fidelidade, em andamento.** A identidade visual do CITi já está aplicada: fundo escuro, verde `#00DB58` para ações e progresso, âmbar `#FFA630` para alertas, Inter Tight e IBM Plex Mono. O resumo gerado por IA está pronto e o protótipo está publicado na Vercel, com o banco no Neon.
 
 | Tela | Rota |
 |---|---|

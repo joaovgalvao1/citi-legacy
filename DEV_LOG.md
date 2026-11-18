@@ -584,3 +584,28 @@ A IA recomendou trocar a chave. Gerei uma nova e coloquei direto no `.env.local`
   - Os commits fictícios continuam terminando em 16/11 (data dos dados em `cenarios.mjs`), para não desalinhar dos resumos já gerados.
 
 **Verificação:** os dados gerados são idênticos aos que estavam no banco (mesmos hashes e datas). A carga refeita manteve os 18 resumos.
+
+## Deploy na Vercel com banco Neon (18/11)
+
+**O que pedi:** publicar o protótipo na Vercel.
+
+**Como foi feito:**
+- **Eu, no painel da Vercel:**
+  - importei o repositório do GitHub;
+  - criei o banco **Neon** pela integração de Storage: região São Paulo, plano Free, sem o Auth do Neon (o login é o nosso), prefixo `DATABASE` para gerar a variável `DATABASE_URL`;
+  - cadastrei `GEMINI_API_KEY` e `CRON_SECRET` como *Secret* em Production e Preview;
+  - refiz o deploy.
+- **A IA me guiou tela por tela** e explicou cada opção do painel (o que mudar e o que deixar como está).
+- **Carga do banco pela IA:**
+  - a URL do Neon ficou num arquivo local ignorado pelo git (`.env.neon`), sem passar pelo chat;
+  - a IA criou as tabelas e carregou os dados no Neon com os mesmos scripts do banco local;
+  - os 18 resumos do Gemini foram **copiados** do banco local em vez de gerados de novo, para não gastar cota da API.
+- **Um tropeço:**
+  - a primeira tentativa de carga leu o arquivo com `source`, e o `&` da URL quebrou o comando. A carga foi para o banco local por engano, sem prejuízo, porque os dados eram os mesmos;
+  - a IA percebeu pela mensagem "No changes detected", que não fazia sentido num banco novo, conferiu consultando o Neon direto e refez.
+
+**Verificação no site publicado** (https://citi-legacy.vercel.app):
+- entrada, login, projetos, membros e as três abas de um projeto respondem 200, com os dados do Neon;
+- a Visão geral mostra o resumo da semana gerado pelo Gemini e as semanas anteriores;
+- a rota do cron recusa chamadas sem o segredo (401);
+- o HTML público da entrada não contém nomes de pessoas nem de projetos.
