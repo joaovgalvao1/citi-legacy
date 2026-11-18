@@ -54,7 +54,15 @@ São gerados por `npm run dados` a partir de `scripts/cenarios.mjs`. A data de r
 | Neoenergia · GALT | Concluído | **case real do CITi** |
 | Riachuelo · plataforma omnichannel | Concluído | **case real do CITi** |
 
-Nos cases reais, o contexto e os resultados vêm do material do CITi. **Pessoas, commits, prazos e progresso das etapas são fictícios em todos os projetos**: 20 pessoas e 808 commits. Algumas pessoas participam de mais de um projeto, e três já saíram da empresa. Os contextos dos projetos que não são cases reais foram escritos para o protótipo.
+Nos cases reais, o contexto e os resultados vêm do material do CITi. **Pessoas, commits, arquivos, prazos e tasks das etapas são fictícios em todos os projetos**: 20 pessoas e 808 commits. Algumas pessoas participam de mais de um projeto, e três já saíram da empresa. Os contextos dos projetos que não são cases reais foram escritos para o protótipo.
+
+### Etapas ↔ repositório
+
+Cada etapa tem **caminhos do repositório**, como `src/estoque/**`, `etl/**` ou `.github/**`. Cada commit tem a lista de **arquivos que alterou**. Um commit conta numa etapa quando altera algum arquivo dentro dos caminhos dela; se mexer em arquivos de duas etapas, conta nas duas. É assim que se calculam a atividade e o IC de cada etapa.
+
+### Progresso pelas tasks
+
+Cada etapa tem uma lista de **tasks**. O **progresso da etapa é a fração de tasks concluídas**. Na Visão geral, o admin marca e desmarca as tasks, e o progresso, o status da etapa, os alertas, o cabeçalho do projeto e o card na lista mudam na hora. As marcações ficam salvas no navegador.
 
 ### Status
 
@@ -65,7 +73,7 @@ Nos cases reais, o contexto e os resultados vêm do material do CITi. **Pessoas,
   - **em andamento** no resto;
   - além disso, ela fica **parada** quando passa 14 dias ou mais sem commits sem estar concluída.
 - **Projeto:** **concluído** (entregue), **atrasado** (passou do fim previsto) ou **em andamento**.
-- **Progresso do projeto:** a média do progresso das etapas. O progresso de cada etapa é informado pelo gerente do projeto.
+- **Progresso do projeto:** a média do progresso das etapas, que vem das tasks concluídas.
 
 ### Índice de Conhecimento (IC)
 
@@ -87,7 +95,14 @@ Só em projetos não concluídos. Cada etapa atrasada ou parada gera um alerta, 
 - **Login:** usuário único de demonstração e botão Sair no cabeçalho.
 - **Projetos:** cards com nome, cliente, status, progresso, prazo e o alerta principal. Os concluídos mostram a entrega e o resultado.
 - **Projeto, em 3 abas** (o cabeçalho, com status, progresso e prazo, aparece em todas):
-  - **Visão geral:** precisa de atenção (nos concluídos, resultados), espaço do resumo por IA (etapa 3) e lista de etapas. Cada etapa mostra o escopo (o que inclui), o status, o progresso, a contagem de prazo ("faltam 17 dias", "atrasada há 18 dias", "começa em 13 dias") e quem mais sabe. Clicar numa etapa abre a aba Participação já filtrada nela.
+  - **Visão geral:** precisa de atenção (nos concluídos, resultados), espaço do resumo por IA (etapa 3) e lista de etapas. Cada etapa mostra:
+    - o escopo (o que inclui) e o status;
+    - o progresso, com "x de y tasks";
+    - a contagem de prazo ("faltam 17 dias", "atrasada há 18 dias", "começa em 13 dias");
+    - quem mais sabe;
+    - um painel que abre e fecha, com as **tasks marcáveis** e os **caminhos do repositório** da etapa.
+
+    "Ver participação →" abre a aba Participação já filtrada na etapa, que mostra também os caminhos que contam nela.
   - **Sobre:** sobre o projeto (cliente, objetivo, contexto e período), equipe e resultados.
   - **Participação:** os dois gráficos na mesma página, com um único seletor "Projeto todo / Etapa":
     - **Conhecimento:** IC por membro, com "Como o IC foi calculado" recolhível.

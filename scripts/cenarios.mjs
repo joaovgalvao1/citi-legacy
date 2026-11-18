@@ -5,8 +5,9 @@
 // Projetos concluídos: cases reais do CITi (Neoenergia GALT e Riachuelo). Em todos eles,
 // as PESSOAS E OS COMMITS SÃO FICTÍCIOS; dos cases reais vêm só o contexto e os resultados.
 //
-// Cada etapa tem: período previsto [início, fim], progresso (%) informado pelo gerente do projeto
-// e a "janela" (fração do período de commits do projeto em que a etapa recebeu commits).
+// Cada etapa tem: período previsto [início, fim], progresso (%) de referência (vira o número de tasks
+// concluídas), "janela" (fração do período de commits em que a etapa recebeu commits) e, opcionalmente,
+// caminhos do repositório (padrão: src/<etapa>/**) e tasks (padrão: as entregas das mensagens de commit).
 //
 // plano de cada membro: { etapaId: [nº de commits, média de linhas adicionadas, sobrevivência] }
 //   sobrevivência = fração das linhas adicionadas que continua no código hoje (vira "linhas efetivas")
@@ -54,7 +55,7 @@ export const cenarios = [
       { id: "estoque", nome: "Estoque", descricao: "Entradas, saídas, alertas de reposição", janela: [0.25, 1], previsto: ["2026-09-01", "2026-11-27"], progresso: 75 },
       { id: "pedidos", nome: "Pedidos e checkout", descricao: "Carrinho, pedidos e status de entrega", janela: [0.45, 1], previsto: ["2026-09-28", "2026-12-11"], progresso: 55 },
       { id: "infra", nome: "Infra/Deploy", descricao: "CI, banco e deploy", janela: [0, 1], previsto: ["2026-08-03", "2026-12-18"], progresso: 60 },
-      { id: "relatorios", nome: "Relatórios de vendas", descricao: "Vendas por planta, categoria e período, e plantas mais vendidas", janela: [0, 0], previsto: ["2026-11-30", "2026-12-18"], progresso: 0 },
+      { id: "relatorios", nome: "Relatórios de vendas", descricao: "Vendas por planta, categoria e período, e plantas mais vendidas", janela: [0, 0], previsto: ["2026-11-30", "2026-12-18"], progresso: 0, tasks: ["Relatório de vendas por planta", "Filtro por período e categoria", "Ranking das plantas mais vendidas", "Exportação em PDF"] },
     ],
     membros: [
       {
@@ -158,7 +159,7 @@ export const cenarios = [
       { id: "unidades", nome: "Multiunidade (BV/CF)", descricao: "Separação de agendas, salas e dados entre BV e CF", janela: [0.3, 1], previsto: ["2026-09-07", "2026-12-04"], progresso: 70 },
       { id: "financeiro", nome: "Financeiro", descricao: "Pagamentos, convênios e repasses", janela: [0.5, 1], previsto: ["2026-09-28", "2026-12-11"], progresso: 45 },
       { id: "infra", nome: "Infra/Deploy", descricao: "CI, banco e deploy", janela: [0, 1], previsto: ["2026-07-27", "2026-12-11"], progresso: 60 },
-      { id: "implantacao", nome: "Implantação nas unidades", descricao: "Migração dos dados antigos e treinamento das equipes de BV e CF", janela: [0, 0], previsto: ["2026-11-30", "2026-12-11"], progresso: 0 },
+      { id: "implantacao", nome: "Implantação nas unidades", descricao: "Migração dos dados antigos e treinamento das equipes de BV e CF", janela: [0, 0], previsto: ["2026-11-30", "2026-12-11"], progresso: 0, tasks: ["Migrar dados antigos de BV", "Migrar dados antigos de CF", "Treinar equipe de BV", "Treinar equipe de CF", "Acompanhar a primeira semana de uso"] },
     ],
     membros: [
       {
@@ -261,12 +262,12 @@ export const cenarios = [
     inicio: "2026-08-10",
     fimPrevisto: "2026-12-18",
     etapas: [
-      { id: "limpeza", nome: "Limpeza de dados", descricao: "Padronização das planilhas de produção e pipeline ETL", janela: [0, 0.6], previsto: ["2026-08-10", "2026-10-09"], progresso: 100 },
-      { id: "agente-dados", nome: "Agente de leitura de dados", descricao: "Agente que consulta os dados limpos e responde perguntas", janela: [0.35, 0.78], previsto: ["2026-09-14", "2026-11-27"], progresso: 65 },
-      { id: "agente-manual", nome: "Agente do manual", descricao: "Agente (RAG) que responde sobre o manual de instrução", janela: [0.3, 1], previsto: ["2026-09-07", "2026-12-11"], progresso: 70 },
-      { id: "interface", nome: "Interface de chat", descricao: "Tela de conversa com os dois agentes", janela: [0.45, 1], previsto: ["2026-10-05", "2026-12-18"], progresso: 50 },
+      { id: "limpeza", nome: "Limpeza de dados", descricao: "Padronização das planilhas de produção e pipeline ETL", janela: [0, 0.6], previsto: ["2026-08-10", "2026-10-09"], progresso: 100, caminhos: ["etl/**"] },
+      { id: "agente-dados", nome: "Agente de leitura de dados", descricao: "Agente que consulta os dados limpos e responde perguntas", janela: [0.35, 0.78], previsto: ["2026-09-14", "2026-11-27"], progresso: 65, caminhos: ["agentes/dados/**"] },
+      { id: "agente-manual", nome: "Agente do manual", descricao: "Agente (RAG) que responde sobre o manual de instrução", janela: [0.3, 1], previsto: ["2026-09-07", "2026-12-11"], progresso: 70, caminhos: ["agentes/manual/**"] },
+      { id: "interface", nome: "Interface de chat", descricao: "Tela de conversa com os dois agentes", janela: [0.45, 1], previsto: ["2026-10-05", "2026-12-18"], progresso: 50, caminhos: ["web/chat/**"] },
       { id: "infra", nome: "Infra/Deploy", descricao: "CI, chaves de API e deploy", janela: [0, 1], previsto: ["2026-08-10", "2026-12-18"], progresso: 55 },
-      { id: "avaliacao", nome: "Avaliação com operadores", descricao: "Testes dos agentes com operadores do chão de fábrica e ajustes finais", janela: [0, 0], previsto: ["2026-12-01", "2026-12-18"], progresso: 0 },
+      { id: "avaliacao", nome: "Avaliação com operadores", descricao: "Testes dos agentes com operadores do chão de fábrica e ajustes finais", janela: [0, 0], previsto: ["2026-12-01", "2026-12-18"], progresso: 0, tasks: ["Roteiro de testes com operadores", "Sessões de teste no chão de fábrica", "Consolidar feedback dos operadores", "Ajustes finais nos agentes"] },
     ],
     membros: [
       {
@@ -444,12 +445,12 @@ export const cenarios = [
     fimPrevisto: "2026-03-13",
     entrega: "2026-03-20",
     etapas: [
-      { id: "ingestao", nome: "Ingestão de oscilografias", descricao: "Leitura e padronização dos registros elétricos do evento", janela: [0, 0.3], previsto: ["2025-09-01", "2025-10-17"], progresso: 100 },
-      { id: "sinais", nome: "Processamento de sinais", descricao: "Filtragem, fasores e instante da falta", janela: [0.1, 0.5], previsto: ["2025-09-22", "2025-11-21"], progresso: 100 },
-      { id: "localizacao", nome: "Modelo de localização", descricao: "Machine learning para estimar onde a falha ocorreu na linha", janela: [0.3, 0.9], previsto: ["2025-10-20", "2026-02-13"], progresso: 100 },
-      { id: "causas", nome: "Classificação de causas", descricao: "Indicação das causas prováveis da ocorrência", janela: [0.45, 0.95], previsto: ["2025-11-17", "2026-02-27"], progresso: 100 },
-      { id: "plataforma", nome: "Plataforma web", descricao: "Envio do evento, resultado na linha e apoio à inspeção", janela: [0.35, 1], previsto: ["2025-11-03", "2026-03-13"], progresso: 100 },
-      { id: "validacao", nome: "Validação em casos reais", descricao: "Avaliação do erro de localização em ocorrências reais", janela: [0.75, 1], previsto: ["2026-01-19", "2026-03-13"], progresso: 100 },
+      { id: "ingestao", nome: "Ingestão de oscilografias", descricao: "Leitura e padronização dos registros elétricos do evento", janela: [0, 0.3], previsto: ["2025-09-01", "2025-10-17"], progresso: 100, caminhos: ["pipeline/ingestao/**"] },
+      { id: "sinais", nome: "Processamento de sinais", descricao: "Filtragem, fasores e instante da falta", janela: [0.1, 0.5], previsto: ["2025-09-22", "2025-11-21"], progresso: 100, caminhos: ["pipeline/sinais/**"] },
+      { id: "localizacao", nome: "Modelo de localização", descricao: "Machine learning para estimar onde a falha ocorreu na linha", janela: [0.3, 0.9], previsto: ["2025-10-20", "2026-02-13"], progresso: 100, caminhos: ["modelos/localizacao/**"] },
+      { id: "causas", nome: "Classificação de causas", descricao: "Indicação das causas prováveis da ocorrência", janela: [0.45, 0.95], previsto: ["2025-11-17", "2026-02-27"], progresso: 100, caminhos: ["modelos/causas/**"] },
+      { id: "plataforma", nome: "Plataforma web", descricao: "Envio do evento, resultado na linha e apoio à inspeção", janela: [0.35, 1], previsto: ["2025-11-03", "2026-03-13"], progresso: 100, caminhos: ["web/**"] },
+      { id: "validacao", nome: "Validação em casos reais", descricao: "Avaliação do erro de localização em ocorrências reais", janela: [0.75, 1], previsto: ["2026-01-19", "2026-03-13"], progresso: 100, caminhos: ["validacao/**"] },
     ],
     membros: [
       { id: "marcos-vilela", papel: "Tech lead · ML", plano: { localizacao: [22, 130, 0.85], causas: [10, 90, 0.8], validacao: [8, 60, 0.8], sinais: [3, 50, 0.6] } },
@@ -534,12 +535,12 @@ export const cenarios = [
     fimPrevisto: "2026-04-24",
     entrega: "2026-04-17",
     etapas: [
-      { id: "ux", nome: "Imersão e design de interface", descricao: "Mapeamento da dor, protótipos e testes de usabilidade no celular", janela: [0, 0.35], previsto: ["2025-10-06", "2025-12-12"], progresso: 100 },
-      { id: "app", nome: "App com personal shopper", descricao: "Atendimento de personal shopper dentro do app", janela: [0.2, 0.8], previsto: ["2025-11-10", "2026-03-06"], progresso: 100 },
-      { id: "loja", nome: "Escaneamento e carrinho integrado", descricao: "Escanear peças na loja e levar ao carrinho virtual", janela: [0.3, 0.85], previsto: ["2025-11-24", "2026-03-20"], progresso: 100 },
-      { id: "checkout", nome: "Checkout simplificado", descricao: "Otimização do checkout com foco em conversão e performance", janela: [0.45, 0.95], previsto: ["2026-01-05", "2026-04-10"], progresso: 100 },
-      { id: "pdv", nome: "Cadastro no ponto de venda", descricao: "Cadastro de clientes direto no PDV da loja", janela: [0.5, 0.9], previsto: ["2026-01-12", "2026-03-27"], progresso: 100 },
-      { id: "admin", nome: "Painel administrativo", descricao: "Vendas por canal e acompanhamento da operação", janela: [0.55, 1], previsto: ["2026-01-26", "2026-04-24"], progresso: 100 },
+      { id: "ux", nome: "Imersão e design de interface", descricao: "Mapeamento da dor, protótipos e testes de usabilidade no celular", janela: [0, 0.35], previsto: ["2025-10-06", "2025-12-12"], progresso: 100, caminhos: ["design/**"] },
+      { id: "app", nome: "App com personal shopper", descricao: "Atendimento de personal shopper dentro do app", janela: [0.2, 0.8], previsto: ["2025-11-10", "2026-03-06"], progresso: 100, caminhos: ["app/personal-shopper/**"] },
+      { id: "loja", nome: "Escaneamento e carrinho integrado", descricao: "Escanear peças na loja e levar ao carrinho virtual", janela: [0.3, 0.85], previsto: ["2025-11-24", "2026-03-20"], progresso: 100, caminhos: ["app/loja/**", "servicos/carrinho/**"] },
+      { id: "checkout", nome: "Checkout simplificado", descricao: "Otimização do checkout com foco em conversão e performance", janela: [0.45, 0.95], previsto: ["2026-01-05", "2026-04-10"], progresso: 100, caminhos: ["web/checkout/**"] },
+      { id: "pdv", nome: "Cadastro no ponto de venda", descricao: "Cadastro de clientes direto no PDV da loja", janela: [0.5, 0.9], previsto: ["2026-01-12", "2026-03-27"], progresso: 100, caminhos: ["pdv/**"] },
+      { id: "admin", nome: "Painel administrativo", descricao: "Vendas por canal e acompanhamento da operação", janela: [0.55, 1], previsto: ["2026-01-26", "2026-04-24"], progresso: 100, caminhos: ["admin/**"] },
     ],
     membros: [
       { id: "tatiana-rego", papel: "Tech lead", plano: { checkout: [16, 110, 0.85], loja: [10, 90, 0.8], admin: [5, 60, 0.7] } },

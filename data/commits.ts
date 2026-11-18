@@ -8,8 +8,11 @@ export type Commit = {
   projetoId: string;
   autor: string;
   data: string;
-  etapa: string;
   mensagem: string;
+  /** Arquivos alterados pelo commit. */
+  arquivos: string[];
+  /** Etapas cujos caminhos casam com algum arquivo alterado. */
+  etapas: string[];
   adicionadas: number;
   removidas: number;
   brutas: number;

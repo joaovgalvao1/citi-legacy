@@ -2,11 +2,11 @@
 
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { getProjeto, projetos } from "@/data";
+import { getProjeto, projetoEnxuto, projetos } from "@/data";
 import { formatarData } from "@/data/formatos";
-import { progressoProjeto, textoEntrega, textoPrazo } from "@/lib/status";
+import { textoEntrega } from "@/lib/status";
 import { Voltar } from "@/components/ui";
-import { BarraProgresso } from "@/components/ui/progresso";
+import { ProgressoDoProjeto } from "@/components/projeto/progresso";
 import { SeloStatusProjeto } from "@/components/projeto/status";
 import { AbasDoProjeto } from "@/components/projeto/abas";
 
@@ -33,13 +33,7 @@ async function Cabecalho({ params }: { params: LayoutProps<"/projetos/[projetoId
           Entregue · {formatarData(projeto.inicio)} a {formatarData(projeto.entrega!)} · {textoEntrega(projeto)}
         </p>
       ) : (
-        <div className="flex items-center gap-3">
-          <div className="flex-1">
-            <BarraProgresso valor={progressoProjeto(projeto)} compacta />
-          </div>
-          <span className="text-sm font-semibold tabular-nums">{Math.round(progressoProjeto(projeto))}%</span>
-          <span className="text-sm text-gray-600">{textoPrazo(projeto)}</span>
-        </div>
+        <ProgressoDoProjeto projeto={{ ...projetoEnxuto(projeto), membros: [] }} />
       )}
       <AbasDoProjeto projetoId={projeto.id} />
     </div>

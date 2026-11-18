@@ -390,3 +390,41 @@ Build (55 páginas), tipos e lint passam.
 **Problema no teste:** depois da troca de rotas, o servidor de desenvolvimento ficou com uma versão antiga do módulo em cache e mostrava "Element type is invalid". O build de produção já passava. Reiniciar o servidor resolveu.
 
 **Verificação:** na Folhagem, a etapa Estoque abre filtrada pela Visão geral. Clicar em Caio apaga 17 das 27 barras de outros membros na linha do tempo. A etapa em planejamento mostra o aviso de "sem commits". Build, tipos e lint passam.
+
+---
+
+## Etapas ligadas ao repositório e progresso pelas tasks (17/11)
+
+**O que pedi:**
+- etapas ligadas a arquivos específicos do repositório, com a contagem de commits saindo disso;
+- o progresso de cada etapa pelas tasks concluídas;
+- projetos que o admin possa adicionar.
+
+A IA recomendou fazer primeiro o que mais aparece na demo e cabe no prazo. Pedi para fazer só os dois primeiros agora; o cadastro de projetos fica para eu avaliar depois.
+
+**O que a IA fez:**
+- **Commit de restauração** antes de começar (`8cb3d38`).
+- **Caminhos por etapa:**
+  - o padrão é `src/<etapa>/**`, e Infra/Deploy usa `.github/**` e `infra/**`;
+  - algumas etapas têm caminhos próprios, como `etl/**` e `agentes/manual/**` na Mezzalira, `pipeline/sinais/**` e `modelos/localizacao/**` no GALT, e `app/loja/**` e `pdv/**` na Riachuelo.
+- **Arquivos em cada commit**, coerentes com a mensagem: uma feature cria `src/estoque/baixa-automatica.ts` e às vezes o teste; uma refatoração mexe em vários arquivos; docs altera o README.
+  - Cerca de 8% dos commits também tocam um arquivo de outra etapa ativa naquele momento (código compartilhado). Com isso, 48 commits contam em duas etapas.
+  - O gerador passou a calcular a etapa de cada commit **pelos arquivos**, e não mais pela mensagem. O IC, a atividade semanal, o último commit e o status "parada" saem daí.
+- **Tasks por etapa:**
+  - por padrão são as entregas descritas nas mensagens de commit (feat, chore, docs, perf);
+  - as etapas em planejamento têm tasks escritas à mão;
+  - o número de tasks concluídas segue o progresso de referência de cada etapa;
+  - **progresso = tasks concluídas ÷ total**.
+- **Telas:**
+  - **Visão geral:** cada etapa mostra "x de y tasks" e um painel recolhível com as **tasks marcáveis** e os caminhos do repositório. Marcar uma task recalcula na hora o progresso da etapa, o status, os alertas, o cabeçalho do projeto e o card na lista de projetos. As marcações ficam salvas no navegador (`lib/tasks.ts`).
+  - **Participação:** com uma etapa selecionada, mostra "Contam nesta etapa os commits que alteram: …".
+- Para isso, a Visão geral e a barra do cabeçalho viraram componentes de navegador. O servidor manda para eles uma versão leve do projeto (`projetoEnxuto`).
+
+**Problemas no teste:**
+- Rodar o build de produção com o servidor de desenvolvimento ligado corrompeu o cache `.next` ("Unexpected end of JSON input"). A solução foi parar o servidor, apagar o `.next` e rodar de novo; daqui em diante, nunca os dois ao mesmo tempo.
+- A Visão geral ficava em "Carregando…" ao abrir a página direto. A IA investigou e viu que não era um defeito do app: o painel do navegador de teste estava **oculto**, e nesse estado o navegador pausa o `requestAnimationFrame` que o React usa para revelar o conteúdo transmitido. Abrindo pela navegação interna, ou numa aba visível, a página carrega normalmente.
+
+**Verificação:**
+- Na Plataforma de Voluntariado, marcar as 2 tasks restantes de "Certificados de horas" levou a etapa de 33% para 100%, com status "Concluída". O projeto foi de 70% para 81%, e o alerta da etapa sumiu.
+- A aba Participação mostra os caminhos da etapa Inscrições.
+- Tipos e lint passam. O build de produção passou antes do teste.

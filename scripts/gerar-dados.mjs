@@ -4,7 +4,7 @@
 //
 // Saída em data/:
 //   projetos.json  pessoas, projetos (status, prazos, progresso das etapas) e membros
-//   commits.json   commits fictícios (autor, data, mensagem, etapa, linhas)
+//   commits.json   commits fictícios (autor, data, mensagem, arquivos alterados, etapas, linhas)
 //   analises.json  participação pré-calculada por membro × etapa nas três métricas,
 //                  IC, concentração, primeiro/último commit das etapas e atividade semanal
 //
@@ -15,6 +15,10 @@
 //
 // A partir delas, calcula o Índice de Conhecimento (IC) (ver abaixo).
 // Projetos em andamento têm commits até a véspera da data de referência; os concluídos, até a entrega.
+//
+// Etapas ↔ repositório: cada etapa tem caminhos (ex.: "src/estoque/**"). Um commit pertence às etapas
+// cujos caminhos casam com algum arquivo que ele alterou (pode ser mais de uma).
+// Progresso: cada etapa tem tasks; progresso = tasks concluídas ÷ total.
 //
 // O gerador é determinístico (semente fixa): rodar de novo produz os mesmos dados.
 
@@ -150,6 +154,70 @@ function indiceConhecimento(lista, membroIds, ref) {
 }
 
 
+/* ---------- arquivos, caminhos e tasks ---------- */
+
+const PALAVRAS_VAZIAS = new Set(["para", "com", "por", "dos", "das", "nos", "nas", "uma", "que", "sem", "entre", "pela", "pelo", "após", "ajustes", "parte"]);
+
+function slug(texto) {
+  const palavras = texto
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]/g, " ")
+    .split(/\s+/)
+    .filter((p) => p.length > 2 && !PALAVRAS_VAZIAS.has(p));
+  return palavras.slice(0, 3).join("-") || "geral";
+}
+
+/** Caminhos do repositório de uma etapa (padrão: src/<etapa>/**; infra: .github e infra). */
+function caminhosDa(etapa) {
+  if (etapa.caminhos) return etapa.caminhos;
+  if (etapa.id === "infra") return [".github/**", "infra/**"];
+  return [`src/${etapa.id}/**`];
+}
+
+const pasta = (glob) => glob.replace(/\/\*\*$/, "");
+const casa = (arquivo, glob) => arquivo === pasta(glob) || arquivo.startsWith(pasta(glob) + "/");
+
+const ARQUIVOS_INFRA = [".github/workflows/ci.yml", ".github/workflows/deploy.yml", "infra/docker-compose.yml", "infra/migrations.sh", "infra/README.md"];
+
+/** Arquivos alterados por um commit, coerentes com o tipo e o texto da mensagem. */
+function arquivosDoCommit(etapa, tipo, texto) {
+  const base = pasta(caminhosDa(etapa)[0]);
+  if (etapa.id === "infra") return [escolher(ARQUIVOS_INFRA), ...(rand() < 0.3 ? [escolher(ARQUIVOS_INFRA)] : [])].filter((v, i, a) => a.indexOf(v) === i);
+  const nome = slug(texto);
+  switch (tipo) {
+    case "feat":
+      return rand() < 0.5 ? [`${base}/${nome}.ts`, `${base}/${nome}.test.ts`] : [`${base}/${nome}.ts`];
+    case "test":
+      return [`${base}/${nome}.test.ts`];
+    case "docs":
+      return [`${base}/README.md`];
+    case "style":
+      return [`${base}/${nome}.css`];
+    case "refactor":
+      return [`${base}/${nome}.ts`, `${base}/index.ts`, ...(rand() < 0.5 ? [`${base}/tipos.ts`] : [])];
+    default:
+      return [`${base}/${nome}.ts`];
+  }
+}
+
+/** Tasks de uma etapa: as definidas no cenário ou, por padrão, as entregas (feat/chore/docs/perf) das mensagens. */
+function tasksDa(c, etapa) {
+  let titulos = etapa.tasks;
+  if (!titulos) {
+    const modelos = c.mensagens[etapa.id] ?? [];
+    titulos = modelos.filter(([tipo]) => ["feat", "chore", "docs", "perf"].includes(tipo)).map(([, t]) => t);
+    if (titulos.length < 3) titulos = modelos.filter(([tipo]) => tipo !== "test").map(([, t]) => t);
+  }
+  titulos = [...new Set(titulos)].map((t) => t.charAt(0).toUpperCase() + t.slice(1));
+  const total = titulos.length;
+  let feitas = Math.round((etapa.progresso / 100) * total);
+  if (etapa.progresso > 0 && feitas === 0) feitas = 1;
+  if (etapa.progresso < 100 && feitas === total) feitas = total - 1;
+  return titulos.map((titulo, i) => ({ titulo, feita: i < feitas }));
+}
+
 /* ---------- geração ---------- */
 
 const projetosSaida = [];
@@ -173,7 +241,8 @@ for (const c of cenarios) {
   }
   esqueletos.sort((a, b) => a.data.localeCompare(b.data));
 
-  // 2) mensagens e linhas atribuídas em ordem cronológica dentro de cada etapa
+  // 2) mensagens, arquivos e linhas atribuídos em ordem cronológica dentro de cada etapa
+  const etapasComCommits = c.etapas.filter((e) => c.membros.some((m) => m.plano[e.id]));
   const commits = [];
   {
     for (const { m, etapaId, media, sobrevivencia, data } of esqueletos) {
@@ -187,13 +256,26 @@ for (const c of cenarios) {
           adicionadas * (1 - sobrev) * entre(0.6, 1.4) +
             adicionadas * (tipo === "refactor" ? 0.6 : 0.1 * rand()),
         );
+        const etapa = c.etapas.find((e) => e.id === etapaId);
+        let arquivos = arquivosDoCommit(etapa, tipo, texto);
+        // às vezes o commit também mexe em outra etapa (código compartilhado)
+        if (etapaId !== "infra" && rand() < 0.08) {
+          // só etapas que estavam ativas na data do commit
+          const frac = (new Date(data) - inicio) / (fim - inicio);
+          const outras = etapasComCommits.filter(
+            (e) => e.id !== etapaId && e.id !== "infra" && e.janela[0] <= frac && frac <= e.janela[1],
+          );
+          if (outras.length) arquivos = [...arquivos, `${pasta(caminhosDa(escolher(outras))[0])}/index.ts`];
+        }
+        const etapas = c.etapas.filter((e) => arquivos.some((a) => caminhosDa(e).some((g) => casa(a, g)))).map((e) => e.id);
         commits.push({
           hash: hash(),
           projetoId: c.id,
           autor: m.id,
           data,
-          etapa: etapaId,
           mensagem: `${tipo}(${etapaId}): ${texto}`,
+          arquivos,
+          etapas,
           adicionadas,
           removidas,
           brutas: adicionadas + removidas,
@@ -214,11 +296,17 @@ for (const c of cenarios) {
   const totais = zero();
   const semanas = {};
 
+  const somar = (alvo, k) => {
+    alvo.efetivas += k.efetivas;
+    alvo.brutas += k.brutas;
+    alvo.commits += 1;
+  };
   for (const k of commits) {
-    for (const alvo of [porMembro[k.autor].total, porMembro[k.autor].porEtapa[k.etapa], porEtapa[k.etapa].total, totais]) {
-      alvo.efetivas += k.efetivas;
-      alvo.brutas += k.brutas;
-      alvo.commits += 1;
+    somar(porMembro[k.autor].total, k);
+    somar(totais, k);
+    for (const e of k.etapas) {
+      somar(porMembro[k.autor].porEtapa[e], k);
+      somar(porEtapa[e].total, k);
     }
     const s = inicioDaSemana(k.data);
     semanas[s] ??= Object.fromEntries(c.membros.map((m) => [m.id, 0]));
@@ -226,7 +314,7 @@ for (const c of cenarios) {
   }
 
   for (const e of c.etapas) {
-    const daEtapa = commits.filter((k) => k.etapa === e.id);
+    const daEtapa = commits.filter((k) => k.etapas.includes(e.id));
     porEtapa[e.id].primeiroCommit = daEtapa[0]?.data.slice(0, 10) ?? null;
     porEtapa[e.id].ultimoCommit = daEtapa.at(-1)?.data.slice(0, 10) ?? null;
   }
@@ -247,7 +335,7 @@ for (const c of cenarios) {
 
   for (const e of c.etapas) {
     const reg = porEtapa[e.id];
-    const resultado = icDe(commits.filter((k) => k.etapa === e.id));
+    const resultado = icDe(commits.filter((k) => k.etapas.includes(e.id)));
     reg.ic = resultado.ic;
     reg.fatias = Object.fromEntries(Object.entries(resultado.fatias).filter(([id]) => resultado.ic[id] > 0));
     reg.semanas = listaSemanas.map((semana) => ({
@@ -255,7 +343,7 @@ for (const c of cenarios) {
       commits: Object.fromEntries(
         c.membros.map((m) => [
           m.id,
-          commits.filter((k) => k.etapa === e.id && k.autor === m.id && inicioDaSemana(k.data) === semana).length,
+          commits.filter((k) => k.etapas.includes(e.id) && k.autor === m.id && inicioDaSemana(k.data) === semana).length,
         ]),
       ),
     }));
@@ -285,14 +373,19 @@ for (const c of cenarios) {
     inicio: c.inicio,
     fimPrevisto: c.fimPrevisto,
     ...(c.entrega ? { entrega: c.entrega } : {}),
-    etapas: c.etapas.map(({ id, nome, descricao, previsto, progresso }) => ({
-      id,
-      nome,
-      descricao,
-      inicioPrevisto: previsto[0],
-      fimPrevisto: previsto[1],
-      progresso,
-    })),
+    etapas: c.etapas.map((e) => {
+      const tasks = tasksDa(c, e);
+      return {
+        id: e.id,
+        nome: e.nome,
+        descricao: e.descricao,
+        inicioPrevisto: e.previsto[0],
+        fimPrevisto: e.previsto[1],
+        caminhos: caminhosDa(e),
+        tasks,
+        progresso: Math.round((tasks.filter((t) => t.feita).length / tasks.length) * 100),
+      };
+    }),
     membros: c.membros.map(({ id, papel }) => ({ id, papel })),
   });
 }
@@ -315,7 +408,7 @@ for (const p of projetosSaida) {
     const reg = a.porEtapa[e.id];
     const ic = Object.entries(reg.ic).filter(([, v]) => v > 0).sort(([, x], [, y]) => y - x)
       .map(([id, v]) => `${pessoas.find((m) => m.id === id).nome.split(" ")[0]} ${Math.round(v)}%`).join(" · ");
-    console.log(`  ${e.nome.slice(0, 30).padEnd(30)} ${String(e.progresso).padStart(3)}%  ${e.fimPrevisto}  último ${reg.ultimoCommit}  IC: ${ic}`);
+    console.log(`  ${e.nome.slice(0, 30).padEnd(30)} ${String(e.progresso).padStart(3)}% ${e.tasks.filter((t) => t.feita).length}/${e.tasks.length}  ${e.fimPrevisto}  último ${reg.ultimoCommit}  IC: ${ic}`);
   }
   console.log(`  status ${p.status} · ${p.inicio} → previsto ${p.fimPrevisto}${p.entrega ? ` · entregue ${p.entrega}` : ""}`);
 }

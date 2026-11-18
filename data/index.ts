@@ -13,13 +13,19 @@ export type Sinais = { efetivas: number; commits: number; brutas: number; recent
 /** Commits de cada membro numa semana (semana = segunda-feira, "aaaa-mm-dd"). */
 export type Semana = { semana: string; commits: Record<string, number> };
 
+export type Task = { titulo: string; feita: boolean };
+
 export type Etapa = {
   id: string;
   nome: string;
   descricao: string;
   inicioPrevisto: string; // "aaaa-mm-dd"
   fimPrevisto: string;
-  /** Progresso informado pelo gerente do projeto (0 a 100). */
+  /** Caminhos do repositório ligados à etapa (ex.: "src/estoque/**"). */
+  caminhos: string[];
+  /** Tasks da etapa; o progresso é a fração concluída. */
+  tasks: Task[];
+  /** Progresso (0 a 100) = tasks concluídas ÷ total. */
   progresso: number;
   primeiroCommit: string | null;
   ultimoCommit: string | null;
@@ -131,3 +137,15 @@ export function nomeEtapa(projeto: Projeto, etapaId: string) {
 }
 
 export { formatarData, formatarMesAno } from "./formatos";
+
+/**
+ * Versão leve do projeto para enviar ao navegador (sem semanas e fatias do IC),
+ * usada nos componentes que só precisam de progresso, status e quem mais sabe.
+ */
+export function projetoEnxuto(projeto: Projeto): Projeto {
+  return {
+    ...projeto,
+    semanas: [],
+    etapas: projeto.etapas.map((e) => ({ ...e, semanas: [], fatias: {} })),
+  };
+}

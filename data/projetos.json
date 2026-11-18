@@ -123,6 +123,35 @@
           "descricao": "Login de funcionários e permissões",
           "inicioPrevisto": "2026-08-03",
           "fimPrevisto": "2026-09-11",
+          "caminhos": [
+            "src/autenticacao/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Cria tela de login dos funcionários",
+              "feita": true
+            },
+            {
+              "titulo": "Adiciona sessão com cookie httpOnly",
+              "feita": true
+            },
+            {
+              "titulo": "Perfis de acesso: gerente e atendente",
+              "feita": true
+            },
+            {
+              "titulo": "Recuperação de senha por e-mail",
+              "feita": true
+            },
+            {
+              "titulo": "Atualiza dependência do bcrypt",
+              "feita": true
+            },
+            {
+              "titulo": "Expira sessão após 8h de inatividade",
+              "feita": true
+            }
+          ],
           "progresso": 100
         },
         {
@@ -131,6 +160,39 @@
           "descricao": "CRUD de plantas, categorias e fotos",
           "inicioPrevisto": "2026-08-10",
           "fimPrevisto": "2026-10-16",
+          "caminhos": [
+            "src/catalogo/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "CRUD de plantas (nome, espécie, preço)",
+              "feita": true
+            },
+            {
+              "titulo": "Upload de fotos das plantas",
+              "feita": true
+            },
+            {
+              "titulo": "Filtro por categoria: suculentas, folhagens, flores",
+              "feita": true
+            },
+            {
+              "titulo": "Campo de cuidados: luz, rega e porte",
+              "feita": true
+            },
+            {
+              "titulo": "Busca por nome popular e científico",
+              "feita": true
+            },
+            {
+              "titulo": "Paginação da listagem de plantas",
+              "feita": true
+            },
+            {
+              "titulo": "Marca planta como pet-friendly",
+              "feita": true
+            }
+          ],
           "progresso": 100
         },
         {
@@ -139,6 +201,43 @@
           "descricao": "Entradas, saídas, alertas de reposição",
           "inicioPrevisto": "2026-09-01",
           "fimPrevisto": "2026-11-27",
+          "caminhos": [
+            "src/estoque/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Registra entrada de lote de mudas",
+              "feita": true
+            },
+            {
+              "titulo": "Baixa automática de estoque ao fechar pedido",
+              "feita": true
+            },
+            {
+              "titulo": "Alerta de reposição abaixo do mínimo",
+              "feita": true
+            },
+            {
+              "titulo": "Histórico de movimentações por planta",
+              "feita": true
+            },
+            {
+              "titulo": "Perda por planta danificada",
+              "feita": true
+            },
+            {
+              "titulo": "Relatório semanal de giro de estoque",
+              "feita": true
+            },
+            {
+              "titulo": "Estoque por tamanho de vaso (P, M, G)",
+              "feita": false
+            },
+            {
+              "titulo": "Documenta regra de estoque mínimo",
+              "feita": false
+            }
+          ],
           "progresso": 75
         },
         {
@@ -147,7 +246,36 @@
           "descricao": "Carrinho, pedidos e status de entrega",
           "inicioPrevisto": "2026-09-28",
           "fimPrevisto": "2026-12-11",
-          "progresso": 55
+          "caminhos": [
+            "src/pedidos/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Carrinho com quantidade por tamanho de vaso",
+              "feita": true
+            },
+            {
+              "titulo": "Fluxo de checkout com retirada ou entrega",
+              "feita": true
+            },
+            {
+              "titulo": "Status do pedido: separado, enviado, entregue",
+              "feita": true
+            },
+            {
+              "titulo": "Cupom de desconto",
+              "feita": false
+            },
+            {
+              "titulo": "Comprovante do pedido em PDF",
+              "feita": false
+            },
+            {
+              "titulo": "Painel de pedidos do dia",
+              "feita": false
+            }
+          ],
+          "progresso": 50
         },
         {
           "id": "infra",
@@ -155,7 +283,37 @@
           "descricao": "CI, banco e deploy",
           "inicioPrevisto": "2026-08-03",
           "fimPrevisto": "2026-12-18",
-          "progresso": 60
+          "caminhos": [
+            ".github/**",
+            "infra/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Configura CI com lint e testes",
+              "feita": true
+            },
+            {
+              "titulo": "Deploy automático da branch main",
+              "feita": true
+            },
+            {
+              "titulo": "Migrations do banco no deploy",
+              "feita": true
+            },
+            {
+              "titulo": "Seed com plantas de exemplo",
+              "feita": true
+            },
+            {
+              "titulo": "README com passo a passo de setup",
+              "feita": false
+            },
+            {
+              "titulo": "Backup diário do banco",
+              "feita": false
+            }
+          ],
+          "progresso": 67
         },
         {
           "id": "relatorios",
@@ -163,6 +321,27 @@
           "descricao": "Vendas por planta, categoria e período, e plantas mais vendidas",
           "inicioPrevisto": "2026-11-30",
           "fimPrevisto": "2026-12-18",
+          "caminhos": [
+            "src/relatorios/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Relatório de vendas por planta",
+              "feita": false
+            },
+            {
+              "titulo": "Filtro por período e categoria",
+              "feita": false
+            },
+            {
+              "titulo": "Ranking das plantas mais vendidas",
+              "feita": false
+            },
+            {
+              "titulo": "Exportação em PDF",
+              "feita": false
+            }
+          ],
           "progresso": 0
         }
       ],
@@ -202,6 +381,39 @@
           "descricao": "Agenda de profissionais e marcação de sessões",
           "inicioPrevisto": "2026-07-27",
           "fimPrevisto": "2026-10-02",
+          "caminhos": [
+            "src/agendamento/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Agenda semanal por profissional",
+              "feita": true
+            },
+            {
+              "titulo": "Marcação de sessão com duração variável",
+              "feita": true
+            },
+            {
+              "titulo": "Bloqueio de horários (férias e feriados)",
+              "feita": true
+            },
+            {
+              "titulo": "Confirmação de consulta por WhatsApp",
+              "feita": true
+            },
+            {
+              "titulo": "Lista de espera para horários vagos",
+              "feita": true
+            },
+            {
+              "titulo": "Remarcação arrastando na agenda",
+              "feita": true
+            },
+            {
+              "titulo": "Pacotes de sessões recorrentes",
+              "feita": true
+            }
+          ],
           "progresso": 100
         },
         {
@@ -210,7 +422,36 @@
           "descricao": "Cadastro, prontuário e evolução",
           "inicioPrevisto": "2026-08-10",
           "fimPrevisto": "2026-10-30",
-          "progresso": 90
+          "caminhos": [
+            "src/pacientes/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Cadastro de pacientes com CPF e convênio",
+              "feita": true
+            },
+            {
+              "titulo": "Prontuário com evolução por sessão",
+              "feita": true
+            },
+            {
+              "titulo": "Anexos de exames no prontuário",
+              "feita": true
+            },
+            {
+              "titulo": "Histórico de atendimentos do paciente",
+              "feita": true
+            },
+            {
+              "titulo": "Busca de paciente por nome ou CPF",
+              "feita": true
+            },
+            {
+              "titulo": "Consentimento LGPD no primeiro atendimento",
+              "feita": false
+            }
+          ],
+          "progresso": 83
         },
         {
           "id": "unidades",
@@ -218,7 +459,44 @@
           "descricao": "Separação de agendas, salas e dados entre BV e CF",
           "inicioPrevisto": "2026-09-07",
           "fimPrevisto": "2026-12-04",
-          "progresso": 70
+          "caminhos": [
+            "src/unidades/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Modelo de unidade (BV e CF) no banco",
+              "feita": true
+            },
+            {
+              "titulo": "Agenda separada por unidade BV/CF",
+              "feita": true
+            },
+            {
+              "titulo": "Salas e equipamentos por unidade",
+              "feita": true
+            },
+            {
+              "titulo": "Profissional atendendo nas duas unidades",
+              "feita": true
+            },
+            {
+              "titulo": "Troca rápida de unidade no topo da tela",
+              "feita": true
+            },
+            {
+              "titulo": "Transferência de paciente entre BV e CF",
+              "feita": true
+            },
+            {
+              "titulo": "Horário de funcionamento diferente por unidade",
+              "feita": false
+            },
+            {
+              "titulo": "Explica regra de escopo por unidade",
+              "feita": false
+            }
+          ],
+          "progresso": 75
         },
         {
           "id": "financeiro",
@@ -226,7 +504,36 @@
           "descricao": "Pagamentos, convênios e repasses",
           "inicioPrevisto": "2026-09-28",
           "fimPrevisto": "2026-12-11",
-          "progresso": 45
+          "caminhos": [
+            "src/financeiro/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Registro de pagamento por sessão",
+              "feita": true
+            },
+            {
+              "titulo": "Faturamento por convênio",
+              "feita": true
+            },
+            {
+              "titulo": "Repasse mensal por profissional",
+              "feita": true
+            },
+            {
+              "titulo": "Relatório financeiro por unidade",
+              "feita": false
+            },
+            {
+              "titulo": "Glosa de convênio",
+              "feita": false
+            },
+            {
+              "titulo": "Exportação para o contador (CSV)",
+              "feita": false
+            }
+          ],
+          "progresso": 50
         },
         {
           "id": "infra",
@@ -234,7 +541,37 @@
           "descricao": "CI, banco e deploy",
           "inicioPrevisto": "2026-07-27",
           "fimPrevisto": "2026-12-11",
-          "progresso": 60
+          "caminhos": [
+            ".github/**",
+            "infra/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Configura CI com lint e testes",
+              "feita": true
+            },
+            {
+              "titulo": "Deploy com migrations automáticas",
+              "feita": true
+            },
+            {
+              "titulo": "Backup criptografado do banco (dados de saúde)",
+              "feita": true
+            },
+            {
+              "titulo": "Logs de auditoria de acesso ao prontuário",
+              "feita": true
+            },
+            {
+              "titulo": "README de setup local",
+              "feita": false
+            },
+            {
+              "titulo": "Ambiente de homologação para a clínica",
+              "feita": false
+            }
+          ],
+          "progresso": 67
         },
         {
           "id": "implantacao",
@@ -242,6 +579,31 @@
           "descricao": "Migração dos dados antigos e treinamento das equipes de BV e CF",
           "inicioPrevisto": "2026-11-30",
           "fimPrevisto": "2026-12-11",
+          "caminhos": [
+            "src/implantacao/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Migrar dados antigos de BV",
+              "feita": false
+            },
+            {
+              "titulo": "Migrar dados antigos de CF",
+              "feita": false
+            },
+            {
+              "titulo": "Treinar equipe de BV",
+              "feita": false
+            },
+            {
+              "titulo": "Treinar equipe de CF",
+              "feita": false
+            },
+            {
+              "titulo": "Acompanhar a primeira semana de uso",
+              "feita": false
+            }
+          ],
           "progresso": 0
         }
       ],
@@ -285,6 +647,39 @@
           "descricao": "Padronização das planilhas de produção e pipeline ETL",
           "inicioPrevisto": "2026-08-10",
           "fimPrevisto": "2026-10-09",
+          "caminhos": [
+            "etl/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Importa planilhas de produção 2023-2026",
+              "feita": true
+            },
+            {
+              "titulo": "Padroniza códigos de peça (SKU)",
+              "feita": true
+            },
+            {
+              "titulo": "Remove registros duplicados de ordens de produção",
+              "feita": true
+            },
+            {
+              "titulo": "Trata valores ausentes de turno",
+              "feita": true
+            },
+            {
+              "titulo": "Relatório de qualidade dos dados",
+              "feita": true
+            },
+            {
+              "titulo": "Dicionário de dados das tabelas finais",
+              "feita": true
+            },
+            {
+              "titulo": "Carga incremental diária",
+              "feita": true
+            }
+          ],
           "progresso": 100
         },
         {
@@ -293,7 +688,32 @@
           "descricao": "Agente que consulta os dados limpos e responde perguntas",
           "inicioPrevisto": "2026-09-14",
           "fimPrevisto": "2026-11-27",
-          "progresso": 65
+          "caminhos": [
+            "agentes/dados/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Agente que gera consultas SQL sobre a produção",
+              "feita": true
+            },
+            {
+              "titulo": "Ferramenta de consulta por período e máquina",
+              "feita": true
+            },
+            {
+              "titulo": "Respostas com tabela e gráfico simples",
+              "feita": true
+            },
+            {
+              "titulo": "Limite de linhas retornadas por consulta",
+              "feita": false
+            },
+            {
+              "titulo": "Explica de onde veio cada número",
+              "feita": false
+            }
+          ],
+          "progresso": 60
         },
         {
           "id": "agente-manual",
@@ -301,7 +721,40 @@
           "descricao": "Agente (RAG) que responde sobre o manual de instrução",
           "inicioPrevisto": "2026-09-07",
           "fimPrevisto": "2026-12-11",
-          "progresso": 70
+          "caminhos": [
+            "agentes/manual/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Extrai texto do manual de instrução em PDF",
+              "feita": true
+            },
+            {
+              "titulo": "Divide manual em trechos por seção",
+              "feita": true
+            },
+            {
+              "titulo": "Índice vetorial dos trechos do manual",
+              "feita": true
+            },
+            {
+              "titulo": "Agente RAG responde com citação da página",
+              "feita": true
+            },
+            {
+              "titulo": "Responde 'não consta no manual' quando não sabe",
+              "feita": true
+            },
+            {
+              "titulo": "Glossário de termos técnicos da metalurgia",
+              "feita": false
+            },
+            {
+              "titulo": "Re-ranking dos trechos recuperados",
+              "feita": false
+            }
+          ],
+          "progresso": 71
         },
         {
           "id": "interface",
@@ -309,7 +762,32 @@
           "descricao": "Tela de conversa com os dois agentes",
           "inicioPrevisto": "2026-10-05",
           "fimPrevisto": "2026-12-18",
-          "progresso": 50
+          "caminhos": [
+            "web/chat/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Tela de chat com seleção de agente",
+              "feita": true
+            },
+            {
+              "titulo": "Histórico de conversas",
+              "feita": true
+            },
+            {
+              "titulo": "Streaming das respostas",
+              "feita": true
+            },
+            {
+              "titulo": "Mostra citação do manual ao lado da resposta",
+              "feita": false
+            },
+            {
+              "titulo": "Botão de feedback útil / não útil",
+              "feita": false
+            }
+          ],
+          "progresso": 60
         },
         {
           "id": "infra",
@@ -317,7 +795,33 @@
           "descricao": "CI, chaves de API e deploy",
           "inicioPrevisto": "2026-08-10",
           "fimPrevisto": "2026-12-18",
-          "progresso": 55
+          "caminhos": [
+            ".github/**",
+            "infra/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Configura CI com lint e testes",
+              "feita": true
+            },
+            {
+              "titulo": "Segredos das chaves de API no deploy",
+              "feita": true
+            },
+            {
+              "titulo": "Deploy do ETL agendado",
+              "feita": true
+            },
+            {
+              "titulo": "Monitoramento de custo de tokens",
+              "feita": false
+            },
+            {
+              "titulo": "README com arquitetura dos agentes",
+              "feita": false
+            }
+          ],
+          "progresso": 60
         },
         {
           "id": "avaliacao",
@@ -325,6 +829,27 @@
           "descricao": "Testes dos agentes com operadores do chão de fábrica e ajustes finais",
           "inicioPrevisto": "2026-12-01",
           "fimPrevisto": "2026-12-18",
+          "caminhos": [
+            "src/avaliacao/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Roteiro de testes com operadores",
+              "feita": false
+            },
+            {
+              "titulo": "Sessões de teste no chão de fábrica",
+              "feita": false
+            },
+            {
+              "titulo": "Consolidar feedback dos operadores",
+              "feita": false
+            },
+            {
+              "titulo": "Ajustes finais nos agentes",
+              "feita": false
+            }
+          ],
           "progresso": 0
         }
       ],
@@ -364,6 +889,31 @@
           "descricao": "Cadastro, perfil e disponibilidade",
           "inicioPrevisto": "2026-07-20",
           "fimPrevisto": "2026-08-28",
+          "caminhos": [
+            "src/cadastro/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Cadastro de voluntário com e-mail e telefone",
+              "feita": true
+            },
+            {
+              "titulo": "Perfil com áreas de interesse",
+              "feita": true
+            },
+            {
+              "titulo": "Disponibilidade por dia da semana",
+              "feita": true
+            },
+            {
+              "titulo": "Autorização do responsável para menores de 18",
+              "feita": true
+            },
+            {
+              "titulo": "Confirmação de e-mail no cadastro",
+              "feita": true
+            }
+          ],
           "progresso": 100
         },
         {
@@ -372,6 +922,27 @@
           "descricao": "Publicação e busca de vagas de voluntariado",
           "inicioPrevisto": "2026-08-10",
           "fimPrevisto": "2026-09-25",
+          "caminhos": [
+            "src/oportunidades/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Publicação de oportunidade pela ONG",
+              "feita": true
+            },
+            {
+              "titulo": "Busca por área, bairro e horário",
+              "feita": true
+            },
+            {
+              "titulo": "Página da oportunidade com vagas restantes",
+              "feita": true
+            },
+            {
+              "titulo": "Destaque de oportunidades urgentes",
+              "feita": true
+            }
+          ],
           "progresso": 100
         },
         {
@@ -380,7 +951,32 @@
           "descricao": "Inscrição, aprovação e lista de presença",
           "inicioPrevisto": "2026-09-01",
           "fimPrevisto": "2026-10-23",
-          "progresso": 70
+          "caminhos": [
+            "src/inscricoes/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Inscrição do voluntário em oportunidade",
+              "feita": true
+            },
+            {
+              "titulo": "Aprovação de inscrição pela ONG",
+              "feita": true
+            },
+            {
+              "titulo": "Lista de presença por encontro",
+              "feita": true
+            },
+            {
+              "titulo": "Cancelamento com liberação da vaga",
+              "feita": true
+            },
+            {
+              "titulo": "Lembrete do encontro por e-mail",
+              "feita": false
+            }
+          ],
+          "progresso": 80
         },
         {
           "id": "certificados",
@@ -388,7 +984,24 @@
           "descricao": "Cálculo de horas e emissão de certificados em PDF",
           "inicioPrevisto": "2026-10-01",
           "fimPrevisto": "2026-11-06",
-          "progresso": 30
+          "caminhos": [
+            "src/certificados/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Cálculo de horas a partir da presença",
+              "feita": true
+            },
+            {
+              "titulo": "Geração do certificado em PDF",
+              "feita": false
+            },
+            {
+              "titulo": "Código de verificação no certificado",
+              "feita": false
+            }
+          ],
+          "progresso": 33
         },
         {
           "id": "painel",
@@ -396,7 +1009,24 @@
           "descricao": "Indicadores de voluntários e horas por projeto",
           "inicioPrevisto": "2026-10-12",
           "fimPrevisto": "2026-11-06",
-          "progresso": 40
+          "caminhos": [
+            "src/painel/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Painel com voluntários ativos e horas",
+              "feita": true
+            },
+            {
+              "titulo": "Horas por projeto da ONG",
+              "feita": false
+            },
+            {
+              "titulo": "Exportação de voluntários em CSV",
+              "feita": false
+            }
+          ],
+          "progresso": 33
         },
         {
           "id": "infra",
@@ -404,7 +1034,29 @@
           "descricao": "CI, banco e deploy",
           "inicioPrevisto": "2026-07-20",
           "fimPrevisto": "2026-11-06",
-          "progresso": 80
+          "caminhos": [
+            ".github/**",
+            "infra/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Configura CI com lint e testes",
+              "feita": true
+            },
+            {
+              "titulo": "Deploy automático da main",
+              "feita": true
+            },
+            {
+              "titulo": "Banco gerenciado e migrations",
+              "feita": true
+            },
+            {
+              "titulo": "README de setup local",
+              "feita": false
+            }
+          ],
+          "progresso": 75
         }
       ],
       "membros": [
@@ -442,6 +1094,27 @@
           "descricao": "Leitura e padronização dos registros elétricos do evento",
           "inicioPrevisto": "2025-09-01",
           "fimPrevisto": "2025-10-17",
+          "caminhos": [
+            "pipeline/ingestao/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Leitor de oscilografias no padrão COMTRADE (.cfg/.dat)",
+              "feita": true
+            },
+            {
+              "titulo": "Normaliza taxas de amostragem entre registradores",
+              "feita": true
+            },
+            {
+              "titulo": "Associa oscilografia à linha e aos terminais",
+              "feita": true
+            },
+            {
+              "titulo": "Importação em lote de eventos históricos",
+              "feita": true
+            }
+          ],
           "progresso": 100
         },
         {
@@ -450,6 +1123,31 @@
           "descricao": "Filtragem, fasores e instante da falta",
           "inicioPrevisto": "2025-09-22",
           "fimPrevisto": "2025-11-21",
+          "caminhos": [
+            "pipeline/sinais/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Filtro anti-aliasing e remoção de componente DC",
+              "feita": true
+            },
+            {
+              "titulo": "Estimação de fasores por janela móvel de Fourier",
+              "feita": true
+            },
+            {
+              "titulo": "Detecção do instante de início da falta",
+              "feita": true
+            },
+            {
+              "titulo": "Identificação das fases envolvidas",
+              "feita": true
+            },
+            {
+              "titulo": "Extração de atributos para o modelo",
+              "feita": true
+            }
+          ],
           "progresso": 100
         },
         {
@@ -458,6 +1156,35 @@
           "descricao": "Machine learning para estimar onde a falha ocorreu na linha",
           "inicioPrevisto": "2025-10-20",
           "fimPrevisto": "2026-02-13",
+          "caminhos": [
+            "modelos/localizacao/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Baseline por impedância aparente",
+              "feita": true
+            },
+            {
+              "titulo": "Conjunto de treino com faltas simuladas na linha",
+              "feita": true
+            },
+            {
+              "titulo": "Modelo de regressão para a distância da falta",
+              "feita": true
+            },
+            {
+              "titulo": "Ajuste de hiperparâmetros por validação cruzada",
+              "feita": true
+            },
+            {
+              "titulo": "Estimativa com intervalo de busca na linha",
+              "feita": true
+            },
+            {
+              "titulo": "Trata faltas de alta impedância separadamente",
+              "feita": true
+            }
+          ],
           "progresso": 100
         },
         {
@@ -466,6 +1193,23 @@
           "descricao": "Indicação das causas prováveis da ocorrência",
           "inicioPrevisto": "2025-11-17",
           "fimPrevisto": "2026-02-27",
+          "caminhos": [
+            "modelos/causas/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Rótulos de causa a partir dos relatórios de inspeção",
+              "feita": true
+            },
+            {
+              "titulo": "Classificador de causas prováveis",
+              "feita": true
+            },
+            {
+              "titulo": "Probabilidade por causa no resultado",
+              "feita": true
+            }
+          ],
           "progresso": 100
         },
         {
@@ -474,6 +1218,31 @@
           "descricao": "Envio do evento, resultado na linha e apoio à inspeção",
           "inicioPrevisto": "2025-11-03",
           "fimPrevisto": "2026-03-13",
+          "caminhos": [
+            "web/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Envio de oscilografia pela plataforma",
+              "feita": true
+            },
+            {
+              "titulo": "Resultado com trecho provável destacado na linha",
+              "feita": true
+            },
+            {
+              "titulo": "Lista de causas prováveis com probabilidade",
+              "feita": true
+            },
+            {
+              "titulo": "Histórico de ocorrências por linha",
+              "feita": true
+            },
+            {
+              "titulo": "Relatório para a equipe de inspeção em campo",
+              "feita": true
+            }
+          ],
           "progresso": 100
         },
         {
@@ -482,6 +1251,23 @@
           "descricao": "Avaliação do erro de localização em ocorrências reais",
           "inicioPrevisto": "2026-01-19",
           "fimPrevisto": "2026-03-13",
+          "caminhos": [
+            "validacao/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Relatório de erro por fase, impedância e causa",
+              "feita": true
+            },
+            {
+              "titulo": "Caso com comprimento de linha cadastrado errado",
+              "feita": true
+            },
+            {
+              "titulo": "Resultado da validação: erro médio de 1,73% da linha",
+              "feita": true
+            }
+          ],
           "progresso": 100
         }
       ],
@@ -524,6 +1310,31 @@
           "descricao": "Mapeamento da dor, protótipos e testes de usabilidade no celular",
           "inicioPrevisto": "2025-10-06",
           "fimPrevisto": "2025-12-12",
+          "caminhos": [
+            "design/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Mapa da jornada de compra loja + digital",
+              "feita": true
+            },
+            {
+              "titulo": "Protótipo navegável da home do app",
+              "feita": true
+            },
+            {
+              "titulo": "Design system: tipografia, cores e componentes",
+              "feita": true
+            },
+            {
+              "titulo": "Protótipo do fluxo de checkout no celular",
+              "feita": true
+            },
+            {
+              "titulo": "Componentes de vitrine de produto",
+              "feita": true
+            }
+          ],
           "progresso": 100
         },
         {
@@ -532,6 +1343,31 @@
           "descricao": "Atendimento de personal shopper dentro do app",
           "inicioPrevisto": "2025-11-10",
           "fimPrevisto": "2026-03-06",
+          "caminhos": [
+            "app/personal-shopper/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Chat com personal shopper no app",
+              "feita": true
+            },
+            {
+              "titulo": "Sugestões de looks enviadas pelo personal shopper",
+              "feita": true
+            },
+            {
+              "titulo": "Agendamento de atendimento na loja",
+              "feita": true
+            },
+            {
+              "titulo": "Lista de desejos compartilhada com o personal shopper",
+              "feita": true
+            },
+            {
+              "titulo": "Avaliação do atendimento",
+              "feita": true
+            }
+          ],
           "progresso": 100
         },
         {
@@ -540,6 +1376,28 @@
           "descricao": "Escanear peças na loja e levar ao carrinho virtual",
           "inicioPrevisto": "2025-11-24",
           "fimPrevisto": "2026-03-20",
+          "caminhos": [
+            "app/loja/**",
+            "servicos/carrinho/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Leitura do código da etiqueta pela câmera",
+              "feita": true
+            },
+            {
+              "titulo": "Peça escaneada vai para o carrinho virtual",
+              "feita": true
+            },
+            {
+              "titulo": "Disponibilidade de tamanhos na loja atual",
+              "feita": true
+            },
+            {
+              "titulo": "Carrinho sincronizado entre app e site",
+              "feita": true
+            }
+          ],
           "progresso": 100
         },
         {
@@ -548,6 +1406,27 @@
           "descricao": "Otimização do checkout com foco em conversão e performance",
           "inicioPrevisto": "2026-01-05",
           "fimPrevisto": "2026-04-10",
+          "caminhos": [
+            "web/checkout/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Checkout em uma página",
+              "feita": true
+            },
+            {
+              "titulo": "Pagamento salvo para compra recorrente",
+              "feita": true
+            },
+            {
+              "titulo": "Retirada na loja como opção de entrega",
+              "feita": true
+            },
+            {
+              "titulo": "Carregamento do checkout abaixo de 2 s no 4G",
+              "feita": true
+            }
+          ],
           "progresso": 100
         },
         {
@@ -556,6 +1435,23 @@
           "descricao": "Cadastro de clientes direto no PDV da loja",
           "inicioPrevisto": "2026-01-12",
           "fimPrevisto": "2026-03-27",
+          "caminhos": [
+            "pdv/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Cadastro rápido do cliente no PDV",
+              "feita": true
+            },
+            {
+              "titulo": "Consentimento LGPD no cadastro da loja",
+              "feita": true
+            },
+            {
+              "titulo": "Vínculo da compra da loja ao cadastro digital",
+              "feita": true
+            }
+          ],
           "progresso": 100
         },
         {
@@ -564,6 +1460,31 @@
           "descricao": "Vendas por canal e acompanhamento da operação",
           "inicioPrevisto": "2026-01-26",
           "fimPrevisto": "2026-04-24",
+          "caminhos": [
+            "admin/**"
+          ],
+          "tasks": [
+            {
+              "titulo": "Painel de vendas por canal",
+              "feita": true
+            },
+            {
+              "titulo": "Filtro por loja, região e período",
+              "feita": true
+            },
+            {
+              "titulo": "Indicador de vendas iniciadas no app e concluídas na loja",
+              "feita": true
+            },
+            {
+              "titulo": "Agregações pré-calculadas do painel",
+              "feita": true
+            },
+            {
+              "titulo": "Exportação do relatório de vendas",
+              "feita": true
+            }
+          ],
           "progresso": 100
         }
       ],

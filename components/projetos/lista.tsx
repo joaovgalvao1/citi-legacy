@@ -6,6 +6,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { Selo } from "@/components/ui";
 import { BarraProgresso } from "@/components/ui/progresso";
+import type { Projeto } from "@/data";
+import { alertaDoCard, progressoProjeto } from "@/lib/status";
+import { aplicarMarcadas, useMarcadas } from "@/lib/tasks";
 
 export type ResumoProjeto = {
   id: string;
@@ -18,6 +21,7 @@ export type ResumoProjeto = {
   alerta: string | null;
   entrega: string | null;
   resultado: string | null;
+  base: Projeto;
 };
 
 const normalizar = (s: string) =>
@@ -29,6 +33,12 @@ const normalizar = (s: string) =>
 export function ListaProjetos({ projetos }: { projetos: ResumoProjeto[] }) {
   const [aba, setAba] = useState<"andamento" | "concluidos">("andamento");
   const [busca, setBusca] = useState("");
+  const marcadas = useMarcadas();
+  // progresso e alerta recalculados com as tasks marcadas pelo admin
+  projetos = projetos.map((p) => {
+    const atual = aplicarMarcadas(p.base, marcadas);
+    return atual === p.base ? p : { ...p, progresso: progressoProjeto(atual), alerta: alertaDoCard(atual) };
+  });
 
   const andamento = projetos.filter((p) => p.status !== "Concluído");
   const concluidos = projetos.filter((p) => p.status === "Concluído");

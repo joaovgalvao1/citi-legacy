@@ -25,6 +25,17 @@ export function AbaParticipacao({ projeto }: { projeto: Projeto }) {
           <SeletorEtapa projeto={projeto} />
           <p className="text-xs text-gray-500">Clique num membro para destacá-lo nos dois gráficos.</p>
         </div>
+        {etapa && (
+          <p className="text-xs text-gray-600">
+            Contam nesta etapa os commits que alteram:{" "}
+            {etapa.caminhos.map((c, i) => (
+              <span key={c}>
+                {i > 0 && ", "}
+                <code className="bg-gray-100 px-1">{c}</code>
+              </span>
+            ))}
+          </p>
+        )}
 
         <Caixa titulo="Conhecimento · Índice de Conhecimento">
           {linhas.length ? (
