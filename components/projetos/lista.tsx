@@ -65,7 +65,7 @@ export function ListaProjetos({ projetos }: { projetos: ResumoProjeto[] }) {
               aria-selected={aba === id}
               onClick={() => setAba(id)}
               className={`cursor-pointer rounded-full border px-3 py-1 ${
-                aba === id ? "border-gray-800 bg-gray-800 text-white" : "border-gray-400 bg-white text-gray-700"
+                aba === id ? "border-verde bg-verde/10 text-verde" : "border-gray-400 bg-white text-gray-700"
               }`}
             >
               {rotulo}
@@ -78,23 +78,23 @@ export function ListaProjetos({ projetos }: { projetos: ResumoProjeto[] }) {
           onChange={(e) => setBusca(e.target.value)}
           placeholder="Buscar projeto ou cliente"
           aria-label="Buscar projeto ou cliente"
-          className="w-full border border-gray-400 bg-white px-3 py-1.5 text-sm sm:w-64"
+          className="w-full rounded-full border border-gray-400 bg-white px-4 py-1.5 text-sm outline-none transition-colors focus:border-verde sm:w-64"
         />
       </div>
 
       {visiveis.length === 0 ? (
-        <p className="border border-dashed border-gray-400 p-6 text-center text-sm text-gray-500">Nenhum projeto encontrado.</p>
+        <p className="rounded-2xl border border-dashed border-gray-400 p-6 text-center text-sm text-gray-500">Nenhum projeto encontrado.</p>
       ) : (
         <ul className="grid gap-4 md:grid-cols-2">
           {visiveis.map((p) => (
             <li key={p.id}>
-              <Link href={`/projetos/${p.id}`} className="block h-full space-y-3 border border-gray-400 bg-white p-4 hover:border-gray-800">
+              <Link href={`/projetos/${p.id}`} className="block h-full space-y-3 rounded-2xl border border-gray-300 bg-white p-5 transition-colors hover:border-verde/60">
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <div className="text-lg font-semibold">{p.nome}</div>
                     <div className="text-sm text-gray-600">{p.cliente === p.nome ? p.subtitulo : p.cliente}</div>
                   </div>
-                  <Selo forte={p.status === "Atrasado"}>{p.status}</Selo>
+                  <Selo tom={p.status === "Atrasado" ? "ambar" : p.status === "Concluído" ? "verde" : "neutro"}>{p.status}</Selo>
                 </div>
                 {p.status === "Concluído" ? (
                   <>
@@ -106,11 +106,11 @@ export function ListaProjetos({ projetos }: { projetos: ResumoProjeto[] }) {
                     <div className="space-y-1">
                       <BarraProgresso valor={p.progresso} compacta />
                       <div className="flex justify-between text-sm text-gray-600">
-                        <span>{Math.round(p.progresso)}%</span>
-                        <span>{p.prazo}</span>
+                        <span className="dado">{Math.round(p.progresso)}%</span>
+                        <span className="dado">{p.prazo}</span>
                       </div>
                     </div>
-                    {p.alerta && <div className="text-sm font-semibold text-gray-800">⚠ {p.alerta}</div>}
+                    {p.alerta && <div className="text-sm font-medium text-ambar">▲ {p.alerta}</div>}
                   </>
                 )}
               </Link>

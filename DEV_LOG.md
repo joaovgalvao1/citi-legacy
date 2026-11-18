@@ -428,3 +428,50 @@ A IA recomendou fazer primeiro o que mais aparece na demo e cabe no prazo. Pedi 
 - Na Plataforma de Voluntariado, marcar as 2 tasks restantes de "Certificados de horas" levou a etapa de 33% para 100%, com status "Concluída". O projeto foi de 70% para 81%, e o alerta da etapa sumiu.
 - A aba Participação mostra os caminhos da etapa Inscrições.
 - Tipos e lint passam. O build de produção passou antes do teste.
+
+---
+
+## Etapa 3 — Alta fidelidade (18/11)
+
+**O que pedi:** primeiro, o plano da etapa 3: identidade visual, IA ao vivo e deploy. Depois pedi uma **página de entrada do site antes do login**, com o ícone de login no topo.
+
+**O que a IA fez (identidade e entrada):**
+- **Tema escuro do CITi** (`app/globals.css`):
+  - fundo `#0A0A0A`, verde `#00DB58` para ações, progresso, aba ativa e itens concluídos, âmbar `#FFA630` para alertas;
+  - Inter Tight nos títulos e no texto, IBM Plex Mono nos dados, via `next/font`.
+  - A escala de cinza do Tailwind foi redefinida em modo escuro. Assim, os componentes da média fidelidade herdaram o tema sem reescrever cada classe; depois só os pontos de destaque foram ajustados.
+- **Componentes:**
+  - cards arredondados, botões em pílula (o primário em verde);
+  - selos com tons (neutro, verde para concluído, âmbar para atrasado e parado);
+  - alertas em âmbar;
+  - barras de progresso em verde, com animação ao carregar;
+  - paleta de membros nova para o fundo escuro, sem verde nem âmbar, que já têm significado;
+  - gráficos com eixos e tooltip escuros;
+  - animações discretas, desligadas para quem configurou o sistema para reduzir movimento.
+- **Entrada do site (`/`, pública):**
+  - tagline em destaque;
+  - uma prévia do painel com dados reais do protótipo (a Clínica Movimento e quem sabe de Multiunidade);
+  - os números do acervo;
+  - "O que o CITi Legacy faz" e "Do repositório ao painel";
+  - chamada para entrar.
+- **Cabeçalho:** marca "CITi Legacy" e **ícone de login no topo**, que vira "Abrir painel" para quem já entrou. Na área logada, ficam os links, o usuário e o ícone de sair.
+- **Login** foi para `/login`, com o mesmo visual. Sair leva de volta à entrada do site.
+
+**Verificação:** prints da entrada, do login, da lista de projetos, da Visão geral e da Participação no tema novo, enviados para aprovação. Tipos e lint passam.
+
+### Logo, fundo do CITi e nomes ocultos na prévia (18/11)
+
+**O que pedi:** enviei imagens do logo do CITi e do fundo usado no site citi.org.br. Pedi também que os nomes da prévia da página de entrada ficassem ocultos, como o saldo num app de banco.
+
+**O que a IA fez:**
+- **Logo:** com a biblioteca `sharp`, já instalada pelo Next, recortou o logo e trocou o fundo branco por transparente. Gerou duas versões, verde e branca, em `public/marca/`. O cabeçalho e o login usam o logo verde ao lado da palavra "Legacy".
+- **Fundo:** recortou só o padrão abstrato do banner, sem o texto e o logo que vêm nele (`public/marca/fundo-citi.webp`). Ele aparece no lado direito da área de destaque da entrada, esmaecido para a esquerda, para o título continuar legível.
+- **Prévia com nomes ocultos:** primeira versão com os nomes como `••••••••` e um ícone de olho para revelar.
+
+**Ajuste que pedi:** ocultar também o nome do projeto e tirar o olho, porque essas informações são protegidas pelo login.
+
+**O que a IA fez:**
+- A prévia mostra só o formato e os números (status, progresso, prazo, porcentagens de IC). Projeto, descrição, etapa e pessoas aparecem como `••••`, e há o aviso "Entre para ver os projetos e as pessoas".
+- A IA também garantiu que **nenhum nome real chega à página pública**: o servidor passa para a prévia apenas os números. Foi conferido no HTML da entrada, onde aparecem 0 ocorrências de "Sofia", "Clínica Movimento", "Multiunidade" e "Boa Viagem".
+
+**Verificação:** a entrada mostra a prévia toda oculta. Tipos e lint passam.

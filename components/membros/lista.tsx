@@ -40,7 +40,7 @@ export function ListaMembros({ membros }: { membros: ResumoMembro[] }) {
               aria-selected={aba === id}
               onClick={() => setAba(id)}
               className={`cursor-pointer rounded-full border px-3 py-1 ${
-                aba === id ? "border-gray-800 bg-gray-800 text-white" : "border-gray-400 bg-white text-gray-700"
+                aba === id ? "border-verde bg-verde/10 text-verde" : "border-gray-400 bg-white text-gray-700"
               }`}
             >
               {rotulo}
@@ -53,17 +53,17 @@ export function ListaMembros({ membros }: { membros: ResumoMembro[] }) {
           onChange={(e) => setBusca(e.target.value)}
           placeholder="Buscar por nome"
           aria-label="Buscar membro por nome"
-          className="w-full border border-gray-400 bg-white px-3 py-1.5 text-sm sm:w-64"
+          className="w-full rounded-full border border-gray-400 bg-white px-4 py-1.5 text-sm outline-none transition-colors focus:border-verde sm:w-64"
         />
       </div>
 
       {visiveis.length === 0 ? (
-        <p className="border border-dashed border-gray-400 p-6 text-center text-sm text-gray-500">Nenhum membro encontrado.</p>
+        <p className="rounded-2xl border border-dashed border-gray-400 p-6 text-center text-sm text-gray-500">Nenhum membro encontrado.</p>
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {visiveis.map((m) => (
             <li key={m.id}>
-              <Link href={`/membros/${m.id}`} className="block h-full space-y-1 border border-gray-400 bg-white p-4 hover:border-gray-800">
+              <Link href={`/membros/${m.id}`} className="block h-full space-y-1 rounded-2xl border border-gray-300 bg-white p-5 transition-colors hover:border-verde/60">
                 <div className="flex items-start justify-between gap-2">
                   <span className="font-semibold">{m.nome}</span>
                   {m.saiuEm && <Selo>Saiu em {m.saiuEm}</Selo>}

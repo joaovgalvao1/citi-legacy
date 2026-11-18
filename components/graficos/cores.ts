@@ -1,9 +1,10 @@
 // Cores dos gráficos: cada membro (ou projeto) tem a mesma cor em todas as telas.
-// Paleta neutra provisória; na etapa 3 ela é trocada pela identidade visual do CITi.
+// Paleta da identidade do CITi Legacy para o fundo escuro.
 
 import type { Projeto } from "@/data";
 
-const PALETA = ["#5b7db1", "#c8a26b", "#6fa287", "#b9727f", "#8c7db8", "#7a8a99"];
+// legível no fundo escuro; sem verde (progresso) e sem âmbar (alertas)
+const PALETA = ["#4f9dff", "#c084fc", "#2dd4bf", "#f472b6", "#e2e8f0", "#818cf8"];
 
 export function corPorIndice(i: number) {
   return PALETA[(i < 0 ? 0 : i) % PALETA.length];

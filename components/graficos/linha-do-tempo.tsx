@@ -72,8 +72,8 @@ export function LinhaDoTempo({ series, semanas, titulo, periodo = "semana" }: Pr
         <svg viewBox={`0 0 ${L} ${A}`} className="h-auto w-full" role="img" aria-label={resumo}>
           {ticks.map((t) => (
             <g key={t}>
-              <line x1={M.esq} x2={L - M.dir} y1={y(t)} y2={y(t)} stroke="#e5e7eb" strokeWidth={1} />
-              <text x={M.esq - 6} y={y(t) + 3} textAnchor="end" fontSize={10} fill="#6b7280">
+              <line x1={M.esq} x2={L - M.dir} y1={y(t)} y2={y(t)} stroke="#262626" strokeWidth={1} />
+              <text x={M.esq - 6} y={y(t) + 3} textAnchor="end" fontSize={10} fill="#8a8a8a">
                 {t}
               </text>
             </g>
@@ -103,7 +103,7 @@ export function LinhaDoTempo({ series, semanas, titulo, periodo = "semana" }: Pr
                   );
                 })}
                 {i % cadaRotulo === 0 && (
-                  <text x={x + larg / 2} y={A - 8} textAnchor="middle" fontSize={10} fill="#6b7280">
+                  <text x={x + larg / 2} y={A - 8} textAnchor="middle" fontSize={10} fill="#8a8a8a">
                     {ddmm(s.semana)}
                   </text>
                 )}
@@ -113,19 +113,19 @@ export function LinhaDoTempo({ series, semanas, titulo, periodo = "semana" }: Pr
                   y={M.topo}
                   width={col}
                   height={areaA}
-                  fill={hover === i ? "rgba(0,0,0,0.04)" : "transparent"}
+                  fill={hover === i ? "rgba(255,255,255,0.05)" : "transparent"}
                   onMouseEnter={() => setHover(i)}
                   onMouseLeave={() => setHover(null)}
                 />
               </g>
             );
           })}
-          <line x1={M.esq} x2={L - M.dir} y1={y(0)} y2={y(0)} stroke="#9ca3af" strokeWidth={1} />
+          <line x1={M.esq} x2={L - M.dir} y1={y(0)} y2={y(0)} stroke="#444444" strokeWidth={1} />
         </svg>
 
         {hover !== null && (
           <div
-            className="pointer-events-none absolute top-0 z-10 min-w-40 border border-gray-300 bg-white p-2 text-xs shadow-sm"
+            className="pointer-events-none absolute top-0 z-10 min-w-40 rounded-xl border border-gray-400 bg-gray-100 p-2.5 text-xs shadow-xl shadow-black/40"
             style={{
               left: `${((M.esq + (hover + 0.5) * col) / L) * 100}%`,
               transform: hover > semanas.length / 2 ? "translateX(-105%)" : "translateX(5%)",

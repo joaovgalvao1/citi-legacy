@@ -23,7 +23,7 @@ export function SeletorEtapa({ projeto }: { projeto: Projeto }) {
       <select
         value={etapa?.id ?? ""}
         onChange={(e) => router.replace(e.target.value ? `${caminho}?etapa=${e.target.value}` : caminho, { scroll: false })}
-        className="border border-gray-400 bg-white px-2 py-1.5"
+        className="rounded-full border border-gray-400 bg-white px-3 py-1.5 outline-none focus:border-verde"
       >
         <option value="">Projeto todo</option>
         {projeto.etapas.map((e) => (

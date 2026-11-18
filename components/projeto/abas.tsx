@@ -25,7 +25,7 @@ export function AbasDoProjeto({ projetoId }: { projetoId: string }) {
             href={href}
             aria-current={ativa ? "page" : undefined}
             className={`-mb-px whitespace-nowrap border-b-2 px-3 py-2 ${
-              ativa ? "border-gray-900 font-semibold text-gray-900" : "border-transparent text-gray-600 hover:text-gray-900"
+              ativa ? "border-verde font-semibold text-verde" : "border-transparent text-gray-600 hover:text-gray-900"
             }`}
           >
             {a.rotulo}

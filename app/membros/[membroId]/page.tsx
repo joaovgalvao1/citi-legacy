@@ -40,7 +40,7 @@ async function MembroConteudo({ params }: { params: PageProps<"/membros/[membroI
           const meus = commitsDaPessoa(pessoa.id, projeto.id);
           return (
             <li key={projeto.id}>
-              <Link href={`/projetos/${projeto.id}`} className="block h-full space-y-3 border border-gray-400 bg-white p-4 hover:border-gray-800">
+              <Link href={`/projetos/${projeto.id}`} className="block h-full space-y-3 rounded-2xl border border-gray-300 bg-white p-5 transition-colors hover:border-verde/60">
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <div className="text-lg font-semibold">{projeto.nome}</div>

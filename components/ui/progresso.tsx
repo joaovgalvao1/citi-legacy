@@ -7,7 +7,7 @@ export function BarraProgresso({ valor, rotulo, compacta = false }: { valor: num
       {rotulo && (
         <div className="flex items-baseline justify-between text-sm">
           <span className="text-gray-600">{rotulo}</span>
-          <span className="font-semibold tabular-nums">{v}%</span>
+          <span className="dado font-semibold">{v}%</span>
         </div>
       )}
       <div
@@ -16,9 +16,9 @@ export function BarraProgresso({ valor, rotulo, compacta = false }: { valor: num
         aria-valuemin={0}
         aria-valuemax={100}
         aria-label={rotulo ?? "Progresso"}
-        className={`w-full bg-gray-200 ${compacta ? "h-1.5" : "h-3"}`}
+        className={`w-full overflow-hidden rounded-full bg-gray-200 ${compacta ? "h-1.5" : "h-2.5"}`}
       >
-        <div className="h-full bg-gray-700" style={{ width: `${v}%` }} />
+        <div className="anima-barra h-full rounded-full bg-verde" style={{ width: `${v}%` }} />
       </div>
     </div>
   );

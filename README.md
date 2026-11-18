@@ -11,11 +11,12 @@ Tudo é calculado a partir dos commits.
 
 ## Estado atual
 
-**Etapa 2: média fidelidade, versão simplificada.** A interface ainda está em tons de cinza; a identidade visual do CITi e o resumo gerado por IA entram na etapa 3.
+**Etapa 3: alta fidelidade, em andamento.** A identidade visual do CITi já está aplicada: fundo escuro, verde `#00DB58` para ações e progresso, âmbar `#FFA630` para alertas, Inter Tight e IBM Plex Mono. Faltam o resumo gerado por IA e o deploy.
 
 | Tela | Rota |
 |---|---|
-| Login | `/` |
+| Entrada do site (pública) | `/` |
+| Login | `/login` |
 | Projetos (abas Em andamento / Concluídos, busca) | `/projetos` |
 | Projeto · Visão geral | `/projetos/[projetoId]` |
 | Projeto · Sobre | `/projetos/[projetoId]/sobre` |

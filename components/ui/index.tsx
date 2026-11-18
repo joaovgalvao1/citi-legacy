@@ -1,5 +1,5 @@
-// Peças básicas de interface (Caixa, Selo, Alerta, botões). Ainda em tons de cinza:
-// a identidade visual do CITi entra na etapa 3, trocando só este arquivo e as cores dos gráficos.
+// Peças básicas de interface (Caixa, Selo, Alerta, botões) com a identidade do CITi:
+// superfícies escuras, verde para ações e conclusão, âmbar para alertas.
 
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -14,12 +14,8 @@ export function Caixa({
   className?: string;
 }) {
   return (
-    <section className={`border border-gray-400 bg-white p-4 ${className}`}>
-      {titulo && (
-        <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-gray-600">
-          {titulo}
-        </h2>
-      )}
+    <section className={`anima-surgir rounded-2xl border border-gray-300 bg-white p-5 ${className}`}>
+      {titulo && <h2 className="dado mb-4 text-xs font-medium uppercase tracking-[0.14em] text-gray-500">{titulo}</h2>}
       {children}
     </section>
   );
@@ -28,20 +24,23 @@ export function Caixa({
 export function Placeholder({ texto, altura = "h-40" }: { texto: string; altura?: string }) {
   return (
     <div
-      className={`flex ${altura} items-center justify-center border-2 border-dashed border-gray-400 bg-gray-100 p-4 text-center text-sm text-gray-500`}
+      className={`flex ${altura} items-center justify-center rounded-xl border border-dashed border-gray-400 bg-gray-100 p-4 text-center text-sm text-gray-500`}
     >
       [{texto}]
     </div>
   );
 }
 
-export function Selo({ children, forte = false }: { children: ReactNode; forte?: boolean }) {
+const tons = {
+  neutro: "border-gray-400 text-gray-700",
+  verde: "border-verde/40 bg-verde/10 text-verde",
+  ambar: "border-ambar/50 bg-ambar/10 text-ambar",
+};
+
+/** Selo em pílula. `forte` = alerta (âmbar); `tom` escolhe a cor explicitamente. */
+export function Selo({ children, forte = false, tom }: { children: ReactNode; forte?: boolean; tom?: keyof typeof tons }) {
   return (
-    <span
-      className={`inline-block rounded-full border px-2 py-0.5 text-xs ${
-        forte ? "border-gray-800 bg-gray-800 text-white" : "border-gray-500 text-gray-700"
-      }`}
-    >
+    <span className={`inline-block whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-medium ${tons[tom ?? (forte ? "ambar" : "neutro")]}`}>
       {children}
     </span>
   );
@@ -49,15 +48,16 @@ export function Selo({ children, forte = false }: { children: ReactNode; forte?:
 
 export function Alerta({ children }: { children: ReactNode }) {
   return (
-    <div className="border-l-4 border-gray-700 bg-gray-200 px-3 py-2 text-sm text-gray-800">
-      ⚠ {children}
+    <div className="flex items-start gap-2 rounded-xl border border-ambar/30 bg-ambar/10 px-3 py-2 text-sm text-gray-800">
+      <span aria-hidden="true" className="text-ambar">▲</span>
+      <span>{children}</span>
     </div>
   );
 }
 
 const estiloPilula = {
-  primario: "border-gray-800 bg-gray-800 text-white hover:bg-gray-700",
-  secundario: "border-gray-500 bg-white text-gray-800 hover:bg-gray-100",
+  primario: "border-verde bg-verde font-semibold text-fundo hover:bg-verde-escuro hover:border-verde-escuro",
+  secundario: "border-gray-400 bg-transparent text-gray-800 hover:border-gray-600",
 };
 
 export function BotaoLink({
@@ -72,7 +72,7 @@ export function BotaoLink({
   return (
     <Link
       href={href}
-      className={`inline-block rounded-full border px-4 py-1.5 text-sm ${estiloPilula[variante]}`}
+      className={`inline-block rounded-full border px-5 py-2 text-sm transition-colors ${estiloPilula[variante]}`}
     >
       {children}
     </Link>
@@ -82,12 +82,13 @@ export function BotaoLink({
 export function Botao({
   children,
   variante = "primario",
+  className = "",
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & { variante?: keyof typeof estiloPilula }) {
   return (
     <button
       {...props}
-      className={`inline-block cursor-pointer rounded-full border px-4 py-1.5 text-sm disabled:opacity-50 ${estiloPilula[variante]}`}
+      className={`inline-block cursor-pointer rounded-full border px-5 py-2 text-sm transition-colors disabled:opacity-50 ${estiloPilula[variante]} ${className}`}
     >
       {children}
     </button>
@@ -96,7 +97,7 @@ export function Botao({
 
 export function Voltar({ href, children }: { href: string; children: ReactNode }) {
   return (
-    <Link href={href} className="text-sm text-gray-600 underline hover:text-gray-900">
+    <Link href={href} className="text-sm text-gray-500 transition-colors hover:text-verde">
       ← {children}
     </Link>
   );

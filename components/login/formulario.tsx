@@ -29,7 +29,7 @@ export function FormularioLogin() {
   return (
     <form onSubmit={enviar} className="space-y-4" noValidate>
       <label className="block text-sm">
-        <span className="mb-1 block text-gray-700">Usuário</span>
+        <span className="mb-1.5 block text-gray-600">Usuário</span>
         <input
           value={usuario}
           onChange={(e) => {
@@ -37,11 +37,11 @@ export function FormularioLogin() {
             setErro("");
           }}
           autoComplete="username"
-          className="w-full border border-gray-400 bg-white px-3 py-2"
+          className="w-full rounded-xl border border-gray-400 bg-gray-50 px-3 py-2.5 outline-none transition-colors focus:border-verde"
         />
       </label>
       <label className="block text-sm">
-        <span className="mb-1 block text-gray-700">Senha</span>
+        <span className="mb-1.5 block text-gray-600">Senha</span>
         <input
           type="password"
           value={senha}
@@ -50,15 +50,15 @@ export function FormularioLogin() {
             setErro("");
           }}
           autoComplete="current-password"
-          className="w-full border border-gray-400 bg-white px-3 py-2"
+          className="w-full rounded-xl border border-gray-400 bg-gray-50 px-3 py-2.5 outline-none transition-colors focus:border-verde"
         />
       </label>
       {erro && (
-        <p role="alert" className="text-sm font-semibold text-gray-900">
+        <p role="alert" className="text-sm font-medium text-ambar">
           {erro}
         </p>
       )}
-      <Botao type="submit">Entrar</Botao>
+      <Botao type="submit" className="w-full">Entrar</Botao>
     </form>
   );
 }

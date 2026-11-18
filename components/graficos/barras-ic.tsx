@@ -27,13 +27,13 @@ export function BarrasIC({ projeto, linhas, rotulo }: { projeto: Projeto; linhas
             }`}
           >
             <span className={`truncate ${i === 0 ? "font-semibold" : "text-gray-700"}`}>{membro.nome}</span>
-            <span className="relative h-5 bg-gray-100">
+            <span className="relative h-5 overflow-hidden rounded-full bg-gray-100">
               <span
-                className="absolute inset-y-0 left-0"
+                className="anima-barra absolute inset-y-0 left-0 rounded-full"
                 style={{ width: `${Math.max(ic, 1)}%`, backgroundColor: corDoMembro(projeto, membro.id) }}
               />
             </span>
-            <span className={`text-right tabular-nums ${i === 0 ? "font-semibold" : "text-gray-600"}`}>{emPct(ic)}</span>
+            <span className={`dado text-right ${i === 0 ? "font-semibold" : "text-gray-600"}`}>{emPct(ic)}</span>
           </button>
         );
       })}

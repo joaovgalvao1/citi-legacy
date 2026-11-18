@@ -88,7 +88,7 @@ export function VisaoGeral({ projeto: original }: { projeto: Projeto }) {
                     )}
                   </span>
                   {top && (
-                    <Link href={`/projetos/${projeto.id}/participacao?etapa=${e.id}`} className="text-gray-700 underline">
+                    <Link href={`/projetos/${projeto.id}/participacao?etapa=${e.id}`} className="text-verde hover:underline">
                       Ver participação →
                     </Link>
                   )}
@@ -107,7 +107,7 @@ export function VisaoGeral({ projeto: original }: { projeto: Projeto }) {
                               checked={t.feita}
                               disabled={concluido}
                               onChange={(ev) => alternarTask(projeto.id, e.id, i, ev.target.checked)}
-                              className="mt-0.5"
+                              className="mt-0.5 accent-[#00db58]"
                             />
                             <span className={t.feita ? "text-gray-500 line-through" : ""}>{t.titulo}</span>
                           </label>

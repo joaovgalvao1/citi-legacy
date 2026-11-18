@@ -49,7 +49,7 @@ async function Sobre({ params }: { params: PageProps<"/projetos/[projetoId]/sobr
             <li key={m.id}>
               <Link
                 href={`/membros/${m.id}`}
-                className="inline-flex items-center gap-2 rounded-full border border-gray-400 bg-white px-3 py-1 text-sm hover:border-gray-800"
+                className="inline-flex items-center gap-2 rounded-full border border-gray-400 bg-gray-100 px-3 py-1 text-sm hover:border-verde/60"
               >
                 <span className="font-semibold">{m.nome}</span>
                 <span className="text-gray-600">{m.papel}</span>
