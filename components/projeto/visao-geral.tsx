@@ -97,7 +97,7 @@ export function VisaoGeral({ projeto: original, resumo }: { projeto: Projeto; re
                             <input
                               type="checkbox"
                               checked={t.feita}
-                              disabled={concluido}
+                              disabled={concluido && !projeto.concluidoPelasTasks}
                               onChange={(ev) => alternar(e.id, i, ev.target.checked)}
                               className="mt-0.5 accent-[#00db58]"
                             />

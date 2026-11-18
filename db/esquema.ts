@@ -32,6 +32,8 @@ export const projetos = pgTable("projetos", {
   inicio: text("inicio").notNull(),
   fimPrevisto: text("fim_previsto").notNull(),
   entrega: text("entrega"),
+  /** Concluído porque todas as tasks foram marcadas (pode ser reaberto desmarcando uma). */
+  concluidoPelasTasks: boolean("concluido_pelas_tasks").notNull().default(false),
   ordem: integer("ordem").notNull().default(0),
 });
 

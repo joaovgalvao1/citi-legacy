@@ -46,6 +46,7 @@ export async function carregarTudo() {
       inicio: p.inicio,
       fimPrevisto: p.fimPrevisto,
       ...(p.entrega ? { entrega: p.entrega } : {}),
+      concluidoPelasTasks: p.concluidoPelasTasks,
       etapas: etapas
         .filter((e) => e.projetoId === p.id)
         .map((e) => {

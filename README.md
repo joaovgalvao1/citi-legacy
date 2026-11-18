@@ -112,6 +112,9 @@ Cada etapa tem uma lista de **tasks**. O **progresso da etapa é a fração de t
   - **em andamento** no resto;
   - além disso, ela fica **parada** quando passa 14 dias ou mais sem commits sem estar concluída.
 - **Projeto:** **concluído** (entregue), **atrasado** (passou do fim previsto) ou **em andamento**.
+  - Marcar a **última task** conclui o projeto: ele passa para a aba Concluídos, com entrega na data de hoje. O resumo final sai na sexta-feira seguinte, quando o cron roda.
+  - Desmarcar uma task de um projeto concluído assim **reabre** o projeto e descarta o resumo final, se já existir.
+  - Os projetos históricos, que foram concluídos sem passar pelas tasks, ficam com as tasks travadas.
 - **Progresso do projeto:** a média do progresso das etapas, que vem das tasks concluídas.
 
 ### Índice de Conhecimento (IC)

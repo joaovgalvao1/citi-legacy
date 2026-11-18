@@ -609,3 +609,27 @@ A IA recomendou trocar a chave. Gerei uma nova e coloquei direto no `.env.local`
 - a Visão geral mostra o resumo da semana gerado pelo Gemini e as semanas anteriores;
 - a rota do cron recusa chamadas sem o segredo (401);
 - o HTML público da entrada não contém nomes de pessoas nem de projetos.
+
+### Projeto concluído pelas tasks (18/11)
+
+**O que pedi:** testei marcar todas as tasks de um projeto e ele continuou "Atrasado". Pedi que o status se atualizasse.
+
+**Causa:** a etapa já virava "Concluída" com 100%, mas o projeto só ficava concluído pela data de entrega gravada no banco, que as tasks nunca alteravam.
+
+**O que a IA propôs e eu aprovei:**
+- Marcar a última task conclui o projeto: status concluído e entrega = hoje.
+- Desmarcar uma task reabre o projeto.
+- O resumo final fica para o cron de sexta, sem gastar a API a cada clique.
+
+**Ajuste que a IA encontrou ao implementar:** nos projetos concluídos, as tasks ficavam travadas na tela, e assim nunca daria para reabrir. Por isso:
+- o banco ganhou a coluna `concluido_pelas_tasks`;
+- só esses projetos continuam com as tasks liberadas;
+- GALT e Riachuelo (históricos) continuam travados, inclusive no servidor;
+- ao reabrir, o resumo final, se já existir, é apagado, para não ficar desatualizado.
+
+**Verificação no banco local, pela tela:**
+- deixei a Folhagem & Cia com uma task pendente e marquei a última: o projeto virou "Concluído · Entregue 03/08/2026 a 18/11/2026 · 30 dias antes do previsto";
+- desmarquei a task: o projeto voltou para "Em andamento" com o resumo da semana;
+- os dados de teste foram restaurados depois.
+
+**No Neon:** a coluna foi aplicada com `banco:migrar`. Nenhum projeto estava com todas as tasks feitas, então não havia teste para desfazer.

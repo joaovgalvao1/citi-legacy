@@ -69,6 +69,8 @@ export type Projeto = {
   inicio: string;
   fimPrevisto: string;
   entrega?: string;
+  /** Concluído ao marcar a última task; desmarcar uma task reabre o projeto. */
+  concluidoPelasTasks: boolean;
   etapas: Etapa[];
   membros: Membro[];
   /** Commits por semana no projeto inteiro. */

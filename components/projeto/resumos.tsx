@@ -72,7 +72,7 @@ export function ResumosDoProjeto({ resumos, concluido }: { resumos: Resumo[]; co
         </div>
       ) : (
         <p className="text-sm text-gray-500">
-          {concluido ? "O resumo final ainda não foi gerado." : "O primeiro resumo semanal sai na próxima sexta-feira."}
+          {concluido ? "O resumo final é gerado na sexta-feira, às 23h." : "O primeiro resumo semanal sai na próxima sexta-feira."}
         </p>
       )}
 
