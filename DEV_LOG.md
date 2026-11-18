@@ -712,3 +712,12 @@ Ficaram de fora o boletim da empresa inteira e a imagem para WhatsApp/Slack.
 **Verificação:**
 - gerei o HTML com os dados locais e conferi o visual no navegador (um ajuste: a coluna do prazo foi alargada para não quebrar a linha);
 - sem a chave, o script avisa "boletim NÃO enviado: RESEND_API_KEY não configurada".
+
+**Decisão sobre os destinatários (18/11):**
+- **Limite:** sem domínio verificado, o Resend só envia para o e-mail da conta.
+- **Opções analisadas com a IA:**
+  - verificar um domínio no Resend;
+  - trocar para o Brevo, que aceita só um remetente verificado;
+  - manter como está.
+- **Escolha:** manter, porque na demonstração o boletim chega no e-mail da conta, e isso basta para mostrar o envio automático.
+- **Em produção:** o CITi verificaria o próprio domínio no Resend e definiria `BOLETIM_DE` e `BOLETIM_PARA`, sem mudar o código.

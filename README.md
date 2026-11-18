@@ -106,7 +106,7 @@ O botão **Salvar como PDF** abre a janela de impressão do navegador. O nome do
 Toda sexta-feira, depois de gerar os resumos, o cron envia o boletim por e-mail pelo **Resend**, chamando a API HTTP sem biblioteca (`lib/email.ts`). O e-mail tem o mesmo conteúdo do PDF, num HTML com estilos embutidos, links para cada projeto e um botão "Ver o boletim em PDF".
 
 - **Variáveis:** `RESEND_API_KEY` e `BOLETIM_PARA` (destinatários, separados por vírgula). Sem elas, o envio é pulado e o cron só registra o motivo.
-- **Sem domínio próprio:** o remetente é `onboarding@resend.dev`, que só envia para o e-mail da conta Resend.
+- **Sem domínio próprio:** o remetente é `onboarding@resend.dev`, que só envia para o e-mail da conta Resend. Em produção, basta verificar o domínio da empresa no Resend e definir `BOLETIM_DE` (ex.: `CITi Legacy <legacy@dominio>`) e `BOLETIM_PARA`, sem mudar o código.
 - **Testar na hora:** `npm run boletim:enviar`.
 - **Só gerar o HTML, sem enviar:** `npm run boletim:enviar -- --html boletim.html`.
 
