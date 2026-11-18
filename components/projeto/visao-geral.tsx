@@ -9,7 +9,8 @@ import { formatarData } from "@/data/formatos";
 import { emPct, lider } from "@/lib/indice";
 import { alertas, statusEtapa, textoPrazoEtapa } from "@/lib/status";
 import { alternarTask, useProjetoComTasks } from "@/lib/tasks";
-import { Alerta, Caixa, Placeholder } from "@/components/ui";
+import { Alerta, Caixa } from "@/components/ui";
+import { ResumoIA } from "./resumo-ia";
 import { BarraProgresso } from "@/components/ui/progresso";
 import { SeloStatusEtapa } from "./status";
 
@@ -40,16 +41,7 @@ export function VisaoGeral({ projeto: original }: { projeto: Projeto }) {
         </Caixa>
       )}
 
-      <Caixa titulo={concluido ? "Retrospectiva · gerada por IA" : "Resumo da semana · gerado por IA"}>
-        <Placeholder
-          texto={
-            concluido
-              ? "etapa 3: a IA lê os commits e escreve a retrospectiva do projeto"
-              : "etapa 3: a IA lê os commits e escreve o que andou, o que travou e o que fazer primeiro"
-          }
-          altura="h-20"
-        />
-      </Caixa>
+      <ResumoIA projetoId={projeto.id} concluido={concluido} />
 
       <Caixa titulo={`Etapas · ${projeto.etapas.length}`}>
         <ul className="divide-y divide-gray-300">

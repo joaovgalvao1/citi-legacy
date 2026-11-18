@@ -475,3 +475,45 @@ A IA recomendou fazer primeiro o que mais aparece na demo e cabe no prazo. Pedi 
 - A IA também garantiu que **nenhum nome real chega à página pública**: o servidor passa para a prévia apenas os números. Foi conferido no HTML da entrada, onde aparecem 0 ocorrências de "Sofia", "Clínica Movimento", "Multiunidade" e "Boa Viagem".
 
 **Verificação:** a entrada mostra a prévia toda oculta. Tipos e lint passam.
+
+### IA ao vivo: resumo do projeto (18/11)
+
+**O que pedi:** aprovei o visual (commit `d270ee1`) e pedi para seguir para a IA.
+
+**O que a IA fez:**
+- **`lib/resumo.ts`:**
+  - monta o contexto do projeto em texto: status, progresso, etapas com tasks feitas e pendentes, prazos, alertas, equipe com IC e os commits das últimas 3 semanas (no projeto concluído, uma amostra do projeto inteiro);
+  - o prompt, em português, pede um JSON com 3 seções e 2 a 3 itens curtos cada. Proíbe inventar fatos e pede para citar etapas, tasks e pessoas;
+  - as seções são "O que andou / O que travou / O que fazer primeiro" no projeto em andamento e "O que foi entregue / Como foi o projeto / Quem procurar" no concluído.
+- **Ordem dos provedores:**
+  1. **Gemini** (`GEMINI_API_KEY`, modelo configurável, padrão `gemini-2.5-flash`), com resposta forçada em JSON;
+  2. **Groq** de reserva (`GROQ_API_KEY`, padrão `llama-3.3-70b-versatile`);
+  3. **resumo automático pelas regras**, sem IA, se nenhum responder.
+
+  A resposta é validada antes de ir para a tela, e há um tempo limite de 20 s por chamada.
+- **Rota `POST /api/resumo`:** recebe o projeto e as tasks marcadas no navegador. Assim o resumo reflete o que o admin acabou de marcar.
+- **Tela `ResumoIA`, na Visão geral, no lugar do espaço reservado:**
+  - esqueleto animado enquanto gera;
+  - as 3 seções lado a lado;
+  - a fonte sempre indicada ("Gerado por IA · Gemini", "Gerado por IA · Groq" ou "Resumo automático (sem IA)") e a hora;
+  - botão "Gerar de novo";
+  - cache no navegador enquanto as tasks não mudam (o resumo automático não fica em cache).
+- **`.env.example`:** documenta as variáveis. Os arquivos `.env*` continuam fora do git, exceto o exemplo.
+
+**Verificação:** ainda sem chave configurada, a rota devolve o resumo automático. Para a Clínica Movimento, por exemplo: "Pacientes e prontuário (atrasada há 18 dias): concluir 'Consentimento LGPD no primeiro atendimento' com Mateus Cavalcanti". A Visão geral mostra o resumo com a fonte "Resumo automático (sem IA)". **Falta testar com a chave do Gemini.** Tipos e lint passam.
+
+### Chave do Gemini e escolha do modelo (18/11)
+
+**O que pedi:** coloquei a chave do Gemini e perguntei como saber qual modelo usar.
+
+**O que a IA encontrou e fez:**
+- **A chave estava no `.env.example`**, que é versionado no git. A IA moveu a chave para o `.env.local` (fora do git, com permissão só do dono) e deixou o exemplo vazio de novo, sem exibir a chave em nenhum momento.
+- **Modelos:** consultou a API do Gemini com a chave e listou 49 modelos disponíveis.
+  - O padrão do código, `gemini-2.5-flash`, devolveu 404, com a mensagem "no longer available to new users".
+  - Os mais novos (`gemini-3.8-flash`, `3.7`, `3.5-flash`) devolveram 503, alta demanda naquele momento.
+  - O `gemini-3.5-flash-lite` respondeu normalmente.
+- **Ajuste no código:** o Gemini passou a tentar **uma lista de modelos em ordem** (`gemini-3.8-flash`, `gemini-3.5-flash`, `gemini-3.5-flash-lite`). `GEMINI_MODEL` aceita um ou vários modelos separados por vírgula. O tempo limite por modelo caiu para 12 s. Só depois de todos falharem vem o Groq e, por fim, o resumo automático.
+
+**Verificação:**
+- **Clínica Movimento:** resumo **gerado pelo Gemini (`gemini-3.5-flash-lite`)**, específico e sem inventar fatos. Exemplo: "Destravar a etapa Pacientes e prontuário com Mateus Cavalcanti para finalizar o Consentimento LGPD."
+- **GALT:** no mesmo minuto, os três modelos estavam sobrecarregados e entrou o resumo automático, como previsto.

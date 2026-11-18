@@ -11,7 +11,7 @@ Tudo é calculado a partir dos commits.
 
 ## Estado atual
 
-**Etapa 3: alta fidelidade, em andamento.** A identidade visual do CITi já está aplicada: fundo escuro, verde `#00DB58` para ações e progresso, âmbar `#FFA630` para alertas, Inter Tight e IBM Plex Mono. Faltam o resumo gerado por IA e o deploy.
+**Etapa 3: alta fidelidade, em andamento.** A identidade visual do CITi já está aplicada: fundo escuro, verde `#00DB58` para ações e progresso, âmbar `#FFA630` para alertas, Inter Tight e IBM Plex Mono. O resumo gerado por IA está pronto. Falta o deploy.
 
 | Tela | Rota |
 |---|---|
@@ -32,6 +32,19 @@ O login é de demonstração e tem um único usuário administrador, definido em
 - **Senha:** `admin`
 
 As credenciais ficam no código do front-end e a sessão fica no navegador, então não há segurança real. O login só serve para simular a entrada na ferramenta interna. Sem login, qualquer página leva de volta à tela de login.
+
+## IA: resumo do projeto
+
+Na Visão geral, cada projeto tem um **resumo gerado por IA**:
+- **projetos em andamento:** "Resumo da semana", com o que andou, o que travou e o que fazer primeiro;
+- **projetos concluídos:** "Retrospectiva", com o que foi entregue, como foi o projeto e quem procurar.
+
+**Como funciona:**
+- A rota `POST /api/resumo` (`lib/resumo.ts`) monta o contexto do projeto: status, progresso, tasks feitas e pendentes, prazos, alertas, equipe com IC e commits recentes. Ela inclui as tasks marcadas no navegador.
+- O contexto vai para o **Gemini**. Se ele falhar, vai para o **Groq**. Se nenhum responder, a tela mostra um **resumo automático montado pelas regras**, sem IA.
+- A tela sempre diz de onde veio o texto. O resumo fica guardado no navegador até as tasks mudarem, e o botão "Gerar de novo" força uma nova chamada.
+
+Para ativar a IA, copie `.env.example` para `.env.local` e preencha `GEMINI_API_KEY`; `GROQ_API_KEY` é opcional. Na Vercel, cadastre as mesmas variáveis em *Settings → Environment Variables*.
 
 ## Rodando localmente
 
@@ -134,6 +147,8 @@ data/index.ts              leitura dos JSONs no formato usado pelas telas
 data/commits.ts            consultas aos commits (só no servidor)
 lib/indice.ts              Índice de Conhecimento
 lib/sessao.ts              sessão de demonstração (login/sair)
+lib/resumo.ts              contexto e chamada à IA (Gemini → Groq → regras)
+lib/tasks.ts               tasks marcadas no navegador e progresso
 lib/status.ts              status de etapas e projetos, progresso, prazo e alertas
 scripts/                   cenários e gerador dos dados (npm run dados)
 DEV_LOG.md                 como a IA foi usada em cada etapa
