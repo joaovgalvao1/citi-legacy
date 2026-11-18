@@ -91,3 +91,24 @@ export function IconeRepositorio(p: Props) {
     </Svg>
   );
 }
+
+/** Resumo por IA (brilho). */
+export function IconeIA(p: Props) {
+  return (
+    <Svg {...p}>
+      <path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z" />
+      <path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z" />
+    </Svg>
+  );
+}
+
+/** Download / exportar. */
+export function IconeExportar(p: Props) {
+  return (
+    <Svg {...p}>
+      <path d="M12 3v12" />
+      <path d="M7 10l5 5 5-5" />
+      <path d="M5 21h14" />
+    </Svg>
+  );
+}

@@ -2,16 +2,18 @@
 //   • Em andamento: o resumo da semana mais recente e, abaixo, o histórico das semanas anteriores.
 //   • Concluído: o resumo final, fixo.
 
+import Link from "next/link";
 import type { Resumo } from "@/data";
+import { IconeExportar } from "@/components/ui/icones";
 
-const ROTULO_FONTE: Record<Resumo["fonte"], string> = {
+export const ROTULO_FONTE: Record<Resumo["fonte"], string> = {
   gemini: "Gerado por IA · Gemini",
   groq: "Gerado por IA · Groq",
   regras: "Resumo automático (sem IA)",
 };
 
-const ddmm = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
-const fimDaSemana = (iso: string) => new Date(new Date(`${iso}T12:00:00Z`).getTime() + 6 * 86400000).toISOString().slice(0, 10);
+export const ddmm = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
+export const fimDaSemana = (iso: string) => new Date(new Date(`${iso}T12:00:00Z`).getTime() + 6 * 86400000).toISOString().slice(0, 10);
 
 function Secoes({ resumo, compacto = false }: { resumo: Resumo; compacto?: boolean }) {
   return (
@@ -43,7 +45,7 @@ function Fonte({ resumo }: { resumo: Resumo }) {
   );
 }
 
-export function ResumosDoProjeto({ resumos, concluido }: { resumos: Resumo[]; concluido: boolean }) {
+export function ResumosDoProjeto({ projetoId, resumos, concluido }: { projetoId: string; resumos: Resumo[]; concluido: boolean }) {
   const titulo = concluido ? "Resumo final do projeto" : "Resumo da semana";
   const principal = concluido ? resumos.find((r) => r.tipo === "final") : resumos.find((r) => r.tipo === "semanal");
   const anteriores = concluido ? [] : resumos.filter((r) => r.tipo === "semanal" && r !== principal);
@@ -60,9 +62,18 @@ export function ResumosDoProjeto({ resumos, concluido }: { resumos: Resumo[]; co
             </span>
           )}
         </h2>
-        <span className="text-xs text-gray-500">
-          {concluido ? "Gerado uma vez, ao concluir o projeto" : "Gerado toda sexta-feira às 23h"}
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-gray-500">
+            {concluido ? "Gerado uma vez, ao concluir o projeto" : "Gerado toda sexta-feira às 23h"}
+          </span>
+          <Link
+            href={`/exportar/${projetoId}`}
+            className="inline-flex items-center gap-1.5 rounded-full border border-verde/40 px-3 py-1 text-xs text-verde transition-colors hover:bg-verde/10"
+          >
+            <IconeExportar className="h-3.5 w-3.5" />
+            Exportar PDF
+          </Link>
+        </div>
       </div>
 
       {principal ? (

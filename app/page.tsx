@@ -6,7 +6,7 @@ import { ranking } from "@/lib/indice";
 import { PreviaPainel } from "@/components/entrada/previa";
 import { progressoProjeto, statusProjeto, textoPrazo } from "@/lib/status";
 import { corDoMembro } from "@/components/graficos/cores";
-import { IconeConhecimento, IconeEntrar, IconeLegado, IconeProgresso, IconeRepositorio } from "@/components/ui/icones";
+import { IconeConhecimento, IconeEntrar, IconeIA, IconeLegado, IconeProgresso, IconeRepositorio } from "@/components/ui/icones";
 
 const RECURSOS = [
   {
@@ -18,6 +18,12 @@ const RECURSOS = [
     icone: IconeConhecimento,
     titulo: "Saiba quem sabe o quê",
     texto: "O Índice de Conhecimento mostra, a partir dos commits, quanto de cada etapa está com cada pessoa.",
+  },
+  {
+    icone: IconeIA,
+    titulo: "Resumos semanais com IA",
+    texto:
+      "Toda sexta, a IA resume a semana de cada projeto: o que andou, o que travou e o que fazer primeiro, lembrando das semanas anteriores. Os concluídos ganham um resumo final, e tudo pode ser exportado em PDF.",
   },
   {
     icone: IconeLegado,
@@ -117,7 +123,7 @@ export default async function Entrada() {
       {/* recursos */}
       <section id="como-funciona" className="mx-auto max-w-5xl scroll-mt-20 px-4 py-16">
         <h2 className="text-3xl font-bold">O que o CITi Legacy faz</h2>
-        <ul className="mt-8 grid gap-4 md:grid-cols-3">
+        <ul className="mt-8 grid gap-4 md:grid-cols-2">
           {RECURSOS.map(({ icone: Icone, titulo, texto }) => (
             <li
               key={titulo}

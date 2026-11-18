@@ -25,6 +25,7 @@ Tudo é calculado a partir dos commits.
 | Projeto · Participação (IC e commits por semana) | `/projetos/[projetoId]/participacao?etapa=…` |
 | Membros (abas Na empresa / Já saíram, busca) | `/membros` |
 | Membro | `/membros/[membroId]` |
+| Resumo do projeto para PDF | `/exportar/[projetoId]` |
 
 ## Acesso ao protótipo
 
@@ -68,6 +69,16 @@ Os provedores são tentados nesta ordem:
 3. o **resumo automático pelas regras**.
 
 A tela sempre indica a fonte.
+
+## Exportar resumo em PDF
+
+Na Visão geral de cada projeto, o botão **Exportar PDF** abre a versão de impressão (`/exportar/[projetoId]`):
+- formato A4, fundo claro, com a logo e os detalhes em verde do CITi;
+- cabeçalho com status, progresso, prazo e período do projeto;
+- resumo da semana em destaque, etapas com o progresso e o histórico das semanas anteriores;
+- nos concluídos, o resumo final e os resultados.
+
+O botão **Salvar como PDF** abre a janela de impressão do navegador. O nome do arquivo sugerido é o título da página (`Resumo · <projeto> · CITi Legacy`).
 
 ## Rodando localmente
 

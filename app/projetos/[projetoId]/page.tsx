@@ -18,7 +18,7 @@ async function Conteudo({ params }: { params: PageProps<"/projetos/[projetoId]">
   return (
     <VisaoGeral
       projeto={projetoEnxuto(projeto)}
-      resumo={<ResumosDoProjeto resumos={resumos} concluido={projeto.status === "concluido"} />}
+      resumo={<ResumosDoProjeto projetoId={projeto.id} resumos={resumos} concluido={projeto.status === "concluido"} />}
     />
   );
 }

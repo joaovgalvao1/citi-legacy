@@ -633,3 +633,31 @@ A IA recomendou trocar a chave. Gerei uma nova e coloquei direto no `.env.local`
 - os dados de teste foram restaurados depois.
 
 **No Neon:** a coluna foi aplicada com `banco:migrar`. Nenhum projeto estava com todas as tasks feitas, então não havia teste para desfazer.
+
+### Resumos da IA na entrada e exportação em PDF (18/11)
+
+**O que pedi:** mostrar os resumos de IA em "O que o CITi Legacy faz" e criar um exportável bonito dos resumos. Pedi para discutir antes de fazer.
+
+**Discussão:** a IA propôs as opções e eu escolhi:
+- conteúdo: um PDF por projeto, com o histórico;
+- visual: fundo claro com detalhes verdes;
+- formato: PDF pelo próprio navegador (página de impressão), sem biblioteca nova.
+
+Ficaram de fora o boletim da empresa inteira e a imagem para WhatsApp/Slack.
+
+**O que a IA fez:**
+- **Entrada:** um 4º card, "Resumos semanais com IA", com a seção em 2×2. O card só descreve a ideia, sem mostrar resumos reais, porque a entrada é pública.
+- **Botão "Exportar PDF"** no card do resumo, na Visão geral.
+- **Página `/exportar/[projetoId]`:**
+  - folha A4 branca, com a logo do CITi;
+  - dados do projeto em quatro caixas;
+  - resumo em destaque num bloco verde-claro;
+  - tabela de etapas com barras de progresso;
+  - histórico das semanas em três colunas;
+  - rodapé com a fonte do resumo (Gemini e modelo);
+  - na tela aparece a barra "Voltar ao projeto / Salvar como PDF"; na impressão, só a folha, com regras `@media print` e `@page A4`.
+- **Detalhe técnico:** o rodapé do site foi movido para a `Estrutura`, para que a versão de impressão saia sem cabeçalho nem rodapé do app. As cores do documento são explícitas, porque no tema escuro do site `bg-white` é a cor das superfícies escuras.
+
+**Verificação:**
+- vi a página na tela, com a Clínica Movimento: resumo, etapas, 3 semanas anteriores e rodapé;
+- testei o PDF salvo pelo navegador e funcionou.

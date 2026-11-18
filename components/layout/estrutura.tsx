@@ -5,6 +5,7 @@
 // quem não está logado volta ao login.
 
 import { useEffect, type ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { sair, useUsuario } from "@/lib/sessao";
@@ -18,6 +19,8 @@ export function Estrutura({ children }: { children: ReactNode }) {
   const caminho = usePathname();
   const router = useRouter();
   const publica = PUBLICAS.includes(caminho);
+  // versão de impressão (PDF): sem cabeçalho nem rodapé do site
+  const impressao = caminho.startsWith("/exportar/");
 
   useEffect(() => {
     if (usuario === null && !publica) router.replace("/login");
@@ -27,6 +30,8 @@ export function Estrutura({ children }: { children: ReactNode }) {
   // undefined = ainda no servidor/hidratação: a página é renderizada normalmente
   // (o Next precisa disso para pré-renderizar); no navegador, quem não está logado é redirecionado.
   const liberado = usuario === undefined || publica || !!usuario;
+
+  if (impressao) return liberado ? <main className="flex-1">{children}</main> : null;
 
   return (
     <>
@@ -98,6 +103,14 @@ export function Estrutura({ children }: { children: ReactNode }) {
       >
         {liberado ? children : <p className="text-sm text-gray-500">Carregando…</p>}
       </main>
+      <footer className="border-t border-gray-300 py-5 text-xs text-gray-500">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-2 px-4">
+          <Image src="/marca/citi-logo-verde.png" alt="CITi" width={225} height={115} className="h-4 w-auto" />
+          <span className="font-semibold text-gray-700">Legacy</span>
+          <span aria-hidden="true">·</span>
+          <span>protótipo para o desafio Inovação no PS</span>
+        </div>
+      </footer>
     </>
   );
 }
