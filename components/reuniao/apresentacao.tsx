@@ -134,6 +134,13 @@ export function Apresentacao({ slides, data }: { slides: ReactNode[]; data: stri
         </div>
       </div>
 
+      {/* página 16:9 sem margem e fundo escuro, só enquanto a apresentação está aberta
+          (vem depois da regra A4 geral, então vale ela; os PDFs de resumo e boletim continuam em A4) */}
+      <style>{`@media print {
+  @page { size: 1280px 720px; margin: 0; }
+  html, body { background: #0a0a0a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}`}</style>
+
       {/* na impressão: todos os slides, um por página (só aparece ao salvar em PDF) */}
       <div className="slides-impressao" aria-hidden="true">
         {slides.map((s, n) => (

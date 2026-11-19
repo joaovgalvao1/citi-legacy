@@ -182,21 +182,23 @@ h3 {
   }
 }
 
-/* ---------- Modo Reunião em PDF: um slide por página de 1280 × 720 ---------- */
+/* ---------- Modo Reunião em PDF: um slide por página de 1280 × 720 ----------
+   O tamanho da página (16:9, sem margem) é definido pelo próprio componente da apresentação
+   (components/reuniao/apresentacao.tsx), para valer só nessa tela e funcionar em todos os navegadores
+   (o Firefox ignora "páginas nomeadas" e voltava para A4). */
 .slides-impressao {
   display: none;
-}
-@page slide {
-  size: 1280px 720px;
-  margin: 0;
 }
 @media print {
   .slides-impressao {
     display: block;
   }
   .pagina-slide {
-    page: slide;
     break-after: page;
+    break-inside: avoid;
+    width: 1280px;
+    height: 720px;
+    overflow: hidden;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }

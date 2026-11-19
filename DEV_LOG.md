@@ -1086,3 +1086,11 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - **Animações:** ficam desligadas na impressão. Sem isso, as barras do Gantt sairiam vazias, porque a impressão capturaria o começo da animação.
 
 **Verificação:** gerei o PDF com um Chromium sem janela: 7 páginas de 960 × 540 pt (16:9), com a capa, o panorama, os 4 projetos (Gantt completo) e as prioridades.
+
+**Ajuste que pedi depois:** exportei pelo Firefox e o PDF saiu em A4 em pé: cada slide no topo da folha, cortado à direita, com o resto da página em branco.
+
+**Causa:** o tamanho 16:9 estava numa "página nomeada" do CSS (`@page slide`), que o Firefox não aplicou; ele usou a regra geral de A4.
+
+**Correção:** o próprio componente da apresentação define `@page { size: 1280px 720px; margin: 0 }` e o fundo escuro só enquanto `/reuniao` está aberto. Como vem depois da regra A4, ela vale nessa tela; os PDFs de resumo e boletim continuam em A4.
+
+**Verificação:** conferi de novo no Chromium (7 páginas em 16:9). No Firefox, a IA não conseguiu gerar o PDF sem janela; a conferência fica para eu exportar de novo.
