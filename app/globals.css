@@ -202,9 +202,24 @@ h3 {
 }
 .anima-girar {
   animation: girar 70s linear infinite;
+  will-change: transform;
 }
 .anima-girar-reverso {
   animation: girar 110s linear infinite reverse;
+  will-change: transform;
+}
+/* fundo da entrada: só gira enquanto a peça está na tela; parado no celular */
+.giro-fundo {
+  animation-play-state: paused;
+}
+[data-ativo] > .giro-fundo {
+  animation-play-state: running;
+}
+@media (max-width: 640px) {
+  .giro-fundo {
+    animation: none;
+    will-change: auto;
+  }
 }
 .anima-flutuar {
   animation: flutuar 6s ease-in-out infinite;
@@ -212,15 +227,26 @@ h3 {
 .anima-flutuar-lento {
   animation: flutuar 8s ease-in-out 1.5s infinite;
 }
+/* pulso do ponto de status: anima tamanho e transparência (não a sombra), sem redesenhar a página */
 @keyframes pulso {
-  0% {
-    box-shadow: 0 0 0 0 rgb(0 219 88 / 0.6);
+  from {
+    transform: scale(1);
+    opacity: 0.7;
   }
-  100% {
-    box-shadow: 0 0 0 8px rgb(0 219 88 / 0);
+  to {
+    transform: scale(2.8);
+    opacity: 0;
   }
 }
 .anima-pulso {
+  position: relative;
+}
+.anima-pulso::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
   animation: pulso 1.8s ease-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -228,7 +254,7 @@ h3 {
   .anima-girar-reverso,
   .anima-flutuar,
   .anima-flutuar-lento,
-  .anima-pulso,
+  .anima-pulso::after,
   .anima-barra,
   .anima-surgir,
   .anima-fade,

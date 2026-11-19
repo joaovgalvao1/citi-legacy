@@ -1448,3 +1448,33 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - **Celular:** a órbita do topo fica mais apagada para não passar por cima do texto.
 - **Chamada final:** "Todos os projetos, **num só lugar.**" / "Entre e veja como cada projeto está nesta semana."
 - **Imagem antiga:** a página não usa mais `fundo-citi.webp`, mas o arquivo continua em `public/marca`.
+
+### Página inicial mais leve (19/11)
+
+**O que pedi:** a página inicial estava travando no meu navegador. Pedi o que fazer para garantir a experiência de qualquer pessoa, e também usar o fundo de ramificações no lugar de uma das órbitas, para não ficar repetitivo.
+
+**Causas encontradas pela IA:**
+- **Anéis girando dentro de SVG:** eram 20, em SVGs de até 1369 px. Girar um grupo dentro de um SVG redesenha a imagem inteira a cada quadro, e isso acontecia nas 5 órbitas ao mesmo tempo, mesmo fora da tela.
+- **Desfoque de fundo** (vidro fosco) nos cards da vitrine e na faixa de números, sobre conteúdo em movimento, o que obriga a refazer o desfoque a cada quadro.
+- **Pulso** dos pontos de status animando a sombra (`box-shadow`), o que redesenha continuamente.
+
+**O que a IA fez:**
+- **Órbitas** (`components/entrada/fundo.tsx`):
+  - anéis e brilho viraram uma imagem parada;
+  - só as "pessoas" giram, cada anel numa camada HTML com `will-change: transform`, que a placa de vídeo move sem redesenhar;
+  - cada órbita só anima enquanto está na tela (IntersectionObserver);
+  - no celular (até 640 px) e com "reduzir movimento", o fundo fica parado.
+- **Ramificações:** um grafo de commits parado (linhas de branch com nós verdes e roxos) substituiu a órbita ao lado de "Como funciona".
+- **Sem desfoque:** os cards da vitrine e a faixa de números passaram a ter fundo sólido. Só o cabeçalho continua com desfoque.
+- **Pulso:** passou a animar tamanho e transparência num `::after`, sem redesenhar a página.
+- **Hidratação:** as posições das pessoas são arredondadas, para servidor e navegador gerarem o mesmo HTML.
+
+**Medição** (no navegador do app, 1280 px):
+
+| | Antes | Depois |
+|---|---|---|
+| Animações contínuas | 27 (20 dentro de SVG) | 8 a 12, conforme a parte da página (nenhuma dentro de SVG) |
+| Elementos com desfoque | 4 | 1 (o cabeçalho) |
+| Quadros por segundo | ~70 | ~75, sem quadros lentos |
+
+A melhora deve ser bem maior em computadores e celulares mais fracos.

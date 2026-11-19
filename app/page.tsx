@@ -8,7 +8,7 @@ import { obterPessoas, obterProjetos, obterResumos, totalDeCommits } from "@/dat
 import { lider } from "@/lib/indice";
 import { nivelProjeto } from "@/lib/status";
 import { Lockup } from "@/components/layout/marca";
-import { Orbitas } from "@/components/entrada/fundo";
+import { Orbitas, Ramificacoes } from "@/components/entrada/fundo";
 import {
   IconeConhecimento,
   IconeEmail,
@@ -96,9 +96,13 @@ export default async function Entrada() {
     <div className="relative overflow-x-clip">
       {/* fundo: órbitas em vetor espalhadas pela página (atrás de tudo, só aparecem nos vãos) */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ zIndex: -1 }}>
-        <Orbitas id="topo" brilho={0.2} className="top-[-160px] right-[-380px] w-[1100px] opacity-35 sm:right-[-280px] lg:right-[-200px] lg:opacity-100" />
+        <Orbitas
+          id="topo"
+          brilho={0.2}
+          className="top-[-160px] right-[-380px] w-[1100px] opacity-35 sm:right-[-280px] lg:right-[-200px] lg:opacity-100"
+        />
         <Orbitas id="recursos" brilho={0.12} className="top-[24%] left-[-520px] w-[900px] opacity-70" />
-        <Orbitas id="passos" brilho={0.12} className="top-[52%] right-[-480px] w-[860px] opacity-60" />
+        <Ramificacoes className="top-[50%] right-[-360px] w-[860px] opacity-80" />
         <Orbitas id="historico" brilho={0.14} className="top-[71%] left-[-420px] w-[780px] opacity-70" />
       </div>
       {/* ---------- destaque ---------- */}
@@ -147,7 +151,7 @@ export default async function Entrada() {
       </section>
 
       {/* ---------- números reais (agregados) ---------- */}
-      <section className="border-y border-linha bg-white/40 backdrop-blur">
+      <section className="border-y border-linha bg-white/70">
         <dl className="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-8 px-4 py-10 sm:grid-cols-3 lg:grid-cols-5">
           {[
             { valor: andamento.length, rotulo: "projetos em andamento", extra: niveis },

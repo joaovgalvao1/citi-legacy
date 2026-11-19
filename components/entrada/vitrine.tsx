@@ -96,7 +96,7 @@ export function VitrineDestaque() {
       </div>
 
       {/* card do projeto: semáforo, progresso e previsão */}
-      <div className="absolute top-1/2 left-1/2 w-[74%] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-branco/12 bg-white/95 p-4 shadow-2xl shadow-black/70 backdrop-blur">
+      <div className="absolute top-1/2 left-1/2 w-[74%] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-branco/12 bg-white p-4 shadow-2xl shadow-black/70">
         <div className="flex items-start justify-between gap-2">
           <div className="space-y-1">
             <Oculto n={12} className="block text-sm" />
@@ -128,7 +128,7 @@ export function VitrineDestaque() {
       </div>
 
       {/* Gantt */}
-      <div className="anima-flutuar-lento absolute bottom-[3%] left-0 w-[64%] rounded-xl border border-branco/12 bg-white/95 p-3 shadow-2xl shadow-black/60 backdrop-blur">
+      <div className="anima-flutuar-lento absolute bottom-[3%] left-0 w-[64%] rounded-xl border border-branco/12 bg-white p-3 shadow-2xl shadow-black/60">
         <p className="rotulo">Linha do tempo</p>
         <div className="relative mt-4 space-y-1.5">
           {[
