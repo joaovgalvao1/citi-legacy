@@ -1278,3 +1278,25 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - **Execução:** o Gemini estava sobrecarregado (503) em 2 projetos, que caíram no resumo automático por regras. A IA esperou 30 s e refez só esses dois. Os 5 ficaram gerados pela IA.
 - **Resumo do CITi Legacy:** citou as 4 etapas concluídas e a "Entrega do desafio" com Documentação e Vídeo do pitch pendentes.
 - **Painel local:** passou para a semana 16/11 a 22/11 (5 projetos, 14 tasks e 77 commits, incluindo os 49 reais).
+
+### Geração semanal dentro dos limites da IA (19/11)
+
+**O que pedi:** limitar quantos resumos são gerados por vez, de acordo com os limites da API, porque gerar todos de uma vez sobrecarrega a IA.
+
+**O que a IA encontrou:**
+- **Sem pausa:** o cron pedia os resumos um atrás do outro, e na primeira falha (503 sobrecarregado ou 429 limite) caía direto no resumo automático (regras).
+- **Tempo da função:** cada tentativa podia passar por 3 modelos com 15 s de espera cada, e uma função da Vercel no plano gratuito tem 60 s.
+
+**O que a IA fez (`lib/resumo.ts`, cron):**
+- **Ritmo:** no máximo 1 pedido à IA a cada 4,5 s (≈13 por minuto, abaixo dos 15 por minuto do Gemini gratuito), ajustável por `IA_INTERVALO_MS`. Vale para cada pedido, inclusive para cada modelo tentado.
+- **Novas tentativas:** se a IA falhar, tenta de novo depois de 10 s e de 25 s antes de cair no resumo automático. Sem chave configurada, não repete.
+- **Prazo:** cada pedido só começa se houver tempo de terminar antes do prazo da execução (`definirPrazoIA`). O cron usa 55 s dos 60 s da função (`maxDuration = 60`).
+- **Cron em duas etapas** (`vercel.json`):
+  - **23h00:** sincroniza o GitHub, limpa a lixeira e gera os resumos que couberem no tempo;
+  - **23h30** (`?etapa=pendentes`): gera os que ficaram pendentes (sem resumo ou com o automático) e **só então envia o boletim**, com os resumos completos.
+- **Sem gasto repetido:** projeto que já tem o resumo da semana feito pela IA é pulado (`resumoPronto`). Repetir o cron não gasta pedidos à toa.
+
+**Verificação:**
+- **Pular resumos prontos:** com os resumos da semana 16/11 já gerados, todos os 7 projetos foram pulados; uma semana sem resumo aparece como pendente.
+- **`maxDuration`:** conferido na documentação do Next desta versão (compatível com Cache Components).
+- **Não testado:** a rota do cron, porque o `CRON_SECRET` só existe na Vercel.

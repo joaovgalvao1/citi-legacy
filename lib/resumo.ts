@@ -150,7 +150,36 @@ function validar(texto: string): Secao[] | null {
   }
 }
 
-async function comTempoLimite(url: string, init: RequestInit, ms = 15000) {
+/* ---------- ritmo dos pedidos à IA (limites do plano gratuito) ---------- */
+// Gemini gratuito: ~15 pedidos por minuto. Um pedido a cada 4,5 s (≈13/min) fica abaixo do limite.
+// IA_INTERVALO_MS ajusta o intervalo. Cada pedido também respeita um prazo (o tempo máximo da função
+// na Vercel): sem tempo para esperar a resposta, desiste e usa o resumo automático (regras).
+
+const INTERVALO_MS = Number(process.env.IA_INTERVALO_MS) || 4500;
+const TEMPO_PEDIDO_MS = 15000;
+const ESPERAS_NOVA_TENTATIVA_MS = [10000, 25000];
+let proximoLivre = 0;
+let prazo = Infinity;
+
+const dormir = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/** Define até quando (timestamp) os pedidos à IA podem rodar nesta execução (ex.: o limite da função). */
+export function definirPrazoIA(ate: number) {
+  prazo = ate;
+}
+
+/** Ainda dá tempo de esperar `ms` e fazer um pedido completo antes do prazo? */
+const cabe = (ms = 0) => Date.now() + ms + TEMPO_PEDIDO_MS <= prazo;
+
+/** Espera a vez do próximo pedido, respeitando o intervalo mínimo entre pedidos. */
+async function aguardarVez() {
+  const agora = Date.now();
+  const espera = Math.max(0, proximoLivre - agora);
+  proximoLivre = Math.max(agora, proximoLivre) + INTERVALO_MS;
+  if (espera) await dormir(espera);
+}
+
+async function comTempoLimite(url: string, init: RequestInit, ms = TEMPO_PEDIDO_MS) {
   const controle = new AbortController();
   const t = setTimeout(() => controle.abort(), ms);
   try {
@@ -172,6 +201,11 @@ async function gemini(texto: string): Promise<{ secoes: Secao[]; modelo: string 
   const modelos = (process.env.GEMINI_MODEL || "").split(",").map((m) => m.trim()).filter(Boolean);
   const falhas: string[] = [];
   for (const modelo of modelos.length ? modelos : MODELOS_GEMINI_PADRAO) {
+    if (!cabe(Math.max(0, proximoLivre - Date.now()))) {
+      falhas.push(`${modelo}: sem tempo`);
+      break;
+    }
+    await aguardarVez();
     const r = await comTempoLimite(`https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": chave },
@@ -205,6 +239,8 @@ async function groq(texto: string): Promise<{ secoes: Secao[]; modelo: string } 
   const chave = process.env.GROQ_API_KEY;
   if (!chave) return null;
   const modelo = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
+  if (!cabe(Math.max(0, proximoLivre - Date.now()))) throw new Error("Groq: sem tempo");
+  await aguardarVez();
   const r = await comTempoLimite("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${chave}` },
@@ -224,22 +260,32 @@ async function groq(texto: string): Promise<{ secoes: Secao[]; modelo: string } 
 
 async function pedirIA(texto: string, reserva: () => Secao[]): Promise<Gerado> {
   const falhas: string[] = [];
-  for (const [fonte, provedor] of [
-    ["gemini", gemini],
-    ["groq", groq],
-  ] as const) {
-    try {
-      const r = await provedor(texto);
-      if (r) return { secoes: r.secoes, fonte, modelo: r.modelo };
-    } catch (erro) {
-      falhas.push(erro instanceof Error ? erro.message : String(erro));
+  let algumaChave = false;
+  // primeira tentativa e, se a IA estiver sobrecarregada ou no limite, mais duas (após 10 s e 25 s)
+  for (const espera of [0, ...ESPERAS_NOVA_TENTATIVA_MS]) {
+    if (espera) {
+      if (!cabe(espera)) break;
+      await dormir(espera);
     }
+    for (const [fonte, provedor] of [
+      ["gemini", gemini],
+      ["groq", groq],
+    ] as const) {
+      try {
+        const r = await provedor(texto);
+        if (r) return { secoes: r.secoes, fonte, modelo: r.modelo };
+      } catch (erro) {
+        algumaChave = true;
+        falhas.push(erro instanceof Error ? erro.message : String(erro));
+      }
+    }
+    if (!algumaChave) break; // sem nenhuma chave configurada: não adianta tentar de novo
   }
   return {
     secoes: reserva(),
     fonte: "regras",
     modelo: null,
-    aviso: falhas.length ? `IA indisponível (${falhas.join("; ")})` : "Nenhuma chave de IA configurada",
+    aviso: falhas.length ? `IA indisponível (${falhas.slice(-2).join("; ")})` : "Nenhuma chave de IA configurada",
   };
 }
 
@@ -340,3 +386,12 @@ export async function gerarResumoFinal(projeto: Projeto, commits: Commit[], forc
 }
 
 export { diasEntre };
+
+/** O resumo já existe e foi feito pela IA (não precisa gerar de novo)? */
+export async function resumoPronto(projetoId: string, tipo: "semanal" | "final", semana = "") {
+  const [r] = await db
+    .select({ fonte: esquema.resumos.fonte })
+    .from(esquema.resumos)
+    .where(and(eq(esquema.resumos.projetoId, projetoId), eq(esquema.resumos.tipo, tipo), eq(esquema.resumos.semana, semana)));
+  return !!r && r.fonte !== "regras";
+}
