@@ -9,7 +9,7 @@ import { hoje, somarDias } from "@/lib/hoje";
 import { confereConfirmacao, DIAS_NA_LIXEIRA, linhas, slug, validarProjeto, type ProjetoNovo } from "@/lib/novo-projeto";
 import { carregarCommits, carregarResumos, carregarTudo } from "@/data/carregar";
 import { montarBoletim } from "@/lib/boletim";
-import { destinatarios, enviarBoletim, enviarReuniao, eventoReuniao } from "@/lib/email";
+import { destinatarios, enviarBoletim, enviarReuniao, eventoReuniao, listaDestinatarios } from "@/lib/email";
 import { linkGoogleAgenda, textoQuando, validarConvite, type Convite } from "@/lib/convite";
 
 const { clientes, commits, etapas, membrosProjeto, projetos, resumos, tasks } = esquema;
@@ -122,18 +122,24 @@ export async function enviarBoletimAgora(tema: unknown = "escuro"): Promise<{ en
  * Marca a reunião da diretoria: envia o convite por e-mail (data, horário, local, recado, link do
  * Google Agenda e a pauta da semana) para BOLETIM_PARA. Devolve também o link da agenda para quem marcou.
  */
-export async function marcarReuniao(convite: Convite): Promise<{ enviado: boolean; mensagem: string; agenda?: string }> {
+export async function marcarReuniao(
+  convite: Convite,
+  para: string[],
+): Promise<{ enviado: boolean; mensagem: string; agenda?: string }> {
   const erros = validarConvite(convite, hoje());
   if (erros.length) return { enviado: false, mensagem: erros.join(" ") };
+  // só endereços da configuração (BOLETIM_PARA): a tela escolhe entre eles, não inventa novos
+  const escolhidos = listaDestinatarios().filter((e) => para.includes(e));
+  if (!escolhidos.length) return { enviado: false, mensagem: "Escolha pelo menos um destinatário." };
   const { projetos } = await carregarTudo();
   const resumos = Object.fromEntries(await Promise.all(projetos.map(async (p) => [p.id, await carregarResumos(p.id)] as const)));
   const b = montarBoletim(projetos, resumos, await carregarCommits({}));
-  const r = await enviarReuniao(b, projetos, convite).catch((e: Error) => ({ enviado: false, detalhe: e.message }));
+  const r = await enviarReuniao(b, projetos, convite, escolhidos).catch((e: Error) => ({ enviado: false, detalhe: e.message }));
   if (!r.enviado) return { enviado: false, mensagem: `Não foi possível enviar: ${r.detalhe}.` };
   const evento = eventoReuniao(b);
   return {
     enviado: true,
-    mensagem: `Convite para ${textoQuando(convite)} enviado para ${destinatarios()}.`,
+    mensagem: `Convite para ${textoQuando(convite)} enviado para ${escolhidos.join(", ")}.`,
     agenda: linkGoogleAgenda(convite, evento.titulo, evento.detalhes),
   };
 }

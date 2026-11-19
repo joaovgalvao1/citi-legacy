@@ -1154,3 +1154,10 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - **Link da agenda:** saiu com `dates=20261120T140000/20261120T150000`, `ctz=America/Recife` e o local.
 
 **Ajuste que pedi depois:** retirar o sigilo dos e-mails. Os destinatários agora aparecem por extenso ("jvgvg@cin.ufpe.br") na janela "Marcar reunião" e nas confirmações de envio do convite e do boletim. A função `destinatariosMascarados` virou `destinatarios`.
+
+**Seleção no "Para" (pedi a opção 1 entre as que a IA apresentou):**
+- **Seleção:** o "Para" da janela virou uma lista de seleção com os endereços configurados em `BOLETIM_PARA`, todos marcados. Dá para desmarcar quem não deve receber.
+- **Segurança mantida:** o servidor só aceita endereços que estão na configuração. A tela escolhe entre eles; não dá para mandar para um endereço qualquer. Para ter mais opções, basta incluir mais e-mails separados por vírgula na configuração.
+- **Opções descartadas:** "membros do CITi" (os dados fictícios não têm e-mail das pessoas) e "campo livre" (o app viraria um disparador de e-mail).
+
+**Verificação:** a lista mostra "jvgvg@cin.ufpe.br" marcado; com tudo desmarcado, o envio é bloqueado com "Escolha pelo menos um destinatário."

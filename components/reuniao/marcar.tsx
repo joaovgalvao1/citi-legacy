@@ -23,21 +23,24 @@ export function MarcarReuniao({
 }: {
   aberto: boolean;
   hoje: string;
-  destinatarios: string;
+  /** Endereços configurados (BOLETIM_PARA); a pessoa escolhe entre eles. */
+  destinatarios: string[];
   aoFechar: () => void;
   aoMarcar: (r: Marcada) => void;
 }) {
   const [c, setC] = useState<Convite>(() => ({ data: proximoDiaUtil(hoje), hora: "14:00", duracao: 60, local: "", recado: "" }));
   const [erro, setErro] = useState("");
+  const [para, setPara] = useState<string[]>(() => destinatarios);
   const [enviando, iniciar] = useTransition();
   const mudar = <K extends keyof Convite>(k: K, v: Convite[K]) => setC((a) => ({ ...a, [k]: v }));
 
   function confirmar() {
     const erros = validarConvite(c, hoje);
+    if (!para.length) erros.push("Escolha pelo menos um destinatário.");
     if (erros.length) return setErro(erros.join(" "));
     setErro("");
     iniciar(async () => {
-      const r = await marcarReuniao(c);
+      const r = await marcarReuniao(c, para);
       if (!r.enviado) return setErro(r.mensagem);
       aoMarcar({ mensagem: r.mensagem, agenda: r.agenda });
     });
@@ -98,7 +101,36 @@ export function MarcarReuniao({
           />
         </label>
       </div>
-      <p className="text-xs text-gray-500">Para: {destinatarios || "nenhum destinatário configurado (BOLETIM_PARA)"}</p>
+      <fieldset>
+        <legend className={rotulo}>Para</legend>
+        {destinatarios.length ? (
+          <ul className="flex flex-wrap gap-2">
+            {destinatarios.map((e) => {
+              const marcado = para.includes(e);
+              return (
+                <li key={e}>
+                  <label
+                    className={`flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1.5 text-sm transition-colors ${
+                      marcado ? "border-verde/50 bg-verde/10 text-branco" : "border-branco/25 bg-branco/5 text-gray-600"
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={marcado}
+                      onChange={(ev) => setPara((l) => (ev.target.checked ? [...l, e] : l.filter((x) => x !== e)))}
+                      className="accent-[#00db58]"
+                    />
+                    {e}
+                  </label>
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <p className="text-xs text-ambar">Nenhum destinatário configurado (BOLETIM_PARA).</p>
+        )}
+        <p className="mt-1.5 text-[11px] text-gray-500">A lista vem da configuração do servidor (BOLETIM_PARA).</p>
+      </fieldset>
     </Dialogo>
   );
 }

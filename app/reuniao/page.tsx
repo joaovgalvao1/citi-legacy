@@ -13,7 +13,7 @@ import { statusEtapa, tomSegmentoEtapa } from "@/lib/status";
 import { corDoMembro } from "@/components/graficos/cores";
 import { GanttCompacto } from "@/components/projeto/gantt";
 import { Apresentacao } from "@/components/reuniao/apresentacao";
-import { destinatarios } from "@/lib/email";
+import { listaDestinatarios } from "@/lib/email";
 
 /** Dados da reunião: os projetos e o boletim da semana (a mesma do painel e dos resumos). */
 async function carregarReuniao() {
@@ -230,7 +230,7 @@ export default async function Reuniao() {
     <Apresentacao
       data={ddmm(b.hoje)}
       hoje={b.hoje}
-      destinatarios={destinatarios()}
+      destinatarios={listaDestinatarios()}
       slides={[capa, panorama, ...porProjeto, slidePrioridades]}
     />
   );

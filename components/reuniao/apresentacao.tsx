@@ -53,7 +53,7 @@ export function Apresentacao({
   slides: ReactNode[];
   data: string;
   hoje: string;
-  destinatarios: string;
+  destinatarios: string[];
 }) {
   const router = useRouter();
   const [i, setI] = useState(0);

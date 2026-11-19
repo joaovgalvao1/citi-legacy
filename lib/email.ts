@@ -167,15 +167,25 @@ export function htmlBoletim(b: Boletim, site = siteUrl(), tema: TemaEmail = "esc
 </body></html>`;
 }
 
-/** Envia um e-mail para BOLETIM_PARA pelo Resend. Sem RESEND_API_KEY ou BOLETIM_PARA, não envia e diz o motivo. */
-async function enviarEmail(assunto: string, html: string): Promise<{ enviado: boolean; detalhe: string }> {
-  const chave = process.env.RESEND_API_KEY;
-  const para = (process.env.BOLETIM_PARA ?? "")
+/** Endereços configurados em BOLETIM_PARA (separados por vírgula). */
+export function listaDestinatarios() {
+  return (process.env.BOLETIM_PARA ?? "")
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean);
+}
+
+/**
+ * Envia um e-mail pelo Resend para BOLETIM_PARA, ou só para os `escolhidos` entre eles.
+ * Endereços fora da configuração são ignorados: o app não envia para um endereço qualquer.
+ */
+async function enviarEmail(assunto: string, html: string, escolhidos?: string[]): Promise<{ enviado: boolean; detalhe: string }> {
+  const chave = process.env.RESEND_API_KEY;
+  const configurados = listaDestinatarios();
+  const para = escolhidos ? configurados.filter((e) => escolhidos.includes(e)) : configurados;
   if (!chave) return { enviado: false, detalhe: "RESEND_API_KEY não configurada" };
-  if (!para.length) return { enviado: false, detalhe: "BOLETIM_PARA não configurado" };
+  if (!configurados.length) return { enviado: false, detalhe: "BOLETIM_PARA não configurado" };
+  if (!para.length) return { enviado: false, detalhe: "escolha pelo menos um destinatário" };
 
   const r = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -293,8 +303,8 @@ export function htmlReuniao(b: Boletim, projetos: Projeto[], site = siteUrl(), c
 }
 
 /** Envia o e-mail da reunião da diretoria. */
-export function enviarReuniao(b: Boletim, projetos: Projeto[], convite?: Convite) {
-  return enviarEmail(assuntoReuniao(b, convite), htmlReuniao(b, projetos, siteUrl(), convite));
+export function enviarReuniao(b: Boletim, projetos: Projeto[], convite?: Convite, para?: string[]) {
+  return enviarEmail(assuntoReuniao(b, convite), htmlReuniao(b, projetos, siteUrl(), convite), para);
 }
 
 /** Destinatários configurados (BOLETIM_PARA), por extenso, para mostrar na tela. */
