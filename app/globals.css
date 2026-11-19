@@ -95,7 +95,7 @@ h3 {
 .borda-ia-folha {
   border: 1px solid transparent;
   background:
-    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(var(--f-fundo), var(--f-fundo)) padding-box,
     linear-gradient(120deg, var(--color-roxo), var(--color-verde)) border-box;
 }
 .texto-ia {
@@ -157,9 +157,54 @@ h3 {
 }
 
 /* ---------- versão de impressão (exportar resumo em PDF) ---------- */
+/* Paleta da folha em variáveis: tema claro (padrão) e escuro (botão na barra da página,
+   que marca <html data-tema-folha="escuro">). */
 .folha {
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
+  --f-fundo: #ffffff;
+  --f-caixa: #f7f7f7;
+  --f-texto: #161616;
+  --f-texto-2: #2a2a2a;
+  --f-texto-3: #444444;
+  --f-texto-4: #555555;
+  --f-suave: #666666;
+  --f-fraco: #8a8a8a;
+  --f-borda: #e4e4e4;
+  --f-borda-2: #efefef;
+  --f-trilho: #ececec;
+  --f-verde: #00873a;
+  --f-vermelho: #d42020;
+  --f-ambar: #b86e00;
+  --f-verde-fundo: #f3fbf6;
+  --f-verde-borda: #cdeedb;
+  --f-vermelho-fundo: #fff0f0;
+  --f-vermelho-borda: #f5b5b5;
+  --f-ambar-fundo: #fff6e8;
+  --f-ambar-borda: #f3c98b;
+}
+html[data-tema-folha="escuro"] .folha {
+  --f-fundo: #0a0a0a;
+  --f-caixa: #141414;
+  --f-texto: #ffffff;
+  --f-texto-2: rgb(255 255 255 / 0.85);
+  --f-texto-3: rgb(255 255 255 / 0.75);
+  --f-texto-4: rgb(255 255 255 / 0.7);
+  --f-suave: rgb(255 255 255 / 0.6);
+  --f-fraco: rgb(255 255 255 / 0.45);
+  --f-borda: rgb(255 255 255 / 0.1);
+  --f-borda-2: rgb(255 255 255 / 0.07);
+  --f-trilho: rgb(255 255 255 / 0.12);
+  --f-verde: #00db58;
+  --f-vermelho: #ff3b3b;
+  --f-ambar: #ffa630;
+  --f-verde-fundo: rgb(0 219 88 / 0.1);
+  --f-verde-borda: rgb(0 219 88 / 0.4);
+  --f-vermelho-fundo: rgb(255 59 59 / 0.12);
+  --f-vermelho-borda: rgb(255 59 59 / 0.45);
+  --f-ambar-fundo: rgb(255 166 48 / 0.12);
+  --f-ambar-borda: rgb(255 166 48 / 0.45);
+  border: 1px solid rgb(255 255 255 / 0.08);
 }
 
 @media print {
@@ -167,9 +212,26 @@ h3 {
     size: A4;
     margin: 12mm 0;
   }
+  /* As margens da página (entre as folhas) são pintadas pelo navegador conforme o color-scheme:
+     no tema claro, claro (antes saíam faixas escuras, porque o site usa color-scheme dark). */
+  html {
+    color-scheme: light;
+  }
   html,
   body {
     background: #fff !important;
+  }
+  /* tema escuro: margens escuras (#121212, a cor do navegador) e a folha no mesmo tom, sem emenda */
+  html[data-tema-folha="escuro"] {
+    color-scheme: dark;
+  }
+  html[data-tema-folha="escuro"],
+  html[data-tema-folha="escuro"] body {
+    background: #121212 !important;
+  }
+  html[data-tema-folha="escuro"] .folha {
+    --f-fundo: #121212;
+    border: 0 !important;
   }
   .so-tela {
     display: none !important;

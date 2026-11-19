@@ -17,9 +17,9 @@ export const metadata: Metadata = { title: "Boletim semanal · CITi Legacy" };
 
 function Numero({ valor, rotulo, alerta }: { valor: number; rotulo: string; alerta?: "ambar" | "vermelho" }) {
   return (
-    <div className="rounded-xl border border-[#e4e4e4] px-4 py-3">
-      <p className={`dado text-[24px] leading-none font-semibold ${alerta && valor > 0 ? (alerta === "vermelho" ? "text-[#d42020]" : "text-[#b86e00]") : "text-[#161616]"}`}>{valor}</p>
-      <p className="mt-1.5 text-[9.5px] text-[#666]">{rotulo}</p>
+    <div className="rounded-xl border border-(--f-borda) px-4 py-3">
+      <p className={`dado text-[24px] leading-none font-semibold ${alerta && valor > 0 ? (alerta === "vermelho" ? "text-(--f-vermelho)" : "text-(--f-ambar)") : "text-(--f-texto)"}`}>{valor}</p>
+      <p className="mt-1.5 text-[9.5px] text-(--f-suave)">{rotulo}</p>
     </div>
   );
 }
@@ -33,15 +33,15 @@ async function Documento() {
     <>
       <BarraDeImpressao voltar="/projetos" rotuloVoltar="Voltar aos projetos" acoes={<BotaoEnviarBoletim />} />
 
-      <article className="folha mx-auto w-full max-w-[210mm] rounded-sm bg-[#ffffff] px-[16mm] py-[14mm] text-[#161616] shadow-2xl">
+      <article className="folha mx-auto w-full max-w-[210mm] rounded-sm bg-(--f-fundo) px-[16mm] py-[14mm] text-(--f-texto) shadow-2xl">
         <CabecalhoFolha rotulo="Boletim semanal da empresa" data={b.hoje} />
 
         <section className="mt-6">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8a8a8a]">CITi · projetos em andamento</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-(--f-fraco)">CITi · projetos em andamento</p>
           <h1 className="mt-1 text-[26px] leading-tight font-bold tracking-tight">
             Semana de {ddmm(b.semana)} a {ddmm(b.fimSemana)}
           </h1>
-          <p className="mt-2 max-w-[150mm] text-[11.5px] leading-relaxed text-[#555]">
+          <p className="mt-2 max-w-[150mm] text-[11.5px] leading-relaxed text-(--f-texto-4)">
             O que andou, o que travou e o que fazer primeiro em cada projeto, resumido pela IA a partir dos commits e das tasks da semana.
           </p>
           <div className="mt-5 grid grid-cols-4 gap-2.5">
@@ -56,41 +56,41 @@ async function Documento() {
           <Titulo>Projetos · {b.projetos.length}</Titulo>
           <ol className="space-y-5">
             {b.projetos.map((p) => (
-              <li key={p.id} className="break-inside-avoid rounded-xl border border-[#e4e4e4] p-4">
+              <li key={p.id} className="break-inside-avoid rounded-xl border border-(--f-borda) p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <h2 className="text-[15px] font-bold tracking-tight">{p.nome}</h2>
-                    <p className="text-[10px] text-[#8a8a8a]">{p.cliente}</p>
+                    <p className="text-[10px] text-(--f-fraco)">{p.cliente}</p>
                   </div>
                   <span
                     className={`shrink-0 rounded-full border px-2.5 py-0.5 text-[9.5px] font-medium ${
                       p.status === "Atrasado"
-                        ? "border-[#f5b5b5] bg-[#fff0f0] text-[#d42020]"
+                        ? "border-(--f-vermelho-borda) bg-(--f-vermelho-fundo) text-(--f-vermelho)"
                         : p.alertas.length
-                          ? "border-[#f3c98b] bg-[#fff6e8] text-[#b86e00]"
-                          : "border-[#cdeedb] bg-[#f3fbf6] text-[#00873a]"
+                          ? "border-(--f-ambar-borda) bg-(--f-ambar-fundo) text-(--f-ambar)"
+                          : "border-(--f-verde-borda) bg-(--f-verde-fundo) text-(--f-verde)"
                     }`}
                   >
                     {p.status === "Atrasado" ? "Atrasado" : p.alertas.length ? "Atenção" : "No prazo"}
                   </span>
                 </div>
                 <div className="mt-3 flex items-center gap-3">
-                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#ececec]">
+                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-(--f-trilho)">
                     <div className={`h-full rounded-full ${p.status === "Atrasado" ? "bg-[#FF3B3B]" : p.alertas.length ? "bg-[#FFA630]" : "bg-[#00DB58]"}`} style={{ width: `${p.progresso}%` }} />
                   </div>
-                  <span className="dado text-[10px] text-[#444]">{emPct(p.progresso)}</span>
-                  <span className="dado text-[10px] text-[#8a8a8a]">{p.prazo}</span>
+                  <span className="dado text-[10px] text-(--f-texto-3)">{emPct(p.progresso)}</span>
+                  <span className="dado text-[10px] text-(--f-fraco)">{p.prazo}</span>
                 </div>
                 {p.alertas.length > 0 && (
                   <ul className="mt-2.5 space-y-0.5">
                     {p.alertas.map((a) => (
-                      <li key={a} className={`text-[9.5px] ${/atrasad/.test(a) ? "text-[#d42020]" : "text-[#b86e00]"}`}>
+                      <li key={a} className={`text-[9.5px] ${/atrasad/.test(a) ? "text-(--f-vermelho)" : "text-(--f-ambar)"}`}>
                         ▲ {a}
                       </li>
                     ))}
                   </ul>
                 )}
-                <div className={`mt-3 rounded-lg p-3 ${p.resumo && p.resumo.fonte !== "regras" ? "borda-ia-folha" : "bg-[#f7f7f7]"}`}>
+                <div className={`mt-3 rounded-lg p-3 ${p.resumo && p.resumo.fonte !== "regras" ? "borda-ia-folha" : "bg-(--f-caixa)"}`}>
                   {p.resumo ? (
                     <>
                       {p.resumo.fonte !== "regras" && (
@@ -101,7 +101,7 @@ async function Documento() {
                       <Secoes resumo={p.resumo} compacto />
                     </>
                   ) : (
-                    <p className="text-[10px] text-[#666]">Ainda não há resumo da IA para esta semana.</p>
+                    <p className="text-[10px] text-(--f-suave)">Ainda não há resumo da IA para esta semana.</p>
                   )}
                 </div>
               </li>
@@ -112,20 +112,20 @@ async function Documento() {
         {b.concluidos.length > 0 && (
           <section className="mt-7 break-inside-avoid">
             <Titulo>Legado · projetos concluídos</Titulo>
-            <ul className="divide-y divide-[#efefef] text-[10.5px]">
+            <ul className="divide-y divide-(--f-borda-2) text-[10.5px]">
               {b.concluidos.map((c) => (
                 <li key={c.id} className="flex justify-between gap-4 py-1.5">
                   <span>
-                    <span className="font-medium">{c.nome}</span> <span className="text-[#8a8a8a]">· {c.cliente}</span>
+                    <span className="font-medium">{c.nome}</span> <span className="text-(--f-fraco)">· {c.cliente}</span>
                   </span>
-                  <span className="dado shrink-0 text-[#666]">entregue em {formatarData(c.entrega)}</span>
+                  <span className="dado shrink-0 text-(--f-suave)">entregue em {formatarData(c.entrega)}</span>
                 </li>
               ))}
             </ul>
           </section>
         )}
 
-        <footer className="mt-9 flex flex-wrap items-center justify-between gap-2 border-t border-[#e4e4e4] pt-3 text-[9px] text-[#8a8a8a]">
+        <footer className="mt-9 flex flex-wrap items-center justify-between gap-2 border-t border-(--f-borda) pt-3 text-[9px] text-(--f-fraco)">
           <span>Resumos gerados por IA toda sexta-feira às 23h, com memória das semanas anteriores</span>
           <span>CITi Legacy · uso interno</span>
         </footer>

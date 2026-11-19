@@ -5,18 +5,18 @@ import type { Resumo } from "@/data";
 import { formatarData } from "@/data/formatos";
 
 export function Dado({ rotulo, valor, destaque }: { rotulo: string; valor: string; destaque?: "ambar" | "verde" | "vermelho" }) {
-  const cor = destaque === "vermelho" ? "text-[#d42020]" : destaque === "ambar" ? "text-[#b86e00]" : destaque === "verde" ? "text-[#00873a]" : "text-[#161616]";
+  const cor = destaque === "vermelho" ? "text-(--f-vermelho)" : destaque === "ambar" ? "text-(--f-ambar)" : destaque === "verde" ? "text-(--f-verde)" : "text-(--f-texto)";
   return (
-    <div className="rounded-lg border border-[#e4e4e4] px-3 py-2.5">
-      <p className="text-[9px] font-semibold uppercase tracking-[0.14em] text-[#8a8a8a]">{rotulo}</p>
+    <div className="rounded-lg border border-(--f-borda) px-3 py-2.5">
+      <p className="text-[9px] font-semibold uppercase tracking-[0.14em] text-(--f-fraco)">{rotulo}</p>
       <p className={`dado mt-1 text-[12px] font-medium ${cor}`}>{valor}</p>
     </div>
   );
 }
 
 /** Cor de cada parte do resumo (título e marcadores): o que andou (verde), o que travou (vermelho), o resto em preto. */
-const corDoTitulo = (t: string) => (/andou/i.test(t) ? "text-[#00873a]" : /travou/i.test(t) ? "text-[#d42020]" : "text-[#161616]");
-const corDoMarcador = (t: string) => (/andou/i.test(t) ? "bg-[#00DB58]" : /travou/i.test(t) ? "bg-[#FF3B3B]" : "bg-[#161616]");
+const corDoTitulo = (t: string) => (/andou/i.test(t) ? "text-(--f-verde)" : /travou/i.test(t) ? "text-(--f-vermelho)" : "text-(--f-texto)");
+const corDoMarcador = (t: string) => (/andou/i.test(t) ? "bg-[#00DB58]" : /travou/i.test(t) ? "bg-[#FF3B3B]" : "bg-(--f-texto)");
 
 /** Rótulo "✦ GERADO POR IA" em gradiente (assinatura de conteúdo gerado por IA). */
 export function SeloIAFolha() {
@@ -35,7 +35,7 @@ export function Secoes({ resumo, compacto = false }: { resumo: Resumo; compacto?
           </h4>
           <ul className={compacto ? "space-y-1" : "space-y-1.5"}>
             {s.itens.map((item, i) => (
-              <li key={i} className={`flex gap-2 leading-snug text-[#2a2a2a] ${compacto ? "text-[9.5px]" : "text-[11.5px]"}`}>
+              <li key={i} className={`flex gap-2 leading-snug text-(--f-texto-2) ${compacto ? "text-[9.5px]" : "text-[11.5px]"}`}>
                 <span aria-hidden="true" className={`mt-[0.45em] h-1 w-1 shrink-0 rounded-full ${corDoMarcador(s.titulo)}`} />
                 <span>{item}</span>
               </li>
@@ -48,7 +48,7 @@ export function Secoes({ resumo, compacto = false }: { resumo: Resumo; compacto?
 }
 
 export function Titulo({ children }: { children: ReactNode }) {
-  return <h3 className="mb-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#8a8a8a]">{children}</h3>;
+  return <h3 className="mb-3 text-[10px] font-semibold uppercase tracking-[0.16em] text-(--f-fraco)">{children}</h3>;
 }
 
 /** Logo do CITi Legacy, o tipo de documento e a data. */
@@ -59,12 +59,12 @@ export function CabecalhoFolha({ rotulo, data }: { rotulo: string; data: string 
       <div className="flex items-center gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element -- imagem simples para impressão */}
         <img src="/marca/citi-logo-verde.png" alt="CITi" className="h-7 w-auto" />
-        <span aria-hidden="true" className="h-[22px] w-px bg-[#161616]/35" />
-        <span className="text-[11.5px] font-medium uppercase leading-none tracking-[3.75px] text-[#161616]">Legacy</span>
+        <span aria-hidden="true" className="h-[22px] w-px bg-(--f-texto)/35" />
+        <span className="text-[11.5px] font-medium uppercase leading-none tracking-[3.75px] text-(--f-texto)">Legacy</span>
       </div>
       <div className="text-right">
-        <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#00873a]">{rotulo}</p>
-        <p className="dado mt-1 text-[10px] text-[#8a8a8a]">exportado em {formatarData(data)}</p>
+        <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-(--f-verde)">{rotulo}</p>
+        <p className="dado mt-1 text-[10px] text-(--f-fraco)">exportado em {formatarData(data)}</p>
       </div>
     </header>
   );

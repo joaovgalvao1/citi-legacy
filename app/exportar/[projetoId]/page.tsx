@@ -36,15 +36,15 @@ function Etapas({ projeto }: { projeto: Projeto }) {
         {projeto.etapas.map((e) => {
           const s = statusEtapa(projeto, e);
           return (
-            <tr key={e.id} className="border-b border-[#efefef] last:border-0">
-              <td className="py-1.5 pr-3 font-medium text-[#161616]">{e.nome}</td>
+            <tr key={e.id} className="border-b border-(--f-borda-2) last:border-0">
+              <td className="py-1.5 pr-3 font-medium text-(--f-texto)">{e.nome}</td>
               <td className="w-[45%] py-1.5 pr-3">
-                <div className="h-1.5 overflow-hidden rounded-full bg-[#ececec]">
+                <div className="h-1.5 overflow-hidden rounded-full bg-(--f-trilho)">
                   <div className={`h-full rounded-full ${COR_NIVEL[nivelEtapa(projeto, e)]}`} style={{ width: `${e.progresso}%` }} />
                 </div>
               </td>
-              <td className="dado w-12 py-1.5 pr-3 text-right text-[#444]">{emPct(e.progresso)}</td>
-              <td className={`w-28 py-1.5 text-right ${s === "Atrasada" ? "text-[#d42020]" : s === "Concluída" ? "text-[#00873a]" : "text-[#666]"}`}>
+              <td className="dado w-12 py-1.5 pr-3 text-right text-(--f-texto-3)">{emPct(e.progresso)}</td>
+              <td className={`w-28 py-1.5 text-right ${s === "Atrasada" ? "text-(--f-vermelho)" : s === "Concluída" ? "text-(--f-verde)" : "text-(--f-suave)"}`}>
                 {s}
               </td>
             </tr>
@@ -69,14 +69,14 @@ async function Documento({ params }: { params: PageProps<"/exportar/[projetoId]"
     <>
       <BarraDeImpressao voltar={`/projetos/${projeto.id}`} rotuloVoltar="Voltar ao projeto" />
 
-      <article className="folha mx-auto w-full max-w-[210mm] rounded-sm bg-[#ffffff] px-[16mm] py-[14mm] text-[#161616] shadow-2xl">
+      <article className="folha mx-auto w-full max-w-[210mm] rounded-sm bg-(--f-fundo) px-[16mm] py-[14mm] text-(--f-texto) shadow-2xl">
         <CabecalhoFolha rotulo={concluido ? "Resumo final do projeto" : "Resumo semanal do projeto"} data={projeto.hoje} />
 
         {/* projeto */}
         <section className="mt-6">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#8a8a8a]">{projeto.cliente}</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-(--f-fraco)">{projeto.cliente}</p>
           <h1 className="mt-1 text-[26px] leading-tight font-bold tracking-tight">{projeto.nome}</h1>
-          <p className="mt-2 max-w-[150mm] text-[11.5px] leading-relaxed text-[#555]">{projeto.descricao}</p>
+          <p className="mt-2 max-w-[150mm] text-[11.5px] leading-relaxed text-(--f-texto-4)">{projeto.descricao}</p>
 
           <div className="mt-5 grid grid-cols-4 gap-2.5">
             <Dado rotulo="Status" valor={status} destaque={status === "Atrasado" ? "vermelho" : status === "Concluído" ? "verde" : undefined} />
@@ -92,7 +92,7 @@ async function Documento({ params }: { params: PageProps<"/exportar/[projetoId]"
         {/* resumo em destaque */}
         <section className="mt-7 break-inside-avoid">
           <Titulo>{concluido ? "Resumo final" : `Resumo da semana · ${principal ? semana(principal) : ""}`}</Titulo>
-          <div className={`rounded-xl p-5 ${principal?.fonte === "regras" ? "border border-[#e4e4e4]" : "borda-ia-folha"}`}>
+          <div className={`rounded-xl p-5 ${principal?.fonte === "regras" ? "border border-(--f-borda)" : "borda-ia-folha"}`}>
             {principal && principal.fonte !== "regras" && (
               <p className="mb-3">
                 <SeloIAFolha />
@@ -101,15 +101,15 @@ async function Documento({ params }: { params: PageProps<"/exportar/[projetoId]"
             {principal ? (
               <Secoes resumo={principal} />
             ) : (
-              <p className="text-[11px] text-[#666]">
+              <p className="text-[11px] text-(--f-suave)">
                 {concluido ? "O resumo final é gerado na sexta-feira, às 23h." : "O primeiro resumo semanal sai na próxima sexta-feira."}
               </p>
             )}
           </div>
           {concluido && projeto.resultados && (
-            <div className="mt-4 rounded-xl border border-[#e4e4e4] p-4">
-              <p className="text-[9px] font-semibold uppercase tracking-[0.14em] text-[#8a8a8a]">Resultados</p>
-              <p className="mt-1.5 text-[11.5px] leading-relaxed text-[#2a2a2a]">{projeto.resultados}</p>
+            <div className="mt-4 rounded-xl border border-(--f-borda) p-4">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.14em] text-(--f-fraco)">Resultados</p>
+              <p className="mt-1.5 text-[11.5px] leading-relaxed text-(--f-texto-2)">{projeto.resultados}</p>
             </div>
           )}
         </section>
@@ -127,7 +127,7 @@ async function Documento({ params }: { params: PageProps<"/exportar/[projetoId]"
             <ol className="space-y-4">
               {anteriores.map((r) => (
                 <li key={r.semana} className="break-inside-avoid border-l-2 border-[#00DB58] pl-4">
-                  <p className="dado mb-2 text-[10px] font-medium text-[#555]">Semana de {semana(r)}</p>
+                  <p className="dado mb-2 text-[10px] font-medium text-(--f-texto-4)">Semana de {semana(r)}</p>
                   <Secoes resumo={r} compacto />
                 </li>
               ))}
@@ -136,7 +136,7 @@ async function Documento({ params }: { params: PageProps<"/exportar/[projetoId]"
         )}
 
         {/* rodapé */}
-        <footer className="mt-9 flex flex-wrap items-center justify-between gap-2 border-t border-[#e4e4e4] pt-3 text-[9px] text-[#8a8a8a]">
+        <footer className="mt-9 flex flex-wrap items-center justify-between gap-2 border-t border-(--f-borda) pt-3 text-[9px] text-(--f-fraco)">
           <span>
             {principal ? `${ROTULO_FONTE[principal.fonte]}${principal.modelo ? ` (${principal.modelo})` : ""}` : "Resumos gerados por IA"}
             {" · "}
