@@ -275,7 +275,12 @@ A IA foi usada de **duas formas**: dentro do produto e no desenvolvimento.
 
 ### 5.2 IA no desenvolvimento
 
-O protótipo foi construído em **3 dias (17 a 19/11/2026)** com o **Claude Code** (modelo Claude Opus 5.5) como par de programação. Cada pedido, o que a IA fez e o que eu ajustei estão registrados em ordem no [`DEV_LOG.md`](DEV_LOG.md).
+**Ideação (16 e 17/11), numa conversa à parte com IA:**
+- **O desafio:** levei o PDF do desafio e pedi um processo de ideação. A IA trouxe critérios da banca, ideias iniciais e um roteiro de pesquisa.
+- **A ideia:** a ideia do produto foi minha (acompanhar os commits dos projetos e as trocas de membros), assim como a métrica por linhas alteradas, o protótipo com repositórios fictícios, o nome CITi Legacy e a identidade baseada no site do CITi.
+- **O papel da IA:** organizar a ideia, sugerir o refinamento em "linhas efetivas", nomes e stack, e escrever comigo o prompt inicial do desenvolvimento.
+
+**Desenvolvimento (17 a 19/11):** feito com o **Claude Code** (modelo Claude Opus 5.5) como par de programação. Cada pedido, o que a IA fez e o que eu ajustei estão registrados em ordem no [`DEV_LOG.md`](DEV_LOG.md).
 
 **A regra do trabalho**, definida no primeiro prompt: *"Quem conduz sou eu. Você propõe, eu decido. Antes de escrever código, me mostre o plano da etapa e espere meu ok."*
 

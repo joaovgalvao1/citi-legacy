@@ -1,10 +1,65 @@
 # DEV_LOG: uso de IA no CITi Legacy
 
-Registro resumido de como a IA (**Claude Code**, modelo Claude Opus 5.5) foi usada em cada etapa: **o que eu pedi**, **o que a IA fez** e **o que eu decidi**. Foram 3 dias, de 17 a 19/11/2026.
+Registro resumido de como a IA foi usada em cada etapa: **o que eu pedi**, **o que a IA fez** e **o que eu decidi**.
+
+- **Ideação (16 e 17/11/2026):** feita numa conversa à parte com IA, antes do desenvolvimento.
+- **Desenvolvimento (17 a 19/11/2026):** com o **Claude Code** (modelo Claude Opus 5.5).
 
 **Regra do trabalho**, definida no primeiro prompt: *"Quem conduz sou eu. Você propõe, eu decido. Antes de escrever código, me mostre o plano da etapa e espere meu ok."* Cada etapa terminou com um commit.
 
 > A versão detalhada deste registro (cada pedido e cada ajuste, cerca de 1.800 linhas) está no histórico do git, no commit `236b089`. A visão geral do uso de IA está em [`DOCUMENTACAO.md`](DOCUMENTACAO.md#5-uso-de-ia).
+
+---
+
+## 16 e 17/11: ideação (em outra conversa com IA)
+
+### Ponto de partida
+- Enviei o PDF do desafio (escopo livre; entrega de produto, pitch e documentação até 19/11, 23:59) e pedi ajuda com a ideação.
+- O problema não estava definido no começo. Primeiro citei "melhorar o contato com os clientes"; depois **trouxe a minha própria ideia**: acompanhar os commits dos projetos e as trocas de membros.
+
+### O que eu pedi, em ordem
+1. Um processo de ideação a partir do PDF.
+2. Um processo de pesquisa para achar um problema real.
+3. Organizar a minha ideia de análise de commits.
+4. Simplificar para um protótipo com repositórios fictícios.
+5. Um nome "CITi …".
+6. A explicação da métrica (linhas efetivas × brutas).
+7. Uma IA gratuita para o produto e como gerar a chave do Gemini.
+8. A identidade visual baseada no site do CITi e o fluxo de telas.
+9. O prompt inicial para o Claude Code, comigo conduzindo e evoluindo de baixa para alta fidelidade.
+
+### O que a IA propôs
+- Os critérios da banca, tirados do PDF, e ideias iniciais (Memória Viva, Call→Proposta, Radar ICP, PS Copilot), que acabaram substituídas pela minha.
+- Hipóteses de problema, dados publicados sobre perda de conhecimento em empresas juniores e um roteiro de entrevistas.
+- **Sobre a minha ideia:**
+  - o alerta de "conhecimento concentrado" (o risco de o projeto depender de uma pessoa só);
+  - tratar o produto como memória, e não como vigilância;
+  - uma narrativa de demonstração em 5 atos.
+- Nomes (Rastro, Bastão, Legado, Elo, Memória), com o alerta de que "legacy" tem um sentido técnico negativo.
+- A métrica de linhas efetivas, com filtros para arquivos gerados e alterações em massa, e Next.js com Vercel.
+
+### O que eu decidi e por quê
+- **Produto (meu):** analisar os commits para mostrar a participação por etapa e apoiar a troca de membros.
+- **Escopo (meu):** protótipo com repositórios e análises fictícios, porque "o produto precisa ser visual e passar a mensagem".
+- **Nome (meu):** CITi Legacy, no sentido positivo de legado.
+- **Métrica (minha):** linhas alteradas em vez de número de commits, porque um commit pequeno pode ter muitas alterações. O refinamento em "linhas efetivas" foi sugestão da IA.
+- **IA no produto:** gerada ao vivo (recomendação da IA), com o Gemini por ser gratuito. Gerei a chave.
+- **Identidade visual (minha):** baseada no site do CITi. A paleta e a tipografia foram propostas pela IA a partir do site.
+- **Stack:** Next.js com Vercel (sugestão da IA, mantida).
+
+### O que ficou de fora naquele momento
+- As ideias iniciais da IA, substituídas pela minha.
+- Login, integração com a API do GitHub e banco de dados, para focar no visual. No desenvolvimento, **mudei de ideia**: os três entraram no produto.
+- A API do Claude, por não ser gratuita.
+
+### Resultado
+O **prompt inicial de 17/11** reuniu tudo isso:
+- o problema, a solução e a tagline;
+- as telas da demonstração;
+- as decisões de stack, IA e identidade visual;
+- o que ficaria fora do escopo;
+- três etapas de fidelidade, com a minha aprovação a cada uma;
+- as regras de trabalho: este DEV_LOG, um commit por etapa e a interface em português.
 
 ---
 
