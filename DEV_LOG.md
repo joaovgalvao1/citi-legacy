@@ -884,3 +884,11 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 | Clínica | Atenção | +19 dias, gargalo Financeiro |
 | Mezzalira | Atenção | no prazo; etapas paradas |
 | Folhagem | No prazo | no prazo |
+
+### Fundo com brilho verde e conteúdo mais largo (18/11)
+
+**O que pedi:** melhorar o fundo, que estava chapado (preto uniforme e espaço sobrando nas laterais).
+
+**O que a IA fez:**
+- **Brilho:** um brilho verde suave (gradiente radial) no canto superior direito, fixo atrás do conteúdo, como no site do CITi. É um só por tela, como pede a identidade. Aparece nas telas internas e no login; fica fora da entrada, que tem foto de fundo própria, e da impressão.
+- **Largura:** o conteúdo das telas internas foi de 1024 px para 1152 px (`max-w-6xl`), para sobrar menos preto em telas largas.

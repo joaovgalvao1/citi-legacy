@@ -64,8 +64,10 @@ export function Estrutura({ children }: { children: ReactNode }) {
 
   return (
     <>
+      {/* brilho no canto: só nas telas internas e no login (a entrada tem a foto de fundo própria) */}
+      {caminho !== "/" && <div aria-hidden="true" className="brilho-fundo" />}
       <header className="sticky top-0 z-20 border-b border-linha bg-fundo/85 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3">
+        <div className={`mx-auto flex items-center justify-between gap-3 px-4 py-3 ${caminho === "/" ? "max-w-5xl" : "max-w-6xl"}`}>
           <Marca href={usuario ? "/projetos" : "/"} />
           {publica ? (
             caminho === "/" && (
@@ -129,13 +131,13 @@ export function Estrutura({ children }: { children: ReactNode }) {
             ? "flex-1"
             : caminho === "/login"
               ? "flex flex-1 items-center justify-center px-4 py-10"
-              : "mx-auto w-full max-w-5xl flex-1 px-4 py-8"
+              : "mx-auto w-full max-w-6xl flex-1 px-4 py-8"
         }
       >
         {liberado ? children : <CaixaEsqueleto linhas={3} />}
       </main>
       <footer className="border-t border-linha py-5 text-xs text-gray-500">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-2 px-4">
+        <div className={`mx-auto flex flex-wrap items-center justify-center gap-2 px-4 ${caminho === "/" ? "max-w-5xl" : "max-w-6xl"}`}>
           <Lockup tamanho="pequeno" />
           <span aria-hidden="true">·</span>
           <span>protótipo para o desafio Inovação no PS</span>

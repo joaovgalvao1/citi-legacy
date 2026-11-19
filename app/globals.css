@@ -70,6 +70,21 @@ h3 {
   font-variant-numeric: tabular-nums;
 }
 
+/* brilho verde suave num canto da tela (um por tela, como no site do CITi): fica fixo atrás do conteúdo */
+.brilho-fundo {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 55% at 100% 0%, rgb(0 219 88 / 0.2), rgb(0 219 88 / 0.06) 45%, transparent 78%);
+}
+@media print {
+  .brilho-fundo {
+    display: none;
+  }
+}
+
 /* rótulo de seção: pequeno, maiúsculas, espaçado */
 .rotulo {
   font-family: var(--font-mono);
