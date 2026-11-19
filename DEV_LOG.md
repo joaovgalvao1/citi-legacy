@@ -1094,3 +1094,5 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 **Correção:** o próprio componente da apresentação define `@page { size: 1280px 720px; margin: 0 }` e o fundo escuro só enquanto `/reuniao` está aberto. Como vem depois da regra A4, ela vale nessa tela; os PDFs de resumo e boletim continuam em A4.
 
 **Verificação:** conferi de novo no Chromium (7 páginas em 16:9). No Firefox, a IA não conseguiu gerar o PDF sem janela; a conferência fica para eu exportar de novo.
+
+**Nome do arquivo:** pedi que o PDF se chamasse algo como "reunião da diretoria semana x a y". O título da página, que vira o nome do arquivo, agora é "Reunião da diretoria - semana 09-11 a 15-11", calculado a partir da semana do boletim. As datas usam hífen porque o navegador troca "/" por "_" no nome do arquivo.

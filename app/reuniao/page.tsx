@@ -13,7 +13,23 @@ import { corDoMembro } from "@/components/graficos/cores";
 import { GanttCompacto } from "@/components/projeto/gantt";
 import { Apresentacao } from "@/components/reuniao/apresentacao";
 
-export const metadata: Metadata = { title: "Modo Reunião · CITi Legacy" };
+/** Dados da reunião: os projetos e o boletim da semana (a mesma do painel e dos resumos). */
+async function carregarReuniao() {
+  const [projetos, commits] = await Promise.all([obterProjetos(), obterCommits({})]);
+  const listas = await Promise.all(projetos.map((p) => obterResumos(p.id)));
+  const b = montarBoletim(projetos, Object.fromEntries(projetos.map((p, i) => [p.id, listas[i]])), commits);
+  return { projetos, commits, b };
+}
+
+/**
+ * O título vira o nome do arquivo ao salvar em PDF: "Reunião da diretoria - semana 09-11 a 15-11".
+ * Datas com hífen, porque o navegador troca "/" por "_" no nome do arquivo.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const { b } = await carregarReuniao();
+  const dm = (iso: string) => `${iso.slice(8, 10)}-${iso.slice(5, 7)}`;
+  return { title: { absolute: `Reunião da diretoria - semana ${dm(b.semana)} a ${dm(b.fimSemana)}` } };
+}
 
 const ddmm = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
 const TOM_TEXTO = { verde: "text-verde", ambar: "text-ambar", vermelho: "text-vermelho" };
@@ -79,9 +95,7 @@ function Numero({ valor, destaque, resto, cor = "text-branco" }: { valor: number
 }
 
 export default async function Reuniao() {
-  const [projetos, commits] = await Promise.all([obterProjetos(), obterCommits({})]);
-  const listas = await Promise.all(projetos.map((p) => obterResumos(p.id)));
-  const b = montarBoletim(projetos, Object.fromEntries(projetos.map((p, i) => [p.id, listas[i]])), commits);
+  const { projetos, commits, b } = await carregarReuniao();
   const doId = (id: string) => projetos.find((p) => p.id === id)!;
   const semana = `${ddmm(b.semana)} a ${ddmm(b.fimSemana)}`;
 
