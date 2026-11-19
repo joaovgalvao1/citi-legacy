@@ -1109,3 +1109,18 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - **Alcance:** vale para todos os PDFs (reunião, resumo do projeto e boletim).
 
 **Verificação:** gerei o PDF de novo. O rótulo virou texto extraível ("✦ IA · O QUE TRAVOU") e aparece nítido no recorte ampliado.
+
+### Modo Reunião por e-mail (19/11)
+
+**O que pedi:** um envio por e-mail à esquerda de "Sair", na apresentação.
+
+**O que a IA fez:**
+- **Botão:** "Enviar por e-mail" nos controles da apresentação. Os destinatários são os mesmos do boletim (`BOLETIM_PARA`), vindos só do servidor.
+- **E-mail próprio da reunião** (tema escuro, como a apresentação):
+  - assunto "Reunião da diretoria · semana 09/11 a 15/11";
+  - os 4 indicadores e o panorama (projeto, status, % e previsão);
+  - as **prioridades da semana** com o projeto e as pessoas citadas;
+  - botão "Abrir a apresentação", com a dica de que a tecla P exporta em PDF.
+- **Código compartilhado:** a lógica das prioridades e da frase principal foi para `lib/reuniao.ts`, usada pela apresentação e pelo e-mail. O envio pelo Resend virou uma função comum (`enviarEmail`) para o boletim e a reunião.
+
+**Verificação:** conferi o HTML do e-mail no navegador e fiz um envio real pelo botão: "Enviado para jv***@cin.ufpe.br."

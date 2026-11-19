@@ -9,7 +9,7 @@ import { hoje, somarDias } from "@/lib/hoje";
 import { confereConfirmacao, DIAS_NA_LIXEIRA, linhas, slug, validarProjeto, type ProjetoNovo } from "@/lib/novo-projeto";
 import { carregarCommits, carregarResumos, carregarTudo } from "@/data/carregar";
 import { montarBoletim } from "@/lib/boletim";
-import { destinatariosMascarados, enviarBoletim } from "@/lib/email";
+import { destinatariosMascarados, enviarBoletim, enviarReuniao } from "@/lib/email";
 
 const { clientes, commits, etapas, membrosProjeto, projetos, resumos, tasks } = esquema;
 
@@ -115,6 +115,18 @@ export async function enviarBoletimAgora(tema: unknown = "escuro"): Promise<{ en
   }));
   if (!r.enviado) return { enviado: false, mensagem: `Não foi possível enviar: ${r.detalhe}.` };
   return { enviado: true, mensagem: `Boletim enviado (tema ${temaEmail}) para ${destinatariosMascarados()}.` };
+}
+
+/** Envia agora o e-mail da reunião da diretoria (pauta da semana e link da apresentação) para BOLETIM_PARA. */
+export async function enviarReuniaoAgora(): Promise<{ enviado: boolean; mensagem: string }> {
+  const { projetos } = await carregarTudo();
+  const resumos = Object.fromEntries(await Promise.all(projetos.map(async (p) => [p.id, await carregarResumos(p.id)] as const)));
+  const r = await enviarReuniao(montarBoletim(projetos, resumos, await carregarCommits({})), projetos).catch((e: Error) => ({
+    enviado: false,
+    detalhe: e.message,
+  }));
+  if (!r.enviado) return { enviado: false, mensagem: `Não foi possível enviar: ${r.detalhe}.` };
+  return { enviado: true, mensagem: `Enviado para ${destinatariosMascarados()}.` };
 }
 
 /* ---------- editar projeto ---------- */

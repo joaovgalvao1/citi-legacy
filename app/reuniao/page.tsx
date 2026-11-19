@@ -4,8 +4,9 @@
 // Slides: capa (indicadores) · panorama · um por projeto (atrasados → atenção → no prazo) · prioridades.
 
 import type { Metadata } from "next";
-import { obterCommits, obterProjetos, obterResumos, type Projeto, type Resumo } from "@/data";
-import { montarBoletim, type ItemBoletim } from "@/lib/boletim";
+import { obterCommits, obterProjetos, obterResumos, type Projeto } from "@/data";
+import { montarBoletim } from "@/lib/boletim";
+import { frasePrincipal, prioridadesDaSemana } from "@/lib/reuniao";
 import { emPct, ranking } from "@/lib/indice";
 import { BASE_DO_CALCULO } from "@/lib/previsao";
 import { statusEtapa, tomSegmentoEtapa } from "@/lib/status";
@@ -40,20 +41,6 @@ const TOM_SELO = {
   vermelho: "border-vermelho/50 bg-vermelho/10 text-vermelho",
 };
 const ROTULO = { verde: "No prazo", ambar: "Atenção", vermelho: "Atrasado" };
-
-/** Parte do resumo cujo título contém o termo ("travou", "andou", "fazer primeiro"). */
-const parte = (r: Resumo | null, termo: RegExp) => r?.secoes.find((s) => termo.test(s.titulo))?.itens ?? [];
-
-/** Frase principal do projeto: o que travou (atrasado ou atenção) ou o que andou (no prazo). */
-function frasePrincipal(item: ItemBoletim) {
-  const lista = item.nivel === "verde" ? parte(item.resumo, /andou/i) : parte(item.resumo, /travou/i);
-  return { frase: lista[0] ?? item.resumo?.secoes[0]?.itens[0] ?? null, tipo: item.nivel === "verde" ? "O que andou" : "O que travou" };
-}
-
-/** Pessoas da equipe citadas no texto (nome completo ou primeiro nome). */
-function citados(projeto: Projeto, texto: string) {
-  return projeto.membros.filter((m) => texto.includes(m.nome) || new RegExp(`\\b${m.nome.split(" ")[0]}\\b`).test(texto));
-}
 
 const iniciais = (nome: string) =>
   nome
@@ -203,11 +190,7 @@ export default async function Reuniao() {
   });
 
   // último: prioridades da semana (o "O que fazer primeiro" de todos os projetos, sem nova chamada à IA)
-  const prioridades = b.projetos.flatMap((item) =>
-    parte(item.resumo, /fazer primeiro/i)
-      .slice(0, 2)
-      .map((texto) => ({ texto, item, pessoas: citados(doId(item.id), texto) })),
-  );
+  const prioridades = prioridadesDaSemana(b, projetos);
   const slidePrioridades = (
     <div className="flex h-full flex-col">
       <div className="flex items-baseline justify-between">
@@ -217,7 +200,7 @@ export default async function Reuniao() {
         <p className="dado texto-ia text-[0.95cqw] font-semibold tracking-[0.16em] uppercase">✦ Dos resumos da IA</p>
       </div>
       <ol className="mt-[1.4cqw] flex min-h-0 flex-1 flex-col gap-[0.7cqw]">
-        {prioridades.map(({ texto, item, pessoas }, n) => (
+        {prioridades.map(({ texto, item, projeto, pessoas }, n) => (
           <li key={n} className="grid grid-cols-[3cqw_1fr_auto] items-center gap-[1.2cqw] border-b border-branco/8 pb-[0.7cqw] last:border-0">
             <span className="dado text-[1.4cqw] font-semibold text-branco/40">{String(n + 1).padStart(2, "0")}</span>
             <div className="min-w-0">
@@ -230,7 +213,7 @@ export default async function Reuniao() {
                   key={m.id}
                   title={m.nome}
                   className="dado flex h-[2.4cqw] w-[2.4cqw] items-center justify-center rounded-full border-2 border-[#0a0a0a] text-[0.8cqw] font-semibold text-fundo"
-                  style={{ backgroundColor: corDoMembro(doId(item.id), m.id) }}
+                  style={{ backgroundColor: corDoMembro(projeto, m.id) }}
                 >
                   {iniciais(m.nome)}
                 </span>

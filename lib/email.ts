@@ -10,7 +10,9 @@
 // Tema: claro ou escuro (padrão escuro, o do cron de sexta). O botão do boletim envia no tema da tela,
 // e o link "Ver o boletim em PDF" abre o PDF no mesmo tema (?tema=).
 
+import type { Projeto } from "@/data";
 import type { Boletim } from "./boletim";
+import { prioridadesDaSemana } from "./reuniao";
 
 export type TemaEmail = "claro" | "escuro";
 
@@ -164,8 +166,8 @@ export function htmlBoletim(b: Boletim, site = siteUrl(), tema: TemaEmail = "esc
 </body></html>`;
 }
 
-/** Envia o boletim. Sem RESEND_API_KEY ou BOLETIM_PARA, não envia e diz o motivo. */
-export async function enviarBoletim(b: Boletim, tema: TemaEmail = "escuro"): Promise<{ enviado: boolean; detalhe: string }> {
+/** Envia um e-mail para BOLETIM_PARA pelo Resend. Sem RESEND_API_KEY ou BOLETIM_PARA, não envia e diz o motivo. */
+async function enviarEmail(assunto: string, html: string): Promise<{ enviado: boolean; detalhe: string }> {
   const chave = process.env.RESEND_API_KEY;
   const para = (process.env.BOLETIM_PARA ?? "")
     .split(",")
@@ -177,16 +179,99 @@ export async function enviarBoletim(b: Boletim, tema: TemaEmail = "escuro"): Pro
   const r = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${chave}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      from: process.env.BOLETIM_DE || "CITi Legacy <onboarding@resend.dev>",
-      to: para,
-      subject: assuntoBoletim(b),
-      html: htmlBoletim(b, siteUrl(), tema),
-    }),
+    body: JSON.stringify({ from: process.env.BOLETIM_DE || "CITi Legacy <onboarding@resend.dev>", to: para, subject: assunto, html }),
     signal: AbortSignal.timeout(15000),
   });
   const corpo = (await r.json().catch(() => ({}))) as { id?: string; message?: string };
   return r.ok ? { enviado: true, detalhe: `id ${corpo.id}` } : { enviado: false, detalhe: `Resend ${r.status}: ${corpo.message ?? "erro"}` };
+}
+
+/** Envia o boletim semanal. */
+export function enviarBoletim(b: Boletim, tema: TemaEmail = "escuro") {
+  return enviarEmail(assuntoBoletim(b), htmlBoletim(b, siteUrl(), tema));
+}
+
+/* ---------- e-mail da reunião da diretoria ---------- */
+
+export function assuntoReuniao(b: Boletim) {
+  return `Reunião da diretoria · semana ${ddmm(b.semana)} a ${ddmm(b.fimSemana)}`;
+}
+
+/**
+ * E-mail da reunião (tema escuro, como a apresentação): indicadores, panorama dos projetos,
+ * prioridades da semana com os responsáveis e o link para abrir a apresentação.
+ */
+export function htmlReuniao(b: Boletim, projetos: Projeto[], site = siteUrl()) {
+  const c = PALETAS.escuro;
+  const cor = { verde: c.verde, ambar: c.ambar, vermelho: c.vermelho };
+  const selo = { verde: c.seloVerde, ambar: c.seloAmbar, vermelho: c.seloVermelho };
+  const rotulo = { verde: "No prazo", ambar: "Atenção", vermelho: "Atrasado" };
+  const numero = (valor: number, texto: string, corValor: string = c.texto) => `
+    <td width="25%" style="padding:4px;"><div style="border:1px solid ${c.borda};border-radius:10px;padding:12px;background:${c.caixa};">
+      <div style="font:700 26px/1 Arial,sans-serif;color:${corValor};">${valor}</div>
+      <div style="font:11px/1.3 Arial,sans-serif;color:${c.suave};margin-top:6px;">${esc(texto)}</div>
+    </div></td>`;
+  const panorama = b.projetos
+    .map(
+      (p) => `<tr>
+        <td style="padding:10px 0;border-bottom:1px solid ${c.linha};">
+          <div style="font:700 14px Arial,sans-serif;color:${c.texto};">${esc(p.nome)}</div>
+          <span style="display:inline-block;margin-top:4px;border-radius:99px;padding:2px 8px;font:600 10px Arial,sans-serif;${selo[p.nivel]}">${rotulo[p.nivel]}</span>
+        </td>
+        <td align="right" style="padding:10px 0;border-bottom:1px solid ${c.linha};font:12px 'Courier New',monospace;color:${c.suave};white-space:nowrap;">${Math.round(p.progresso)}%</td>
+        <td align="right" style="padding:10px 0 10px 12px;border-bottom:1px solid ${c.linha};font:700 12px 'Courier New',monospace;color:${cor[p.previsao.tom]};white-space:nowrap;">${esc(p.previsao.texto)}</td>
+      </tr>`,
+    )
+    .join("");
+  const prioridades = prioridadesDaSemana(b, projetos)
+    .map(
+      ({ texto, item, pessoas }, n) => `<tr>
+        <td valign="top" style="padding:8px 10px 8px 0;font:700 12px 'Courier New',monospace;color:${c.fraco};">${String(n + 1).padStart(2, "0")}</td>
+        <td style="padding:8px 0;border-bottom:1px solid ${c.linha};">
+          <div style="font:13px/1.45 Arial,sans-serif;color:${c.texto2};">${esc(texto)}</div>
+          <div style="font:11px Arial,sans-serif;color:${cor[item.nivel]};margin-top:3px;">${esc(item.nome)}${
+            pessoas.length ? ` <span style="color:${c.fraco};">· ${pessoas.map((m) => esc(m.nome)).join(", ")}</span>` : ""
+          }</div>
+        </td>
+      </tr>`,
+    )
+    .join("");
+
+  return `<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"><title>${esc(assuntoReuniao(b))}</title></head>
+<body style="margin:0;background:${c.pagina};padding:24px 12px;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:${c.pagina};"><tr><td align="center">
+    <table width="640" cellpadding="0" cellspacing="0" style="max-width:640px;width:100%;background:${c.card};border-radius:14px;border:1px solid ${c.borda};">
+      <tr><td style="padding:28px 28px 8px;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="border-bottom:2px solid ${c.verdeMarca};"><tr>
+          <td style="padding-bottom:14px;"><img src="${site}/marca/citi-logo-verde.png" alt="CITi" height="26" style="vertical-align:middle;"><span style="display:inline-block;width:1px;height:20px;background:${c.divisoria};margin:0 12px;vertical-align:middle;"></span><span style="font:500 11px Arial,sans-serif;letter-spacing:3.5px;text-transform:uppercase;color:${c.texto};vertical-align:middle;">Legacy</span></td>
+          <td align="right" style="padding-bottom:14px;font:700 10px Arial,sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:${c.verde};">Reunião da diretoria</td>
+        </tr></table>
+        <h1 style="margin:22px 0 6px;font:300 26px Arial,sans-serif;color:${c.texto};">Semana de <b style="font-weight:700;">${ddmm(b.semana)} a ${ddmm(b.fimSemana)}.</b></h1>
+        <p style="margin:0 0 16px;font:13px/1.5 Arial,sans-serif;color:${c.suave};">A pauta da reunião semanal, montada com os dados dos projetos e os resumos da IA.</p>
+        <table width="100%" cellpadding="0" cellspacing="0"><tr>
+          ${numero(b.numeros.andamento, "projetos em andamento")}${numero(b.numeros.atrasados, "atrasados no momento", c.vermelho)}${numero(b.numeros.tasksSemana, "tasks entregues")}${numero(b.numeros.commitsSemana, "commits na semana", c.verdeMarca)}
+        </tr></table>
+        <p style="margin:24px 0 4px;font:700 10px Arial,sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:${c.fraco};">Panorama</p>
+        <table width="100%" cellpadding="0" cellspacing="0">${panorama}</table>
+        <p style="margin:24px 0 4px;font:700 10px Arial,sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:${c.verde};">✦ Prioridades da semana · dos resumos da IA</p>
+        <table width="100%" cellpadding="0" cellspacing="0">${prioridades}</table>
+        <p style="margin:24px 0 0;text-align:center;">
+          <a href="${site}/reuniao" style="display:inline-block;background:${c.verdeMarca};color:#0a0a0a;font:700 14px Arial,sans-serif;text-decoration:none;padding:11px 22px;border-radius:99px;">Abrir a apresentação</a>
+        </p>
+        <p style="margin:10px 0 0;text-align:center;font:11px Arial,sans-serif;color:${c.fraco};">Na apresentação, a tecla P exporta os slides em PDF.</p>
+      </td></tr>
+      <tr><td style="padding:20px 28px 26px;font:11px/1.5 Arial,sans-serif;color:${c.fraco};border-top:1px solid ${c.linha};">
+        Previsões pelo ritmo das últimas 4 semanas. CITi Legacy · uso interno.
+      </td></tr>
+    </table>
+  </td></tr></table>
+</body></html>`;
+}
+
+/** Envia o e-mail da reunião da diretoria. */
+export function enviarReuniao(b: Boletim, projetos: Projeto[]) {
+  return enviarEmail(assuntoReuniao(b), htmlReuniao(b, projetos));
 }
 
 /** Destinatários com o e-mail parcialmente oculto, para mostrar na tela ("jv***@cin.ufpe.br"). */

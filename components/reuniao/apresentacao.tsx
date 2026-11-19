@@ -6,10 +6,11 @@
 // como num programa de apresentação: nada se desalinha em telas menores ou maiores.
 // Exportar PDF: a impressão mostra todos os slides, um por página de 1280 × 720 (ver globals.css).
 
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { Lockup } from "@/components/layout/marca";
-import { IconeExportar } from "@/components/ui/icones";
+import { IconeEmail, IconeExportar } from "@/components/ui/icones";
+import { enviarReuniaoAgora } from "@/app/acoes";
 
 /** Um slide na tela fixa de 1280 × 720: brilho, topo (data e posição), conteúdo, marca e progresso. */
 function Slide({ children, indice, total, data, fade = false }: { children: ReactNode; indice: number; total: number; data: string; fade?: boolean }) {
@@ -86,6 +87,14 @@ export function Apresentacao({ slides, data }: { slides: ReactNode[]; data: stri
 
   const secundario = "cursor-pointer rounded-full px-4 py-2 text-branco/55 transition-colors hover:text-branco";
 
+  // enviar a pauta da reunião por e-mail (os destinatários vêm só da configuração do servidor)
+  const [enviando, iniciarEnvio] = useTransition();
+  const [envio, setEnvio] = useState<{ enviado: boolean; mensagem: string } | null>(null);
+  function enviar() {
+    setEnvio(null);
+    iniciarEnvio(async () => setEnvio(await enviarReuniaoAgora()));
+  }
+
   return (
     <>
       {/* na tela: um slide por vez, escalado */}
@@ -103,6 +112,15 @@ export function Apresentacao({ slides, data }: { slides: ReactNode[]; data: stri
 
         {/* controles */}
         <div className="flex flex-wrap items-center justify-center gap-2 text-sm">
+          <button
+            type="button"
+            onClick={enviar}
+            disabled={enviando}
+            className={`${secundario} inline-flex items-center gap-1.5 disabled:cursor-wait disabled:opacity-60`}
+          >
+            <IconeEmail className="h-4 w-4" />
+            {enviando ? "Enviando…" : "Enviar por e-mail"}
+          </button>
           <button type="button" onClick={() => router.push("/projetos")} className={secundario}>
             Sair (Esc)
           </button>
@@ -132,6 +150,11 @@ export function Apresentacao({ slides, data }: { slides: ReactNode[]; data: stri
             Exportar PDF (P)
           </button>
         </div>
+        {envio && (
+          <p role="status" className={`-mt-1 text-xs ${envio.enviado ? "text-verde" : "text-ambar"}`}>
+            {envio.mensagem}
+          </p>
+        )}
       </div>
 
       {/* página 16:9 sem margem e fundo escuro, só enquanto a apresentação está aberta
