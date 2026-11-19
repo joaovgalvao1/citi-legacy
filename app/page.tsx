@@ -8,6 +8,7 @@ import { obterPessoas, obterProjetos, obterResumos, totalDeCommits } from "@/dat
 import { lider } from "@/lib/indice";
 import { nivelProjeto } from "@/lib/status";
 import { Lockup } from "@/components/layout/marca";
+import { Orbitas } from "@/components/entrada/fundo";
 import {
   IconeConhecimento,
   IconeEmail,
@@ -92,19 +93,16 @@ export default async function Entrada() {
   const etapasDeQuemSaiu = projetos.flatMap((p) => p.etapas.filter((e) => lider(p, e.id)?.membro.saiuEm)).length;
 
   return (
-    <div className="overflow-x-clip">
+    <div className="relative overflow-x-clip">
+      {/* fundo: órbitas em vetor espalhadas pela página (atrás de tudo, só aparecem nos vãos) */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ zIndex: -1 }}>
+        <Orbitas id="topo" brilho={0.2} className="top-[-160px] right-[-380px] w-[1100px] opacity-35 sm:right-[-280px] lg:right-[-200px] lg:opacity-100" />
+        <Orbitas id="recursos" brilho={0.12} className="top-[24%] left-[-520px] w-[900px] opacity-70" />
+        <Orbitas id="passos" brilho={0.12} className="top-[52%] right-[-480px] w-[860px] opacity-60" />
+        <Orbitas id="historico" brilho={0.14} className="top-[71%] left-[-420px] w-[780px] opacity-70" />
+      </div>
       {/* ---------- destaque ---------- */}
       <section className="relative">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 right-0 w-full bg-cover bg-right opacity-35 md:w-3/5"
-          style={{
-            backgroundImage: "url(/marca/fundo-citi.webp)",
-            maskImage:
-              "linear-gradient(to right, transparent, black 45%, black 70%, transparent), linear-gradient(to bottom, black 60%, transparent)",
-            maskComposite: "intersect",
-          }}
-        />
         <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pt-14 pb-16 lg:grid-cols-[1.05fr_1fr] lg:pt-20 lg:pb-24">
           <div className="anima-surgir space-y-7">
             <p className="inline-flex items-center gap-2 rounded-full border border-verde/30 bg-verde/10 px-3 py-1 text-xs text-verde">
@@ -298,18 +296,14 @@ export default async function Entrada() {
 
       {/* ---------- chamada final ---------- */}
       <section className="px-4 pb-24">
-        <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-verde/25 bg-[#082414] px-6 py-16 text-center">
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-25"
-            style={{ backgroundImage: "url(/marca/fundo-citi.webp)" }}
-          />
+        <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-verde/25 bg-[#06170d] px-6 py-16 text-center">
+          <Orbitas id="chamada" brilho={0.3} className="top-1/2 left-1/2 w-[1000px] -translate-x-1/2 -translate-y-1/2" />
           <div className="relative flex flex-col items-center gap-5">
             <Lockup tamanho="grande" />
             <h2 className="text-3xl tracking-[-0.035em] sm:text-4xl">
-              <span className="font-light">Pronto para a</span> <span className="font-bold">reunião de segunda?</span>
+              <span className="font-light">Todos os projetos,</span> <span className="font-bold text-verde">num só lugar.</span>
             </h2>
-            <p className="text-gray-700">Entre com o usuário de demonstração do protótipo.</p>
+            <p className="text-gray-700">Entre e veja como cada projeto está nesta semana.</p>
             <Link href="/login" className={botaoPrincipal}>
               <IconeEntrar className="h-4 w-4" />
               Entrar no CITi Legacy

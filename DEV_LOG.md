@@ -1428,3 +1428,23 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - **Seção do legado:** saiu "Quando alguém sai, o conhecimento fica.", que vendia uma dor, e entrou "E quando a equipe muda, **o histórico fica.**", como benefício de fechamento. Os rótulos dos números foram suavizados.
 - **Chamada final:** "Pronto para a **reunião de segunda?**".
 - **Descrição do site** (Google e compartilhamento): "Todos os projetos do CITi, acompanhados semana a semana: andamento, prazos, resumo com IA e reunião da diretoria."
+
+### Fundo de órbitas e nova chamada final (19/11)
+
+**O que pedi:**
+- Trocar a chamada final ("Pronto para a reunião de segunda?"), que fazia o app parecer só um organizador de reuniões.
+- Melhorar o fundo da página inicial, porque a imagem estava com qualidade baixa.
+- Pedi para ver as opções antes de aplicar, sem me limitar àquela imagem.
+
+**O que a IA encontrou:** a imagem tinha só 320×630 px e era esticada para mais de 700 px de largura.
+
+**O que a IA propôs:** 4 fundos desenhados em vetor (lâminas do CITi, malha de pontos, órbitas e grafo de commits) e 3 chamadas finais.
+
+**Minha escolha:** o fundo C (órbitas) e a chamada 1. Pedi também para aproveitar o tamanho da página e enriquecer o visual ao descer.
+
+**O que a IA fez:**
+- **`components/entrada/fundo.tsx`:** órbitas em SVG, com 4 anéis (dois tracejados), pessoas em verde, roxo e cinza, brilho radial verde e anéis girando devagar em sentidos opostos. As animações param com "reduzir movimento".
+- **Órbitas pela página:** uma grande atrás da vitrine do topo, mais três alternando os lados (recursos, como funciona, histórico) e uma no centro do card da chamada final. Elas ficam atrás do conteúdo e só aparecem nos vãos.
+- **Celular:** a órbita do topo fica mais apagada para não passar por cima do texto.
+- **Chamada final:** "Todos os projetos, **num só lugar.**" / "Entre e veja como cada projeto está nesta semana."
+- **Imagem antiga:** a página não usa mais `fundo-citi.webp`, mas o arquivo continua em `public/marca`.
