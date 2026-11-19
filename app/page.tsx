@@ -8,7 +8,7 @@ import { obterPessoas, obterProjetos, obterResumos, totalDeCommits } from "@/dat
 import { lider } from "@/lib/indice";
 import { nivelProjeto } from "@/lib/status";
 import { Lockup } from "@/components/layout/marca";
-import { Orbitas, Ramificacoes } from "@/components/entrada/fundo";
+import { Orbitas } from "@/components/entrada/fundo";
 import {
   IconeConhecimento,
   IconeEmail,
@@ -102,7 +102,6 @@ export default async function Entrada() {
           className="top-[-160px] right-[-380px] w-[1100px] opacity-35 sm:right-[-280px] lg:right-[-200px] lg:opacity-100"
         />
         <Orbitas id="recursos" brilho={0.12} className="top-[24%] left-[-520px] w-[900px] opacity-70" />
-        <Ramificacoes className="top-[50%] right-[-360px] w-[860px] opacity-80" />
         <Orbitas id="historico" brilho={0.14} className="top-[71%] left-[-420px] w-[780px] opacity-70" />
       </div>
       {/* ---------- destaque ---------- */}

@@ -1639,3 +1639,16 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
   - **Sorteio** com semente fixa (o id do projeto): a constelação é sempre a mesma. Sem animação.
 
 **Verificação** (1534 px de largura, a mesma do print): vermelha em x 79–144, âmbar em x 625–1101 e verde em x 1222–1365.
+
+### Constelações dentro das órbitas (19/11)
+
+**O que pedi:** tirar a ramificação antiga da página inicial e, na página inicial e em Membros, integrar as constelações ao fundo de órbitas. A tela de projetos fica como está.
+
+**O que a IA fez:**
+- **Página inicial:** saiu a ramificação ao lado de "Como funciona", e o componente `Ramificacoes` foi removido.
+- **`Orbitas`** ganhou estrelas (opção `estrelas`, ligada por padrão):
+  - 5 constelações de 4 a 8 estrelas, nos vãos entre os anéis, em verde, roxo e âmbar;
+  - uma poeira de estrelas brancas pequenas pelo campo da órbita;
+  - tudo na parte parada do desenho, sem custo de animação;
+  - sorteio com semente fixa por órbita, para servidor e navegador desenharem igual.
+- **Onde aparece:** em todas as órbitas da página inicial e nas duas de Membros (modos Órbita e Cards).

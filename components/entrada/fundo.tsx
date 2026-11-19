@@ -3,7 +3,7 @@
 // Fundo da página de entrada, em vetor (nítido em qualquer tela) e leve:
 //   · Órbitas: anéis e brilho são uma imagem parada; só as "pessoas" giram, numa camada HTML própria
 //     (a placa de vídeo move a camada sem redesenhar nada).
-//   · Ramificações: linhas de branch com commits, paradas (o produto nasce do Git).
+//   · Constelações: grupos de estrelas ligadas entre os anéis, parados (desenhados uma vez).
 // Cada peça só anima enquanto aparece na tela (IntersectionObserver). No celular e com
 // "reduzir movimento", o fundo fica parado (regras .giro-fundo em globals.css).
 
@@ -55,6 +55,45 @@ const ANEIS: Anel[] = [
 
 const COR = { verde: "bg-verde", roxo: "bg-roxo", cinza: "bg-branco/25" };
 
+/** Gerador pseudoaleatório com semente (mulberry32): mesma entrada, mesmo desenho (servidor e navegador). */
+function sorteio(texto: string) {
+  let x = 0;
+  for (const c of texto) x = (Math.imul(x, 31) + c.charCodeAt(0)) | 0;
+  return () => {
+    x = (x + 0x6d2b79f5) | 0;
+    let t = Math.imul(x ^ (x >>> 15), 1 | x);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+const r1 = (n: number) => Math.round(n * 10) / 10;
+const CORES_CONSTELACAO = ["#00DB58", "#A78BFA", "#00DB58", "#FFA630", "#00DB58"];
+
+/** Constelações entre os anéis (no vão entre 230 e 340 e entre 340 e 460) e poeira de estrelas. */
+function constelacoes(id: string) {
+  const rnd = sorteio(`constelacoes-${id}`);
+  const grupos = Array.from({ length: 5 }, (_, g) => {
+    const raio = g % 2 ? 285 : 405;
+    const ang = (g / 5) * Math.PI * 2 + rnd() * 0.6;
+    const cx = 500 + raio * Math.cos(ang);
+    const cy = 500 + raio * Math.sin(ang);
+    const k = 4 + Math.floor(rnd() * 5);
+    const estrelas = Array.from({ length: k }, () => {
+      const a = rnd() * Math.PI * 2;
+      const d = 14 + rnd() * 42;
+      return { x: cx + Math.cos(a) * d, y: cy + Math.sin(a) * d, r: 2 + rnd() * 3, a };
+    }).sort((p, q) => p.a - q.a);
+    return { cor: CORES_CONSTELACAO[g % CORES_CONSTELACAO.length], estrelas };
+  });
+  const poeira = Array.from({ length: 70 }, () => {
+    const a = rnd() * Math.PI * 2;
+    const d = 160 + rnd() * 330;
+    return { x: 500 + Math.cos(a) * d, y: 500 + Math.sin(a) * d, r: 1 + rnd() * 1.6 };
+  });
+  return { grupos, poeira };
+}
+
 /** Marca o elemento com data-ativo enquanto estiver (quase) na tela. */
 function useVisivel<T extends HTMLElement>() {
   const ref = useRef<T>(null);
@@ -74,16 +113,20 @@ export function Orbitas({
   className = "",
   brilho = 0.22,
   centro = true,
+  estrelas = true,
 }: {
   id: string;
   className?: string;
   brilho?: number;
   /** Ponto verde no centro (sem ele quando há conteúdo no meio, como na roda de membros). */
   centro?: boolean;
+  /** Constelações e poeira de estrelas entre os anéis. */
+  estrelas?: boolean;
 }) {
   const { ref, visivel } = useVisivel<HTMLDivElement>();
   // com conteúdo no meio (centro=false), o anel mais interno sai para não passar por cima dele
   const aneis = centro ? ANEIS : ANEIS.slice(1);
+  const ceu = estrelas ? constelacoes(id) : null;
   return (
     <div
       ref={ref}
@@ -116,6 +159,27 @@ export function Orbitas({
           />
         ))}
         {centro && <circle cx="500" cy="500" r="14" fill="#00DB58" fillOpacity="0.9" />}
+        {ceu?.poeira.map((e, i) => (
+          <circle key={`p${i}`} cx={r1(e.x)} cy={r1(e.y)} r={r1(e.r)} fill="#fff" fillOpacity="0.25" />
+        ))}
+        {ceu?.grupos.map((g, i) => (
+          <g key={`c${i}`}>
+            <polyline
+              points={g.estrelas.map((e) => `${r1(e.x)},${r1(e.y)}`).join(" ")}
+              fill="none"
+              stroke={g.cor}
+              strokeOpacity="0.3"
+              strokeWidth="1"
+              vectorEffect="non-scaling-stroke"
+            />
+            {g.estrelas.map((e, j) => (
+              <g key={j}>
+                <circle cx={r1(e.x)} cy={r1(e.y)} r={r1(e.r * 3)} fill={g.cor} fillOpacity="0.07" />
+                <circle cx={r1(e.x)} cy={r1(e.y)} r={r1(e.r)} fill={g.cor} fillOpacity="0.8" />
+              </g>
+            ))}
+          </g>
+        ))}
       </svg>
       {/* parte que gira: só as pessoas, uma camada por anel */}
       {aneis.map((anel) => (
@@ -140,93 +204,5 @@ export function Orbitas({
         </div>
       ))}
     </div>
-  );
-}
-
-// ---------- ramificações (grafo de commits) ----------
-
-type Ramo = { d: string; cor: string; o: number; nos: [number, number][] };
-
-const RAMOS: Ramo[] = [
-  {
-    d: "M300 0 C 330 260, 320 520, 340 1000",
-    cor: "#00DB58",
-    o: 0.5,
-    nos: [
-      [306, 90],
-      [318, 260],
-      [324, 430],
-      [330, 640],
-      [338, 860],
-    ],
-  },
-  {
-    d: "M318 260 C 420 300, 470 380, 480 470 S 420 640, 330 700",
-    cor: "#00DB58",
-    o: 0.32,
-    nos: [
-      [440, 340],
-      [480, 470],
-      [430, 610],
-    ],
-  },
-  {
-    d: "M324 430 C 520 450, 600 520, 640 650 S 700 860, 760 1000",
-    cor: "#A78BFA",
-    o: 0.4,
-    nos: [
-      [520, 460],
-      [620, 590],
-      [690, 820],
-    ],
-  },
-  {
-    d: "M480 470 C 600 420, 700 330, 820 300",
-    cor: "#00DB58",
-    o: 0.2,
-    nos: [
-      [640, 400],
-      [800, 305],
-    ],
-  },
-  { d: "M120 0 C 140 200, 180 330, 306 380", cor: "#00DB58", o: 0.16, nos: [[150, 160]] },
-];
-
-export function Ramificacoes({ className = "" }: { className?: string }) {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 1000 1000" className={`pointer-events-none absolute aspect-square ${className}`}>
-      <defs>
-        <radialGradient id="brilho-ramos" cx="0.45" cy="0.5">
-          <stop offset="0" stopColor="#0b3a1f" stopOpacity="0.55" />
-          <stop offset="1" stopColor="#0a0a0a" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-      <circle cx="450" cy="500" r="500" fill="url(#brilho-ramos)" />
-      {RAMOS.map((r) => (
-        <g key={r.d}>
-          <path
-            d={r.d}
-            fill="none"
-            stroke={r.cor}
-            strokeOpacity={r.o}
-            strokeWidth="2"
-            strokeLinecap="round"
-            vectorEffect="non-scaling-stroke"
-          />
-          {r.nos.map(([x, y]) => (
-            <circle
-              key={`${x}-${y}`}
-              cx={x}
-              cy={y}
-              r="9"
-              fill="#0a0a0a"
-              stroke={r.cor}
-              strokeOpacity={Math.min(1, r.o + 0.35)}
-              strokeWidth="3"
-            />
-          ))}
-        </g>
-      ))}
-    </svg>
   );
 }
