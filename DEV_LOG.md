@@ -1004,3 +1004,4 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - **GALT** (concluído): "Entregue em 20/03 · 7 dias depois do previsto".
 - **Interação:** dica e clique conferidos; no celular, sem rolagem lateral na página.
 - **Ajuste feito durante o teste:** os rótulos "prev. DD/MM" cortavam no fim do eixo, então a IA aumentou a folga.
+- **Ajuste que pedi depois:** a dica da primeira etapa abria para cima e era cortada pela borda do gráfico. Agora, nas duas primeiras linhas, a dica abre para baixo.

@@ -163,8 +163,17 @@ export function Gantt({ projeto, aoSelecionar }: { projeto: Projeto; aoSeleciona
             </div>
 
             <ul>
-              {linhas.map((l) => (
-                <LinhaEtapa key={l.etapa.id} l={l} hoje={hoje} concluido={concluido} x={x} largura={largura} aoSelecionar={aoSelecionar} />
+              {linhas.map((l, i) => (
+                <LinhaEtapa
+                  key={l.etapa.id}
+                  l={l}
+                  hoje={hoje}
+                  concluido={concluido}
+                  x={x}
+                  largura={largura}
+                  aoSelecionar={aoSelecionar}
+                  dicaAbaixo={i < 2}
+                />
               ))}
             </ul>
           </div>
@@ -206,7 +215,10 @@ function LinhaEtapa({
   x,
   largura,
   aoSelecionar,
+  dicaAbaixo,
 }: {
+  /** Nas primeiras linhas a dica abre para baixo (para cima, seria cortada pela borda do gráfico). */
+  dicaAbaixo: boolean;
   l: Linha;
   hoje: string;
   concluido: boolean;
@@ -313,7 +325,9 @@ function LinhaEtapa({
           <div className="absolute top-1/2 h-5 w-0.5 -translate-x-1/2 -translate-y-1/2 bg-branco" style={{ left: x(etapa.fimPrevisto) }} />
 
           {/* dica ao passar o mouse */}
-          <div className="pointer-events-none absolute right-0 bottom-full z-20 mb-1 hidden w-60 rounded-lg border border-branco/12 bg-[#1f1f1f] px-3 py-2 text-[11px] leading-relaxed text-gray-700 shadow-2xl group-hover:block group-focus-visible:block">
+          <div
+            className={`pointer-events-none absolute right-0 z-20 hidden w-60 ${dicaAbaixo ? "top-full mt-1" : "bottom-full mb-1"} rounded-lg border border-branco/12 bg-[#1f1f1f] px-3 py-2 text-[11px] leading-relaxed text-gray-700 shadow-2xl group-hover:block group-focus-visible:block`}
+          >
             <p className="font-semibold text-branco">{dica[0]}</p>
             {dica.slice(1).map((t) => (
               <p key={t} className="dado">
