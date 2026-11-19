@@ -1609,3 +1609,8 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
 - **Membros:** desktop e celular, sem rolagem lateral; a altura da página termina no rodapé.
 - **Projetos:** título legível sobre o grafo.
 - **Página de projeto:** sem mudança visual com o novo espaçamento.
+- **Ajuste seguinte:**
+  - o modo "Lista" de Membros passou a se chamar **"Cards"**;
+  - a área da Órbita ganhou espaço em cima e embaixo, e o rodapé desceu junto, para o anel maior aparecer inteiro;
+  - no desktop, as órbitas passaram a 190% da roda: o anel maior vai de 17 px a 1164 px e o rodapé começa em 1299 px;
+  - no celular, o anel cabe na altura (de 126 px a 1010 px, rodapé em 1143 px), mas na largura continua maior que a tela.

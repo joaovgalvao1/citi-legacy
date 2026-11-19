@@ -147,7 +147,7 @@ export function Roda<T extends ItemRoda>({
             id="roda"
             brilho={0.18}
             centro={false}
-            className="top-1/2 left-1/2 z-[-1] w-[280%] -translate-x-1/2 -translate-y-1/2 sm:w-[220%]"
+            className="top-1/2 left-1/2 z-[-1] w-[280%] -translate-x-1/2 -translate-y-1/2 sm:w-[190%]"
           />
         )}
         <button
