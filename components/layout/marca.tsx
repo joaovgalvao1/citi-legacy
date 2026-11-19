@@ -22,7 +22,16 @@ export function Lockup({ tamanho = "normal" }: { tamanho?: keyof typeof TAMANHOS
   const t = TAMANHOS[tamanho];
   return (
     <span className={`inline-flex items-center ${t.espaco}`}>
-      <Image src="/marca/citi-logo-verde.png" alt="CITi" width={225} height={115} priority={tamanho !== "pequeno"} className={`${t.logo} w-auto`} />
+      {/* logo em vetor (o mesmo do site citi.org.br): nítido em qualquer tela */}
+      <Image
+        src="/marca/citi-logo-verde.svg"
+        alt="CITi"
+        width={1114}
+        height={566}
+        unoptimized
+        priority={tamanho !== "pequeno"}
+        className={`${t.logo} w-auto`}
+      />
       <span aria-hidden="true" className={`w-px ${t.divisoria} bg-branco/35`} />
       <span className={`font-medium uppercase leading-none text-branco ${t.texto}`}>Legacy</span>
     </span>

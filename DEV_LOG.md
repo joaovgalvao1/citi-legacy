@@ -1711,3 +1711,23 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
     - na vertical, deixa a página rolar.
   - **Mouse e caneta:** continuam com os eventos de ponteiro.
   - **Teste** (toques simulados, tablet de 768 px): na horizontal girou 2 posições e bloqueou a rolagem; na vertical não girou nem bloqueou; o arraste com mouse continua girando.
+
+### Ícone do app e PWA (19/11)
+
+**O que pedi:** colocar um logo na página (ícone) e configurar o app para celular como PWA. Depois pedi para trabalhar no logo primeiro: "LEGACY" embaixo do "citi" e mais qualidade.
+
+**O que a IA fez:**
+- **Logo em vetor:**
+  - **Problema:** o único logo do projeto era um PNG de 225×115, que fica borrado quando ampliado.
+  - **Origem:** a IA extraiu o logo em vetor (SVG) do cabeçalho do site citi.org.br e salvou em `public/marca/citi-logo-verde.svg`.
+  - **Uso:** o cabeçalho, o rodapé e as folhas de PDF passaram a usar esse SVG.
+- **Ícones** (`lib/icone.tsx`, PNG gerado com `ImageResponse` a partir do SVG):
+  - **app** (tela de início do iPhone/iPad em `app/apple-icon.tsx`, 180 px; PWA em `/icones/192` e `/icones/512`, incluindo a versão "maskable"): "citi" verde com "LEGACY" embaixo, sobre o fundo escuro do app com brilho verde e um anel de órbita, dentro da área segura de 80%;
+  - **favicon** (`app/icon.tsx`, 64 px): só o logo, maior, com cantos arredondados, porque o "LEGACY" ficaria ilegível. Saiu o `favicon.ico` padrão do Next.
+- **PWA:**
+  - **Manifest** (`app/manifest.ts`): nome, cores do app, abre em tela cheia em `/projetos`, e atalhos para Projetos, Membros e Modo reunião.
+  - **Metadados:** `appleWebApp` (instalável no iOS, barra de status escura), `themeColor` e `colorScheme` escuro.
+  - **Service worker mínimo** (`public/sw.js`, registrado em `components/layout/registrar-sw.tsx`): permite instalar e mostra uma página de "sem conexão" quando o aparelho está offline. Não guarda dados dos projetos em cache.
+- **Verificação:**
+  - os ícones, o manifest e o `sw.js` respondem em `/icon`, `/apple-icon`, `/icones/192`, `/icones/512`, `/manifest.webmanifest` e `/sw.js`, e o service worker ficou registrado no navegador;
+  - o build de produção (`next build`) passou com essas rotas.

@@ -58,7 +58,7 @@ export function CabecalhoFolha({ rotulo, data }: { rotulo: string; data: string 
       {/* lockup "citi | LEGACY" (versão para fundo claro) */}
       <div className="flex items-center gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element -- imagem simples para impressão */}
-        <img src="/marca/citi-logo-verde.png" alt="CITi" className="h-7 w-auto" />
+        <img src="/marca/citi-logo-verde.svg" alt="CITi" className="h-7 w-auto" />
         <span aria-hidden="true" className="h-[22px] w-px bg-(--f-texto)/35" />
         <span className="text-[11.5px] font-medium uppercase leading-none tracking-[3.75px] text-(--f-texto)">Legacy</span>
       </div>
