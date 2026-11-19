@@ -44,7 +44,14 @@ async function MembroConteudo({ params }: { params: PageProps<"/membros/[membroI
     for (const m of projeto.membros) {
       if (m.id === pessoa.id) continue;
       const juntos = doProjeto.filter((c) => c.autor === m.id && c.etapas.some((e) => minhasEtapas.has(e))).length;
-      const colega = colegasPorId.get(m.id) ?? { id: m.id, nome: m.nome, github: m.github, saiu: !!m.saiuEm, projetos: [], commitsJuntos: 0 };
+      const colega = colegasPorId.get(m.id) ?? {
+        id: m.id,
+        nome: m.nome,
+        github: m.github,
+        saiu: !!m.saiuEm,
+        projetos: [],
+        commitsJuntos: 0,
+      };
       colega.projetos.push(projeto.nome);
       colega.commitsJuntos += juntos;
       colegasPorId.set(m.id, colega);
@@ -91,15 +98,47 @@ async function MembroConteudo({ params }: { params: PageProps<"/membros/[membroI
         <CalendarioContribuicoes commits={todos} />
       </Caixa>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Caixa titulo={`Órbita de colaboração · ${colegas.length} ${colegas.length === 1 ? "colega" : "colegas"}`}>
-          <OrbitaColaboracao pessoa={{ nome: pessoa.nome, github: pessoa.github }} colegas={colegas} />
+      <div className="grid items-start gap-4 lg:grid-cols-2">
+        <Caixa titulo={`Projetos · ${participacoes.length}`}>
+          <ul className="space-y-3">
+            {participacoes.map(({ projeto, membro }) => {
+              const meus = todos.filter((c) => c.projetoId === projeto.id);
+              return (
+                <li key={projeto.id}>
+                  <Link
+                    href={`/projetos/${projeto.id}`}
+                    className="block space-y-3 rounded-xl border border-linha bg-gray-50 p-4 transition-colors hover:border-verde/60"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <div className="text-lg font-semibold">{projeto.nome}</div>
+                        <div className="text-sm text-gray-600">{membro.papel}</div>
+                      </div>
+                      <SeloStatusProjeto projeto={projeto} />
+                    </div>
+                    <div className="flex items-end justify-between gap-3">
+                      <div className="text-sm text-gray-600">
+                        {meus.length ? `${formatarData(meus.at(-1)!.data)} a ${formatarData(meus[0].data)}` : "sem commits"}
+                      </div>
+                      <div className="text-right">
+                        <div className="text-2xl font-bold tabular-nums">{emPct(membro.icProjeto)}</div>
+                        <div className="text-xs text-gray-500">IC no projeto</div>
+                      </div>
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </Caixa>
         <Caixa titulo={`Referência em · ${referencia.length}`}>
           {referencia.length ? (
             <ul className="space-y-3">
               {referencia.map((r) => (
-                <li key={`${r.projeto.id}-${r.etapa}`} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)_3rem] items-center gap-3 text-sm">
+                <li
+                  key={`${r.projeto.id}-${r.etapa}`}
+                  className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)_3rem] items-center gap-3 text-sm"
+                >
                   <span className="min-w-0">
                     <span className="block truncate font-medium">{r.etapa}</span>
                     <Link href={`/projetos/${r.projeto.id}`} className="block truncate text-xs text-gray-500 hover:text-verde">
@@ -119,36 +158,12 @@ async function MembroConteudo({ params }: { params: PageProps<"/membros/[membroI
         </Caixa>
       </div>
 
-      <h2 className="rotulo">Projetos · {participacoes.length}</h2>
-      <ul className="grid gap-4 md:grid-cols-2">
-        {participacoes.map(({ projeto, membro }) => {
-          const meus = todos.filter((c) => c.projetoId === projeto.id);
-          return (
-            <li key={projeto.id}>
-              <Link href={`/projetos/${projeto.id}`} className="block h-full space-y-3 rounded-xl border border-linha bg-white p-5 transition-colors hover:border-verde/60">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <div className="text-lg font-semibold">{projeto.nome}</div>
-                    <div className="text-sm text-gray-600">{membro.papel}</div>
-                  </div>
-                  <SeloStatusProjeto projeto={projeto} />
-                </div>
-                <div className="flex items-end justify-between gap-3">
-                  <div className="text-sm text-gray-600">
-                    {meus.length
-                      ? `${formatarData(meus.at(-1)!.data)} a ${formatarData(meus[0].data)}`
-                      : "sem commits"}
-                  </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold tabular-nums">{emPct(membro.icProjeto)}</div>
-                    <div className="text-xs text-gray-500">IC no projeto</div>
-                  </div>
-                </div>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+      <Caixa
+        className="mx-auto w-full max-w-3xl"
+        titulo={`Órbita de colaboração · ${colegas.length} ${colegas.length === 1 ? "colega" : "colegas"}`}
+      >
+        <OrbitaColaboracao pessoa={{ nome: pessoa.nome, github: pessoa.github }} colegas={colegas} />
+      </Caixa>
     </div>
   );
 }
