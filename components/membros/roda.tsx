@@ -33,7 +33,7 @@ export function Roda<T extends ItemRoda>({
   aoAbrir,
   raioMin = 27,
   fundo = false,
-  dica = "Arraste, use a roda do mouse ou as setas. Clique num avatar para trazê-lo ao topo.",
+  dica = "Deslize ou arraste para girar, use a roda do mouse ou as setas. Toque num avatar para trazê-lo ao topo.",
 }: {
   itens: T[];
   /** Nome da roda para leitores de tela. */
@@ -52,7 +52,9 @@ export function Roda<T extends ItemRoda>({
   const [angulo, setAngulo] = useState(0);
   const [arrastando, setArrastando] = useState(false);
   const area = useRef<HTMLDivElement>(null);
-  const arrasto = useRef<{ x: number; y: number; a0: number; base: number; moveu: boolean; id: number } | null>(null);
+  const arrasto = useRef<{ x: number; y: number; ux: number; a0: number; base: number; moveu: boolean; id: number; toque: boolean } | null>(
+    null,
+  );
   const moveuAgora = useRef(false);
 
   const foco = mod(Math.round(-angulo / passo), Math.max(n, 1));
@@ -87,10 +89,12 @@ export function Roda<T extends ItemRoda>({
     arrasto.current = {
       x: e.clientX,
       y: e.clientY,
+      ux: e.clientX,
       a0: anguloDoPonteiro(e.clientX, e.clientY),
       base: angulo,
       moveu: false,
       id: e.pointerId,
+      toque: e.pointerType !== "mouse",
     };
     moveuAgora.current = false;
   }
@@ -100,14 +104,27 @@ export function Roda<T extends ItemRoda>({
     // o "soltar" se perdeu (ex.: soltou fora da janela): encerra o arraste em vez de seguir o mouse
     if (e.pointerType === "mouse" && e.buttons === 0) return aoSoltar();
     if (!d.moveu) {
-      if (Math.hypot(e.clientX - d.x, e.clientY - d.y) < 5) return;
+      if (Math.hypot(e.clientX - d.x, e.clientY - d.y) < 6) return;
+      // no toque, gesto mais vertical é rolagem da página (touch-action: pan-y), não giro
+      if (d.toque && Math.abs(e.clientY - d.y) > Math.abs(e.clientX - d.x)) {
+        arrasto.current = null;
+        return;
+      }
       d.moveu = true;
       moveuAgora.current = true;
       setArrastando(true);
       area.current?.setPointerCapture(d.id); // só captura depois de mover, para o clique no avatar continuar funcionando
     }
-    let delta = anguloDoPonteiro(e.clientX, e.clientY) - d.a0;
-    delta = mod(delta + 180, 360) - 180;
+    let delta: number;
+    if (d.toque) {
+      // no toque, deslizar para os lados gira a roda (como arrastar o avatar do topo pela borda)
+      const raio = (area.current!.getBoundingClientRect().width * RAIO_MAX) / 100;
+      delta = ((e.clientX - d.ux) / raio) * (180 / Math.PI);
+      d.ux = e.clientX;
+    } else {
+      delta = anguloDoPonteiro(e.clientX, e.clientY) - d.a0;
+      delta = mod(delta + 180, 360) - 180;
+    }
     d.a0 += delta;
     d.base += delta;
     setAngulo(d.base);
@@ -179,7 +196,7 @@ export function Roda<T extends ItemRoda>({
           onPointerCancel={aoSoltar}
           onLostPointerCapture={aoSoltar}
           onDragStart={(e) => e.preventDefault()}
-          className={`relative mx-auto aspect-square w-full max-w-[520px] touch-none rounded-full outline-none select-none focus-visible:ring-2 focus-visible:ring-verde/50 ${
+          className={`relative mx-auto aspect-square w-full max-w-[520px] touch-pan-y rounded-full outline-none select-none focus-visible:ring-2 focus-visible:ring-verde/50 ${
             arrastando ? "cursor-grabbing" : "cursor-grab"
           }`}
         >
@@ -257,7 +274,7 @@ export function Roda<T extends ItemRoda>({
           {temLinhas && (
             <div
               aria-hidden="true"
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-linha bg-white"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-verde/15 bg-fundo/85"
               style={{ width: `${2 * (raioMin - 7)}%`, height: `${2 * (raioMin - 7)}%` }}
             />
           )}

@@ -1679,3 +1679,27 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
   - Saíram a barra de etapas e o "previsão · prazo · gargalo" do formato antigo.
 - **Faixa de números:** virou uma cápsula flutuante, com a borda clara e o fundo translúcido do botão "Ver o que faz". Ela é arredondada por inteiro no desktop e tem cantos grandes no celular, e não usa desfoque, para não pesar.
 - **Semáforo** ("Semáforo, pulso e previsão de entrega"): cada linha mostra o pulso de commits na cor da situação no lugar da barra. Os novos componentes `Pulso` e `AnelMini` estão em `components/entrada/vitrine.tsx`.
+
+### Órbita no toque (celular/iPad) e perfil do membro no novo padrão (19/11)
+
+**O que pedi:** corrigir o giro da órbita no celular e no iPad, que não estava funcionando bem; deixar o fundo da página de cada membro no padrão usado no resto do app; e atualizar a órbita de colaboração para o novo design.
+
+**Causa no toque:**
+- **Rolagem travada:** a roda bloqueava todo gesto de toque (`touch-action: none`). Como ela ocupa quase a tela inteira no iPad, a página não rolava com o dedo sobre ela.
+- **Giro pelo ângulo:** o giro era calculado pelo ângulo do dedo em relação ao centro, o que fica instável perto do meio.
+
+**O que a IA fez:**
+- **Toque:**
+  - a roda agora usa `touch-action: pan-y`, então deslizar na vertical rola a página;
+  - deslizar na horizontal gira a roda, proporcional à distância percorrida na borda;
+  - o gesto se decide nos primeiros pixels;
+  - o mouse continua girando pelo ângulo, como antes;
+  - a dica passou a dizer "Deslize ou arraste para girar…".
+- **Perfil do membro:**
+  - **Fundo:** uma órbita com constelações em volta da foto, no cabeçalho, no mesmo padrão de Membros.
+  - **Órbita de colaboração:** sem o card cinza, com o título centralizado e as órbitas concêntricas ao fundo, com espaço para os anéis aparecerem.
+  - **Disco do centro:** escuro e translúcido, com borda verde suave.
+
+**Verificação:**
+- **Tablet (768 px):** deslizar na horizontal girou 2 posições, e na vertical não girou.
+- **Perfil da Helena (1280 px):** conferido no navegador.

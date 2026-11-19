@@ -33,6 +33,7 @@ export function OrbitaColaboracao({ pessoa, colegas }: { pessoa: { nome: string;
       rotulo={`Colegas de ${pessoa.nome}`}
       aoAbrir={(c) => router.push(`/membros/${c.id}`)}
       raioMin={33}
+      fundo
       dica="Mais perto e com a linha mais grossa = mais trabalho nas mesmas etapas. Clique no colega em foco para ver a órbita dele."
       centro={(c) => (
         <div key={c.id} className="anima-fade flex flex-col items-center">

@@ -12,6 +12,7 @@ import { AvatarMembro, ContatosMembro } from "@/components/membros/pecas";
 import { CalendarioContribuicoes } from "@/components/membros/calendario";
 import { MenuMembro } from "@/components/membros/menu-membro";
 import { OrbitaColaboracao, type Colega } from "@/components/membros/orbita";
+import { Orbitas } from "@/components/entrada/fundo";
 import { SeloStatusProjeto } from "@/components/projeto/status";
 import { EsqueletoMembro } from "@/components/ui/esqueletos";
 
@@ -67,7 +68,16 @@ async function MembroConteudo({ params }: { params: PageProps<"/membros/[membroI
         <Voltar href="/membros">Membros</Voltar>
         <div className="flex flex-wrap items-start justify-between gap-6">
           <div className="flex items-start gap-4">
-            <AvatarMembro nome={pessoa.nome} github={pessoa.github} grande />
+            {/* órbita da identidade em volta da foto, como fundo do cabeçalho (mesmo padrão de Membros) */}
+            <span className="relative shrink-0">
+              <Orbitas
+                id="perfil"
+                brilho={0.16}
+                centro={false}
+                className="top-1/2 left-1/2 z-[-1] w-[760px] -translate-x-1/2 -translate-y-1/2 opacity-80 sm:w-[1000px]"
+              />
+              <AvatarMembro nome={pessoa.nome} github={pessoa.github} grande />
+            </span>
             <div className="space-y-1.5">
               <div className="flex flex-wrap items-center gap-3">
                 <h1 className="text-3xl font-bold tracking-[-0.03em]">{pessoa.nome}</h1>
@@ -158,12 +168,15 @@ async function MembroConteudo({ params }: { params: PageProps<"/membros/[membroI
         </Caixa>
       </div>
 
-      <Caixa
-        className="mx-auto w-full max-w-3xl"
-        titulo={`Órbita de colaboração · ${colegas.length} ${colegas.length === 1 ? "colega" : "colegas"}`}
-      >
-        <OrbitaColaboracao pessoa={{ nome: pessoa.nome, github: pessoa.github }} colegas={colegas} />
-      </Caixa>
+      {/* órbita de colaboração no novo padrão: sem card, integrada ao fundo de órbitas e constelações */}
+      <section className="space-y-2 pt-6">
+        <h2 className="rotulo text-center">
+          Órbita de colaboração · {colegas.length} {colegas.length === 1 ? "colega" : "colegas"}
+        </h2>
+        <div className="relative pt-10 pb-[110px] sm:pt-20 sm:pb-[130px]">
+          <OrbitaColaboracao pessoa={{ nome: pessoa.nome, github: pessoa.github }} colegas={colegas} />
+        </div>
+      </section>
     </div>
   );
 }
