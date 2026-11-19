@@ -2,16 +2,16 @@
 
 // Ações do servidor (chamadas pelos componentes do navegador).
 
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, inArray, isNotNull, lte, sql } from "drizzle-orm";
 import { updateTag } from "next/cache";
 import { db, esquema } from "@/db/conexao";
-import { hoje } from "@/lib/hoje";
-import { linhas, slug, validarProjeto, type ProjetoNovo } from "@/lib/novo-projeto";
+import { hoje, somarDias } from "@/lib/hoje";
+import { confereConfirmacao, DIAS_NA_LIXEIRA, linhas, slug, validarProjeto, type ProjetoNovo } from "@/lib/novo-projeto";
 import { carregarCommits, carregarResumos, carregarTudo } from "@/data/carregar";
 import { montarBoletim } from "@/lib/boletim";
 import { destinatariosMascarados, enviarBoletim } from "@/lib/email";
 
-const { clientes, etapas, membrosProjeto, projetos, resumos, tasks } = esquema;
+const { clientes, commits, etapas, membrosProjeto, projetos, resumos, tasks } = esquema;
 
 /**
  * Marca ou desmarca uma task no banco. Vale para todos os usuários.
@@ -55,7 +55,7 @@ export async function criarProjeto(p: ProjetoNovo): Promise<{ id: string } | { e
   const base = slug(p.nome) || "projeto";
   const existentes = new Set((await db.select({ id: projetos.id }).from(projetos)).map((r) => r.id));
   let id = base;
-  for (let i = 2; existentes.has(id); i++) id = `${base}-${i}`;
+  for (let i = 2; existentes.has(id) || IDS_RESERVADOS.has(id); i++) id = `${base}-${i}`;
 
   await db.transaction(async (tx) => {
     let clienteId = p.clienteId;
@@ -115,4 +115,161 @@ export async function enviarBoletimAgora(tema: unknown = "escuro"): Promise<{ en
   }));
   if (!r.enviado) return { enviado: false, mensagem: `Não foi possível enviar: ${r.detalhe}.` };
   return { enviado: true, mensagem: `Boletim enviado (tema ${temaEmail}) para ${destinatariosMascarados()}.` };
+}
+
+/* ---------- editar projeto ---------- */
+
+/** Ids reservados pelas rotas (/projetos/novo, /projetos/lixeira, /projetos/editar). */
+const IDS_RESERVADOS = new Set(["novo", "lixeira", "editar"]);
+
+/**
+ * Salva a edição de um projeto: dados, equipe, etapas e tasks.
+ * Etapas existentes mantêm o id (os commits continuam ligados a elas); etapas com commits não podem
+ * ser removidas. Tasks com o mesmo título mantêm se estavam feitas e quando foram concluídas.
+ */
+export async function editarProjeto(projetoId: string, p: ProjetoNovo): Promise<{ id: string } | { erros: string[] }> {
+  const erros = validarProjeto(p);
+  if (erros.length) return { erros };
+  const [atual] = await db.select().from(projetos).where(eq(projetos.id, projetoId));
+  if (!atual || atual.apagadoEm) return { erros: ["Este projeto não existe mais (ou está na lixeira)."] };
+
+  const existentes = await db.select().from(etapas).where(eq(etapas.projetoId, projetoId));
+  const tasksAtuais = await db.select().from(tasks).where(eq(tasks.projetoId, projetoId));
+  const commitsDoProjeto = await db.select({ etapas: commits.etapas }).from(commits).where(eq(commits.projetoId, projetoId));
+  const comCommits = new Set(commitsDoProjeto.flatMap((c) => c.etapas));
+
+  const mantidas = new Set(p.etapas.map((e) => e.id).filter(Boolean));
+  const removidas = existentes.filter((e) => !mantidas.has(e.id));
+  const bloqueadas = removidas.filter((e) => comCommits.has(e.id));
+  if (bloqueadas.length) {
+    return { erros: bloqueadas.map((e) => `A etapa "${e.nome}" tem commits e não pode ser removida (só renomeada).`) };
+  }
+
+  // id das etapas novas: slug do nome, sem repetir os ids que ficam
+  const usados = new Set([...mantidas].filter((id): id is string => !!id));
+  const idDe = p.etapas.map((e) => {
+    if (e.id) return e.id;
+    const base = slug(e.nome) || "etapa";
+    let id = base;
+    for (let i = 2; usados.has(id); i++) id = `${base}-${i}`;
+    usados.add(id);
+    return id;
+  });
+
+  await db.transaction(async (tx) => {
+    let clienteId = p.clienteId;
+    if (!clienteId) {
+      clienteId = slug(p.clienteNovo) || "cliente";
+      await tx
+        .insert(clientes)
+        .values({ id: clienteId, nome: p.clienteNovo.trim(), segmento: p.segmentoNovo.trim() || null })
+        .onConflictDoNothing();
+    }
+    await tx
+      .update(projetos)
+      .set({
+        nome: p.nome.trim(),
+        clienteId,
+        descricao: p.descricao.trim(),
+        contexto: p.contexto.trim() || null,
+        inicio: p.inicio,
+        fimPrevisto: p.fimPrevisto,
+      })
+      .where(eq(projetos.id, projetoId));
+
+    await tx.delete(membrosProjeto).where(eq(membrosProjeto.projetoId, projetoId));
+    await tx
+      .insert(membrosProjeto)
+      .values(p.membros.map((m, i) => ({ projetoId, pessoaId: m.pessoaId, papel: m.papel.trim(), ordem: i })));
+
+    if (removidas.length) {
+      const ids = removidas.map((e) => e.id);
+      await tx.delete(tasks).where(and(eq(tasks.projetoId, projetoId), inArray(tasks.etapaId, ids)));
+      await tx.delete(etapas).where(and(eq(etapas.projetoId, projetoId), inArray(etapas.id, ids)));
+    }
+
+    for (const [i, e] of p.etapas.entries()) {
+      const id = idDe[i];
+      const valores = {
+        ordem: i,
+        nome: e.nome.trim(),
+        descricao: e.descricao.trim(),
+        inicioPrevisto: e.inicioPrevisto,
+        fimPrevisto: e.fimPrevisto,
+        caminhos: linhas(e.caminhos),
+      };
+      if (e.id) await tx.update(etapas).set(valores).where(and(eq(etapas.projetoId, projetoId), eq(etapas.id, id)));
+      else await tx.insert(etapas).values({ projetoId, id, ...valores });
+
+      // tasks: as de mesmo título mantêm o estado (feita e data de conclusão)
+      const antigas = tasksAtuais.filter((t) => t.etapaId === id);
+      const novas = linhas(e.tasks).map((titulo, ordem) => {
+        const k = antigas.findIndex((t) => t.titulo === titulo);
+        const antiga = k >= 0 ? antigas.splice(k, 1)[0] : null;
+        return { projetoId, etapaId: id, ordem, titulo, feita: antiga?.feita ?? false, feitaEm: antiga?.feitaEm ?? null };
+      });
+      await tx.delete(tasks).where(and(eq(tasks.projetoId, projetoId), eq(tasks.etapaId, id)));
+      await tx.insert(tasks).values(novas);
+    }
+  });
+
+  updateTag("dados");
+  return { id: projetoId };
+}
+
+/* ---------- lixeira (30 dias) ---------- */
+
+async function clienteDoProjeto(projetoId: string) {
+  const [linha] = await db
+    .select({ id: projetos.id, apagadoEm: projetos.apagadoEm, cliente: clientes.nome })
+    .from(projetos)
+    .innerJoin(clientes, eq(clientes.id, projetos.clienteId))
+    .where(eq(projetos.id, projetoId));
+  return linha;
+}
+
+/** Apaga de vez os projetos que estão na lixeira há 30 dias ou mais. Devolve quantos foram apagados. */
+export async function limparLixeira() {
+  const limite = somarDias(hoje(), -DIAS_NA_LIXEIRA);
+  const vencidos = await db.select({ id: projetos.id }).from(projetos).where(and(isNotNull(projetos.apagadoEm), lte(projetos.apagadoEm, limite)));
+  if (!vencidos.length) return 0;
+  const ids = vencidos.map((v) => v.id);
+  await db.delete(resumos).where(inArray(resumos.projetoId, ids));
+  await db.delete(projetos).where(inArray(projetos.id, ids)); // etapas, tasks, membros e commits vão junto (cascade)
+  return ids.length;
+}
+
+/**
+ * Move um projeto para a lixeira. Ação grave: exige digitar o nome do cliente.
+ * Fica 30 dias na lixeira (dá para restaurar) e depois é apagado de vez.
+ */
+export async function moverParaLixeira(projetoId: string, confirmacao: string): Promise<{ ok: true } | { erro: string }> {
+  const p = await clienteDoProjeto(projetoId);
+  if (!p || p.apagadoEm) return { erro: "Projeto não encontrado." };
+  if (!confereConfirmacao(confirmacao, p.cliente)) return { erro: "O nome do cliente não confere." };
+  await db.update(projetos).set({ apagadoEm: hoje() }).where(eq(projetos.id, projetoId));
+  await limparLixeira();
+  updateTag("dados");
+  return { ok: true };
+}
+
+/** Tira um projeto da lixeira, exatamente como estava. */
+export async function restaurarProjeto(projetoId: string): Promise<{ ok: true } | { erro: string }> {
+  const p = await clienteDoProjeto(projetoId);
+  if (!p || !p.apagadoEm) return { erro: "Projeto não está na lixeira." };
+  await db.update(projetos).set({ apagadoEm: null }).where(eq(projetos.id, projetoId));
+  updateTag("dados");
+  return { ok: true };
+}
+
+/** Apaga de vez um projeto que está na lixeira (com etapas, tasks, commits e resumos). Exige o nome do cliente. */
+export async function apagarDeVez(projetoId: string, confirmacao: string): Promise<{ ok: true } | { erro: string }> {
+  const p = await clienteDoProjeto(projetoId);
+  if (!p || !p.apagadoEm) return { erro: "Só dá para apagar de vez um projeto que está na lixeira." };
+  if (!confereConfirmacao(confirmacao, p.cliente)) return { erro: "O nome do cliente não confere." };
+  await db.delete(resumos).where(eq(resumos.projetoId, projetoId));
+  await db.delete(projetos).where(eq(projetos.id, projetoId));
+  updateTag("dados");
+  updateTag("resumos");
+  return { ok: true };
 }

@@ -34,6 +34,8 @@ export const projetos = pgTable("projetos", {
   entrega: text("entrega"),
   /** Concluído porque todas as tasks foram marcadas (pode ser reaberto desmarcando uma). */
   concluidoPelasTasks: boolean("concluido_pelas_tasks").notNull().default(false),
+  /** Na lixeira desde ("aaaa-mm-dd"); null = ativo. Some de vez depois de 30 dias. */
+  apagadoEm: text("apagado_em"),
   ordem: integer("ordem").notNull().default(0),
 });
 

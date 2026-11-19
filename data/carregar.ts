@@ -1,11 +1,11 @@
 // Leitura direta do banco, sem cache do Next. Usada pela camada de dados (com cache)
 // e pelos scripts (carga de resumos), que rodam fora do Next.
 
-import { asc, desc, eq } from "drizzle-orm";
+import { asc, desc, eq, isNotNull } from "drizzle-orm";
 import { db, esquema } from "@/db/conexao";
 import { hoje as hojeAgora, somarDias } from "@/lib/hoje";
 import { concentracao, indiceConhecimento, listaSemanas, PESOS_IC, semanasDe } from "@/lib/analise";
-import type { Commit, Pessoa, Projeto, Resumo } from "./index";
+import type { Commit, Pessoa, Projeto, ProjetoNaLixeira, Resumo } from "./index";
 
 
 export async function carregarTudo() {
@@ -24,7 +24,15 @@ export async function carregarTudo() {
 
   const listaPessoas: Pessoa[] = pessoas.map((p) => ({ id: p.id, nome: p.nome, entrada: p.entrada, ...(p.saiuEm ? { saiuEm: p.saiuEm } : {}) }));
 
-  const listaProjetos: Projeto[] = projetos.map((p) => {
+  // projetos na lixeira ficam fora de tudo (listas, indicadores, boletim, membros)
+  const naLixeira = projetos.filter((p) => p.apagadoEm);
+  const lixeira: ProjetoNaLixeira[] = naLixeira.map((p) => {
+    const cliente = clientes.find((c) => c.id === p.clienteId)!;
+    return { id: p.id, nome: p.nome, cliente: cliente.nome, apagadoEm: p.apagadoEm!, status: p.status as Projeto["status"] };
+  });
+  const ativos = new Set(projetos.filter((p) => !p.apagadoEm).map((p) => p.id));
+
+  const listaProjetos: Projeto[] = projetos.filter((p) => ativos.has(p.id)).map((p) => {
     const cliente = clientes.find((c) => c.id === p.clienteId)!;
     const doProjeto = commits.filter((c) => c.projetoId === p.id);
     const ids = membros.filter((m) => m.projetoId === p.id).map((m) => m.pessoaId);
@@ -37,6 +45,8 @@ export async function carregarTudo() {
       id: p.id,
       nome: p.nome,
       cliente: cliente.segmento ? `${cliente.nome} · ${cliente.segmento}` : cliente.nome,
+      clienteId: p.clienteId,
+      clienteNome: cliente.nome,
       descricao: p.descricao,
       ...(p.contexto ? { contexto: p.contexto } : {}),
       ...(p.resultados ? { resultados: p.resultados } : {}),
@@ -84,12 +94,23 @@ export async function carregarTudo() {
     };
   });
 
-  return { pessoas: listaPessoas, projetos: listaProjetos, totalCommits: commits.length };
+  return {
+    pessoas: listaPessoas,
+    projetos: listaProjetos,
+    lixeira,
+    totalCommits: commits.filter((c) => ativos.has(c.projetoId)).length,
+  };
 }
 
 export async function carregarCommits(filtro: { projetoId?: string; autor?: string }): Promise<Commit[]> {
-  const linhas = await db.select().from(esquema.commits).orderBy(desc(esquema.commits.data));
-  return linhas.filter((c) => (!filtro.projetoId || c.projetoId === filtro.projetoId) && (!filtro.autor || c.autor === filtro.autor));
+  const [linhas, naLixeira] = await Promise.all([
+    db.select().from(esquema.commits).orderBy(desc(esquema.commits.data)),
+    db.select({ id: esquema.projetos.id }).from(esquema.projetos).where(isNotNull(esquema.projetos.apagadoEm)),
+  ]);
+  const fora = new Set(naLixeira.map((p) => p.id));
+  return linhas.filter(
+    (c) => !fora.has(c.projetoId) && (!filtro.projetoId || c.projetoId === filtro.projetoId) && (!filtro.autor || c.autor === filtro.autor),
+  );
 }
 
 export async function carregarClientes() {

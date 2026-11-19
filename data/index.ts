@@ -68,6 +68,9 @@ export type Projeto = {
   inicio: string;
   fimPrevisto: string;
   entrega?: string;
+  clienteId: string;
+  /** Só o nome do cliente (sem o segmento); é o que se digita para confirmar a exclusão. */
+  clienteNome: string;
   /** Concluído ao marcar a última task; desmarcar uma task reabre o projeto. */
   concluidoPelasTasks: boolean;
   etapas: Etapa[];
@@ -92,6 +95,9 @@ export type Commit = {
   removidas: number;
   efetivas: number;
 };
+
+/** Projeto na lixeira: o suficiente para listar, restaurar ou apagar de vez. */
+export type ProjetoNaLixeira = { id: string; nome: string; cliente: string; apagadoEm: string; status: "andamento" | "concluido" };
 
 export type Resumo = {
   tipo: "semanal" | "final";
@@ -129,6 +135,11 @@ export async function obterPessoas() {
 
 export async function obterPessoa(id: string) {
   return (await lerTudo()).pessoas.find((p) => p.id === id);
+}
+
+/** Projetos na lixeira (apagados há menos de 30 dias). */
+export async function obterLixeira() {
+  return (await lerTudo()).lixeira;
 }
 
 export async function totalDeCommits() {

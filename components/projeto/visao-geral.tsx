@@ -3,6 +3,7 @@
 // Conteúdo da aba "Visão geral". Roda no navegador porque o admin marca/desmarca tasks (gravadas no banco),
 // e o progresso, o status das etapas e os alertas mudam na hora.
 
+import { useState } from "react";
 import Link from "next/link";
 import type { Projeto } from "@/data";
 import { formatarData } from "@/data/formatos";
@@ -13,11 +14,40 @@ import { Alerta, Caixa } from "@/components/ui";
 import type { ReactNode } from "react";
 import { BarraProgresso } from "@/components/ui/progresso";
 import { SeloStatusEtapa } from "./status";
+import { Dialogo } from "@/components/ui/dialogo";
+import { avisar } from "@/lib/avisos";
+
+type Pedido = { tipo: "concluir" | "reabrir"; etapaId: string; ordem: number; feita: boolean };
 
 export function VisaoGeral({ projeto: original, resumo }: { projeto: Projeto; resumo: ReactNode }) {
   const { projeto, alternar } = useTasks(original);
   const concluido = projeto.status === "concluido";
   const lista = alertas(projeto);
+  const [pedido, setPedido] = useState<Pedido | null>(null);
+
+  /** Marca/desmarca e mostra o aviso com o efeito na etapa e o botão Desfazer. */
+  function executar(etapaId: string, ordem: number, feita: boolean, efeitoNoProjeto?: string) {
+    const etapa = projeto.etapas.find((e) => e.id === etapaId)!;
+    const task = etapa.tasks[ordem];
+    const feitasDepois = etapa.tasks.filter((t, i) => (i === ordem ? feita : t.feita)).length;
+    const depois = Math.round((feitasDepois / etapa.tasks.length) * 100);
+    alternar(etapaId, ordem, feita);
+    avisar({
+      texto: `${feita ? "Task concluída" : "Task reaberta"}: ${task.titulo}`,
+      detalhe: efeitoNoProjeto ?? `${etapa.nome}: ${emPct(etapa.progresso)} → ${emPct(depois)}`,
+      tom: feita ? "verde" : "ambar",
+      acao: { rotulo: "Desfazer", executar: () => alternar(etapaId, ordem, !feita) },
+    });
+  }
+
+  /** Marcar a última task conclui o projeto; desmarcar num projeto concluído o reabre: os dois pedem confirmação. */
+  function pedirAlternar(etapaId: string, ordem: number, feita: boolean) {
+    const todas = projeto.etapas.flatMap((e) => e.tasks);
+    const feitas = todas.filter((t) => t.feita).length;
+    if (feita && !concluido && feitas + 1 === todas.length) setPedido({ tipo: "concluir", etapaId, ordem, feita });
+    else if (!feita && concluido && projeto.concluidoPelasTasks) setPedido({ tipo: "reabrir", etapaId, ordem, feita });
+    else executar(etapaId, ordem, feita);
+  }
 
   return (
     <div className="space-y-6">
@@ -100,7 +130,7 @@ export function VisaoGeral({ projeto: original, resumo }: { projeto: Projeto; re
                               type="checkbox"
                               checked={t.feita}
                               disabled={concluido && !projeto.concluidoPelasTasks}
-                              onChange={(ev) => alternar(e.id, i, ev.target.checked)}
+                              onChange={(ev) => pedirAlternar(e.id, i, ev.target.checked)}
                               className="mt-0.5 accent-[#00db58]"
                             />
                             <span className={t.feita ? "text-gray-500 line-through" : ""}>{t.titulo}</span>
@@ -125,6 +155,36 @@ export function VisaoGeral({ projeto: original, resumo }: { projeto: Projeto; re
           })}
         </ul>
       </Caixa>
+
+      <Dialogo
+        aberto={!!pedido}
+        titulo={pedido?.tipo === "concluir" ? "Concluir o projeto?" : "Reabrir o projeto?"}
+        rotuloConfirmar={pedido?.tipo === "concluir" ? "Concluir projeto" : "Reabrir projeto"}
+        perigo={pedido?.tipo === "reabrir"}
+        aoFechar={() => setPedido(null)}
+        aoConfirmar={() => {
+          if (!pedido) return;
+          executar(
+            pedido.etapaId,
+            pedido.ordem,
+            pedido.feita,
+            pedido.tipo === "concluir" ? `${projeto.nome} foi concluído hoje` : `${projeto.nome} voltou para em andamento`,
+          );
+          setPedido(null);
+        }}
+      >
+        {pedido?.tipo === "concluir" ? (
+          <p>
+            Esta é a última task de <b className="text-branco">{projeto.nome}</b>. Marcá-la conclui o projeto com entrega hoje, e o resumo final da
+            IA é gerado na próxima sexta-feira.
+          </p>
+        ) : (
+          <p>
+            <b className="text-branco">{projeto.nome}</b> foi concluído pelas tasks. Desmarcar esta task reabre o projeto e descarta o resumo
+            final, que será gerado de novo quando ele for concluído.
+          </p>
+        )}
+      </Dialogo>
     </div>
   );
 }

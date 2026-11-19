@@ -1,6 +1,6 @@
 // Lista de todos os projetos da empresa: indicadores da semana no topo e os cards dos projetos.
 
-import { obterCommits, obterProjetos, obterResumos, type Etapa, type Projeto } from "@/data";
+import { obterCommits, obterLixeira, obterProjetos, obterResumos, type Etapa, type Projeto } from "@/data";
 import { montarBoletim } from "@/lib/boletim";
 import { formatarData } from "@/data/formatos";
 import { previsaoProjeto, textoPrevisao } from "@/lib/previsao";
@@ -40,7 +40,7 @@ function Indicador({ valor, destaque, resto, cor = "text-branco" }: { valor: num
 }
 
 export default async function Projetos() {
-  const [projetos, commits] = await Promise.all([obterProjetos(), obterCommits({})]);
+  const [projetos, commits, lixeira] = await Promise.all([obterProjetos(), obterCommits({}), obterLixeira()]);
   // indicadores da mesma semana do resumo da IA e do boletim (a semana fechada mais recente),
   // para o painel, os resumos e o boletim contarem a mesma história
   const listas = await Promise.all(projetos.map((p) => obterResumos(p.id)));
@@ -96,7 +96,7 @@ export default async function Projetos() {
         <Indicador valor={numeros.commitsSemana} destaque="commits" resto="na semana" cor="text-verde" />
       </section>
 
-      <ListaProjetos projetos={resumos} />
+      <ListaProjetos projetos={resumos} naLixeira={lixeira.length} />
     </div>
   );
 }

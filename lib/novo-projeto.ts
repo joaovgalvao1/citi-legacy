@@ -2,6 +2,10 @@
 // Usado no navegador (avisos na hora) e no servidor (a validação que vale).
 
 export type EtapaNova = {
+  /** Só na edição: id da etapa que já existe (o id não muda, para os commits continuarem ligados a ela). */
+  id?: string;
+  /** Só na edição: a etapa já tem commits e por isso não pode ser removida. */
+  temCommits?: boolean;
   nome: string;
   descricao: string;
   inicioPrevisto: string;
@@ -34,6 +38,18 @@ export function slug(texto: string) {
     .replace(/[̀-ͯ]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+/** Dias que um projeto apagado fica na lixeira antes de sumir de vez. */
+export const DIAS_NA_LIXEIRA = 30;
+
+/**
+ * Confere o texto digitado para confirmar a exclusão de um projeto com o nome do cliente.
+ * Ignora maiúsculas, acentos e espaços extras.
+ */
+export function confereConfirmacao(digitado: string, esperado: string) {
+  const n = (t: string) => t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\s+/g, " ").trim();
+  return n(digitado) !== "" && n(digitado) === n(esperado);
 }
 
 /** Caminho sugerido para uma etapa, a partir do nome. */

@@ -9,6 +9,7 @@ import { Voltar } from "@/components/ui";
 import { ProgressoDoProjeto } from "@/components/projeto/progresso";
 import { SeloStatusProjeto } from "@/components/projeto/status";
 import { AbasDoProjeto } from "@/components/projeto/abas";
+import { MenuProjeto } from "@/components/projeto/menu-projeto";
 import { EsqueletoCabecalhoProjeto } from "@/components/ui/esqueletos";
 
 export async function generateStaticParams() {
@@ -27,6 +28,7 @@ async function Cabecalho({ params }: { params: LayoutProps<"/projetos/[projetoId
       <div className="flex flex-wrap items-center gap-3">
         <h1 className="text-2xl font-bold">{projeto.nome}</h1>
         <SeloStatusProjeto projeto={projeto} />
+        <MenuProjeto projetoId={projeto.id} nome={projeto.nome} cliente={projeto.clienteNome} />
       </div>
       <p className="text-sm text-gray-600">{projeto.cliente}</p>
       {concluido ? (

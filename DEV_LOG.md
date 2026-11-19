@@ -936,3 +936,40 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - **Previsões:** simulei com "hoje" em 18/11 e em 19/11 e a história se mantém. Plataforma atrasada (+68/+69 dias), Clínica em atenção (gargalo Financeiro, +19/+20), Mezzalira em atenção com etapa parada e previsão no prazo, Folhagem no prazo.
 - **Commits:** de 09 a 16/11, os números por dia são os mesmos de antes.
 - **Painel:** mostra "Semana de 09/11 a 15/11", 9 tasks e 32 commits, igual ao boletim.
+
+### Bloco 3A: desfazer nas tasks, editar projeto e lixeira (18 e 19/11)
+
+**O que pedi:**
+- confirmação e "desfazer" ao marcar ou desmarcar task;
+- editar e apagar projetos, com o nome do cliente digitado para confirmar;
+- lixeira de 30 dias, com o link "Lixeira" aparecendo só quando houver algo nela.
+
+**Decisões:**
+- **Tasks:** cada marcação mostra um aviso com o efeito na etapa ("Estoque: 75% → 88%") e o botão **Desfazer**. Confirmação ("Tem certeza?") só quando a ação muda o status do projeto: marcar a última task (conclui) ou desmarcar num projeto concluído (reabre). A IA propôs assim para não travar quem marca várias tasks seguidas.
+- **Apagar é uma ação grave:** pedi que o nome do cliente seja exigido **nos dois passos**, ao mover para a lixeira e ao apagar de vez. A IA tinha sugerido exigir só no "apagar de vez".
+- **Etapas com commits:** não podem ser removidas na edição, só renomeadas, para não apagar o histórico de quem trabalhou nelas.
+
+**O que a IA fez:**
+- **Avisos:** no canto da tela, com ação (`lib/avisos.ts`, `components/ui/avisos.tsx`).
+- **Janela de confirmação:** `<dialog>` nativo, com campo "digite o nome do cliente" que ignora maiúsculas e acentos (`components/ui/dialogo.tsx`). O servidor confere o nome de novo.
+- **Menu "⋯" no cabeçalho do projeto:** "Editar projeto" e "Mover para a lixeira…".
+- **Edição (`/projetos/editar/[id]`):** o formulário de novo projeto vem preenchido. As etapas mantêm o id, para os commits continuarem ligados a elas. Tasks com o mesmo título mantêm se estavam feitas e a data de conclusão.
+- **Lixeira:**
+  - coluna `apagado_em`; projetos na lixeira saem de listas, indicadores, boletim, e-mail e membros;
+  - página `/projetos/lixeira` com Restaurar e Apagar de vez;
+  - limpeza automática depois de 30 dias, no cron de sexta e a cada projeto movido para a lixeira.
+
+**Verificação no navegador:**
+- **Task:** marcar mostrou o aviso "Estoque: 75% → 88%", e Desfazer voltou a task.
+- **Editar:** a Folhagem abriu com 5 etapas travadas (têm commits) e 1 removível. Salvei e o progresso continuou em 65%.
+- **Mover para a lixeira:**
+  - com "Folhagem" o botão ficou travado; com "folhagem & cia", liberou;
+  - o projeto saiu da lista (3 em andamento, 24 commits na semana) e apareceu "Lixeira · 1";
+  - surgiu o aviso com Desfazer.
+- **Apagar de vez:** com o nome do cliente, a lixeira ficou vazia.
+
+**Não testado:** a janela de confirmação ao concluir ou reabrir um projeto. Nenhum projeto de exemplo está a uma task de terminar.
+
+**Incidentes:**
+- **Servidor em loop:** o servidor de desenvolvimento entrou em loop de recompilação (a página recarregava sem parar), por causa de arquivos velhos em `.next`. Resolvido apagando `.next` com o servidor parado.
+- **Resumos apagados no teste:** apagar a Folhagem de vez também apagou os resumos dela no banco **local**. A IA recarregou os dados e copiou os 4 resumos do Neon (só leitura), sem gastar chamadas à IA.

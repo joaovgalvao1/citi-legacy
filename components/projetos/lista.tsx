@@ -148,7 +148,7 @@ function CardConcluido({ p }: { p: ResumoProjeto }) {
   );
 }
 
-export function ListaProjetos({ projetos }: { projetos: ResumoProjeto[] }) {
+export function ListaProjetos({ projetos, naLixeira }: { projetos: ResumoProjeto[]; naLixeira: number }) {
   const [aba, setAba] = useState<"andamento" | "concluidos">("andamento");
   const [busca, setBusca] = useState("");
 
@@ -184,6 +184,15 @@ export function ListaProjetos({ projetos }: { projetos: ResumoProjeto[] }) {
               {rotulo}
             </button>
           ))}
+          {/* a lixeira só aparece quando tem algo dentro */}
+          {naLixeira > 0 && (
+            <Link
+              href="/projetos/lixeira"
+              className="rounded-full border border-dashed border-vermelho/40 px-3 py-1 text-gray-700 transition-colors hover:border-vermelho hover:text-vermelho"
+            >
+              Lixeira · {naLixeira}
+            </Link>
+          )}
         </div>
         <input
           type="search"

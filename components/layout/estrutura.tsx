@@ -10,6 +10,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { destinoDepoisDoLogin, sair, useUsuario } from "@/lib/sessao";
 import { IconeEntrar, IconeSair, IconeUsuario } from "@/components/ui/icones";
 import { CaixaEsqueleto } from "@/components/ui";
+import { Avisos } from "@/components/ui/avisos";
 import { Lockup, Marca } from "./marca";
 
 const PUBLICAS = ["/", "/login"];
@@ -141,6 +142,7 @@ export function Estrutura({ children }: { children: ReactNode }) {
       >
         {liberado ? children : <CaixaEsqueleto linhas={3} />}
       </main>
+      <Avisos />
       <footer className="border-t border-linha py-5 text-xs text-gray-500">
         <div className={`mx-auto flex flex-wrap items-center justify-center gap-2 px-4 ${caminho === "/" ? "max-w-5xl" : "max-w-6xl"}`}>
           <Lockup tamanho="pequeno" />

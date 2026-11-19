@@ -1,10 +1,12 @@
 "use client";
 
-// Formulário de cadastro de projeto: dados do projeto, equipe e etapas (com caminhos do repositório e tasks).
+// Formulário de projeto: dados, equipe e etapas (com caminhos do repositório e tasks).
+// Serve para cadastrar (sem `inicial`) e para editar (com `inicial`, já preenchido).
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { criarProjeto } from "@/app/acoes";
+import { criarProjeto, editarProjeto } from "@/app/acoes";
+import { avisar } from "@/lib/avisos";
 import { caminhoSugerido, linhas, validarProjeto, type EtapaNova, type ProjetoNovo } from "@/lib/novo-projeto";
 import { Botao, Caixa } from "@/components/ui";
 
@@ -26,23 +28,44 @@ function Campo({ titulo, dica, children }: { titulo: string; dica?: string; chil
   );
 }
 
-export function FormularioNovoProjeto({ clientes, pessoas, hoje }: { clientes: Cliente[]; pessoas: Pessoa[]; hoje: string }) {
+/** Dados de um projeto existente para preencher o formulário de edição. */
+export type ProjetoInicial = {
+  projetoId: string;
+  projeto: Omit<ProjetoNovo, "membros" | "etapas">;
+  membros: Record<string, string>;
+  etapas: EtapaNova[];
+};
+
+export function FormularioNovoProjeto({
+  clientes,
+  pessoas,
+  hoje,
+  inicial,
+}: {
+  clientes: Cliente[];
+  pessoas: Pessoa[];
+  hoje: string;
+  inicial?: ProjetoInicial;
+}) {
   const router = useRouter();
   const [salvando, iniciar] = useTransition();
   const [tentou, setTentou] = useState(false);
   const [errosServidor, setErrosServidor] = useState<string[]>([]);
 
-  const [p, setP] = useState<Omit<ProjetoNovo, "membros" | "etapas">>({
-    nome: "",
-    clienteId: clientes[0]?.id ?? "",
-    clienteNovo: "",
-    segmentoNovo: "",
-    descricao: "",
-    contexto: "",
-    inicio: hoje,
-    fimPrevisto: "",
-  });
-  const [membros, setMembros] = useState<Record<string, string>>({}); // pessoaId → papel
+  const [p, setP] = useState<Omit<ProjetoNovo, "membros" | "etapas">>(
+    () =>
+      inicial?.projeto ?? {
+        nome: "",
+        clienteId: clientes[0]?.id ?? "",
+        clienteNovo: "",
+        segmentoNovo: "",
+        descricao: "",
+        contexto: "",
+        inicio: hoje,
+        fimPrevisto: "",
+      },
+  );
+  const [membros, setMembros] = useState<Record<string, string>>(() => inicial?.membros ?? {}); // pessoaId → papel
   const etapaVazia = (): EtapaForm => ({
     nome: "",
     descricao: "",
@@ -52,12 +75,18 @@ export function FormularioNovoProjeto({ clientes, pessoas, hoje }: { clientes: C
     tasks: "",
     caminhoEditado: false,
   });
-  const [etapas, setEtapas] = useState<EtapaForm[]>([etapaVazia()]);
+  const [etapas, setEtapas] = useState<EtapaForm[]>(() =>
+    inicial ? inicial.etapas.map((e) => ({ ...e, caminhoEditado: true })) : [etapaVazia()],
+  );
 
   const dados: ProjetoNovo = {
     ...p,
-    membros: Object.entries(membros).map(([pessoaId, papel]) => ({ pessoaId, papel })),
+    membros: Object.entries(membros).map(([pessoaId, papel]) => ({
+      pessoaId,
+      papel,
+    })),
     etapas: etapas.map((e) => ({
+      ...(e.id ? { id: e.id } : {}),
       nome: e.nome,
       descricao: e.descricao,
       inicioPrevisto: e.inicioPrevisto,
@@ -86,9 +115,12 @@ export function FormularioNovoProjeto({ clientes, pessoas, hoje }: { clientes: C
     setErrosServidor([]);
     if (erros.length) return;
     iniciar(async () => {
-      const r = await criarProjeto(dados);
+      const r = inicial ? await editarProjeto(inicial.projetoId, dados) : await criarProjeto(dados);
       if ("erros" in r) setErrosServidor(r.erros);
-      else router.push(`/projetos/${r.id}`);
+      else {
+        if (inicial) avisar({ texto: "Alterações salvas", detalhe: dados.nome });
+        router.push(`/projetos/${r.id}`);
+      }
     });
   }
 
@@ -126,7 +158,12 @@ export function FormularioNovoProjeto({ clientes, pessoas, hoje }: { clientes: C
                 <input className={campo} value={p.clienteNovo} onChange={(e) => mudar("clienteNovo", e.target.value)} />
               </Campo>
               <Campo titulo="Segmento (opcional)">
-                <input className={campo} value={p.segmentoNovo} onChange={(e) => mudar("segmentoNovo", e.target.value)} placeholder="Ex.: escola" />
+                <input
+                  className={campo}
+                  value={p.segmentoNovo}
+                  onChange={(e) => mudar("segmentoNovo", e.target.value)}
+                  placeholder="Ex.: escola"
+                />
               </Campo>
             </div>
           ) : (
@@ -157,7 +194,10 @@ export function FormularioNovoProjeto({ clientes, pessoas, hoje }: { clientes: C
           {pessoas.map((pessoa) => {
             const marcado = pessoa.id in membros;
             return (
-              <li key={pessoa.id} className={`rounded-xl border px-3 py-2 transition-colors ${marcado ? "border-verde/50 bg-verde/5" : "border-gray-300"}`}>
+              <li
+                key={pessoa.id}
+                className={`rounded-xl border px-3 py-2 transition-colors ${marcado ? "border-verde/50 bg-verde/5" : "border-gray-300"}`}
+              >
                 <label className="flex cursor-pointer items-center gap-2 text-sm">
                   <input
                     type="checkbox"
@@ -196,28 +236,49 @@ export function FormularioNovoProjeto({ clientes, pessoas, hoje }: { clientes: C
             <li key={i} className="rounded-2xl border border-gray-300 bg-fundo p-4">
               <div className="mb-3 flex items-center justify-between">
                 <span className="dado text-xs text-verde">Etapa {String(i + 1).padStart(2, "0")}</span>
-                {etapas.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => setEtapas((l) => l.filter((_, j) => j !== i))}
-                    className="cursor-pointer text-xs text-gray-500 transition-colors hover:text-ambar"
-                  >
-                    Remover etapa
-                  </button>
+                {e.temCommits ? (
+                  <span className="text-xs text-gray-500" title="Remover apagaria o histórico de commits da etapa">
+                    tem commits · não pode ser removida
+                  </span>
+                ) : (
+                  etapas.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => setEtapas((l) => l.filter((_, j) => j !== i))}
+                      className="cursor-pointer text-xs text-gray-500 transition-colors hover:text-ambar"
+                    >
+                      Remover etapa
+                    </button>
+                  )
                 )}
               </div>
               <div className="grid gap-3 sm:grid-cols-2">
                 <Campo titulo="Nome da etapa">
-                  <input className={campo} value={e.nome} onChange={(ev) => mudarEtapa(i, "nome", ev.target.value)} placeholder="Ex.: Agenda" />
+                  <input
+                    className={campo}
+                    value={e.nome}
+                    onChange={(ev) => mudarEtapa(i, "nome", ev.target.value)}
+                    placeholder="Ex.: Agenda"
+                  />
                 </Campo>
                 <Campo titulo="Descrição">
                   <input className={campo} value={e.descricao} onChange={(ev) => mudarEtapa(i, "descricao", ev.target.value)} />
                 </Campo>
                 <Campo titulo="Início previsto">
-                  <input type="date" className={campo} value={e.inicioPrevisto} onChange={(ev) => mudarEtapa(i, "inicioPrevisto", ev.target.value)} />
+                  <input
+                    type="date"
+                    className={campo}
+                    value={e.inicioPrevisto}
+                    onChange={(ev) => mudarEtapa(i, "inicioPrevisto", ev.target.value)}
+                  />
                 </Campo>
                 <Campo titulo="Fim previsto">
-                  <input type="date" className={campo} value={e.fimPrevisto} onChange={(ev) => mudarEtapa(i, "fimPrevisto", ev.target.value)} />
+                  <input
+                    type="date"
+                    className={campo}
+                    value={e.fimPrevisto}
+                    onChange={(ev) => mudarEtapa(i, "fimPrevisto", ev.target.value)}
+                  />
                 </Campo>
                 <Campo titulo="Caminhos do repositório" dica="Um por linha. Commits que alteram esses arquivos contam nesta etapa.">
                   <textarea
@@ -260,11 +321,11 @@ export function FormularioNovoProjeto({ clientes, pessoas, hoje }: { clientes: C
       )}
 
       <div className="flex flex-wrap items-center justify-end gap-3">
-        <Botao type="button" variante="secundario" onClick={() => router.push("/projetos")}>
+        <Botao type="button" variante="secundario" onClick={() => router.push(inicial ? `/projetos/${inicial.projetoId}` : "/projetos")}>
           Cancelar
         </Botao>
         <Botao type="submit" disabled={salvando}>
-          {salvando ? "Salvando…" : "Criar projeto"}
+          {salvando ? "Salvando…" : inicial ? "Salvar alterações" : "Criar projeto"}
         </Botao>
       </div>
     </form>

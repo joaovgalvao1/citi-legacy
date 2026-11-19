@@ -11,6 +11,7 @@ import { gerarResumoFinal, gerarResumoSemanal } from "@/lib/resumo";
 import { carregarCommits, carregarResumos, carregarTudo } from "@/data/carregar";
 import { montarBoletim } from "@/lib/boletim";
 import { enviarBoletim } from "@/lib/email";
+import { limparLixeira } from "@/app/acoes";
 
 export async function GET(request: Request) {
   const segredo = process.env.CRON_SECRET;
@@ -34,6 +35,10 @@ export async function GET(request: Request) {
 
   revalidateTag("resumos", "max");
 
+  // lixeira: apaga de vez os projetos apagados há 30 dias ou mais
+  const apagadosDeVez = await limparLixeira();
+  if (apagadosDeVez) revalidateTag("dados", "max");
+
   // boletim com os resumos recém-gerados (leitura direta do banco, sem o cache)
   const { projetos } = await carregarTudo();
   const resumos = Object.fromEntries(await Promise.all(projetos.map(async (p) => [p.id, await carregarResumos(p.id)] as const)));
@@ -42,5 +47,5 @@ export async function GET(request: Request) {
     detalhe: e.message,
   }));
 
-  return Response.json({ semana, relatorio, email });
+  return Response.json({ semana, relatorio, email, apagadosDeVez });
 }
