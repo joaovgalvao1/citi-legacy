@@ -1387,3 +1387,4 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
   - o resumo da IA da semana 16/11.
 - **Sincronização:** com o novo `npm run banco:sincronizar -- [projetoId]` (`scripts/sincronizar.ts`), mais 10 commits novos vieram do GitHub, totalizando 59.
 - **Cache do site:** o próximo push dispara o webhook, que atualiza o cache dos dados no site (antes do projeto existir no Neon, o webhook não tinha a que se ligar).
+- **Resumos da semana 16/11 no Neon:** no site, só o CITi Legacy tinha o resumo da semana nova; os outros 4 projetos em andamento estavam com o de 09/11, porque os resumos gerados pela IA na noite de 18/11 só foram gravados no banco local. Os 4 foram copiados para o Neon (só inserção, sem nova chamada à IA). O cache do site se renova sozinho em algumas horas.
