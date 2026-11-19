@@ -1336,3 +1336,38 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
   - **Correção:** o arraste agora termina também quando o mouse se move sem botão apertado, quando a captura do ponteiro se perde ou quando o navegador inicia um arraste nativo de link. O bloqueio de clique depois de arrastar vale só para o clique imediato.
 - **Setas reposicionadas:** saíram de baixo da roda e foram para as laterais, centralizadas na altura (no celular, ficam nos cantos de baixo, onde a roda não ocupa espaço). Viraram botões redondos maiores e mais fáceis de acertar. O contador "N / total" ficou abaixo da roda.
 - **Perfil reorganizado:** Projetos (agora em um card, com os projetos empilhados) e "Referência em" ficam lado a lado, e a Órbita de colaboração fica embaixo, centralizada (até 768 px de largura). No celular, tudo empilha.
+
+### Nova página de entrada (19/11)
+
+**O que pedi:** atualizar a página inicial com o contexto de todas as mudanças (identidade visual, interface, funcionalidades). Ela é a porta de entrada e o marketing do produto, então precisa chamar a atenção.
+
+**O que a IA encontrou:** a página ainda mostrava só os 4 recursos da primeira versão, com o visual antigo (títulos todos em negrito, sem a faixa verde, prévia simples). Ficavam de fora:
+- o semáforo e a previsão de entrega;
+- o Gantt;
+- o modo reunião e o PDF;
+- o boletim e o convite de agenda;
+- o GitHub;
+- a roda e a órbita de membros.
+
+**Plano aprovado e feito:**
+- **Destaque:**
+  - título no estilo do app ("Todo projeto deixa um **legado.**"), com texto fino e destaque verde;
+  - faixa verde e o fundo da identidade do CITi;
+  - botão "Entrar" com brilho e selos (GitHub, IA toda sexta, modo reunião em PDF);
+  - à direita, uma vitrine: card de projeto com semáforo (Atenção), barra de etapas, previsão e gargalo principal, resumo da IA com a borda roxo e verde, e um mini Gantt com "hoje" e o atraso previsto tracejado;
+  - em volta, uma órbita de pessoas sem nome girando devagar.
+- **Números reais agregados:**
+  - projetos em andamento, com a contagem por cor do semáforo;
+  - concluídos, pessoas, commits;
+  - resumos escritos pela IA.
+- **Grade de recursos "Tudo o que a diretoria precisa numa sexta":** semáforo e previsão, resumo com IA, quem sabe o quê (IC e órbita), modo reunião (miniatura 16:9, teclas e PDF), boletim e convite, e o fluxo do GitHub (push, webhook assinado, commits por etapa, painel). Cada bloco tem uma mini ilustração em HTML.
+- **Como funciona:** 3 passos (cadastrar o projeto, conectar o GitHub, receber a sexta pronta).
+- **Legado:** "Quando alguém sai, o conhecimento fica", com dois números reais: ex-membros e etapas em que quem mais sabia já saiu.
+- **Chamada final:** card verde com o logo grande e o botão de entrar.
+- **Privacidade e movimento:** nenhum nome de projeto, cliente ou pessoa aparece (as ilustrações usam conteúdo genérico, e os nomes são ocultados com •••). As animações param com "reduzir movimento".
+- **Cabeçalho:** a faixa verde agora aparece em todas as telas, e o cabeçalho e o rodapé têm a mesma largura em todas as telas.
+- **Removido:** `components/entrada/previa.tsx`, a prévia antiga.
+
+**Verificação:**
+- **Desktop (1280 px) e celular (375 px):** sem rolagem lateral, e a vitrine cabe no celular.
+- **Ajuste:** o rótulo "hoje" do mini Gantt encostava no título e foi afastado.

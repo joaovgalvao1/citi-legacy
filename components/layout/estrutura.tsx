@@ -66,14 +66,12 @@ export function Estrutura({ children }: { children: ReactNode }) {
 
   return (
     <>
-      {/* faixa verde no topo: telas internas e login (a entrada tem a foto de fundo própria) */}
-      {caminho !== "/" && <div aria-hidden="true" className="faixa-topo" />}
+      {/* faixa verde no topo, em todas as telas (na entrada, junto com o fundo da identidade do CITi) */}
+      <div aria-hidden="true" className="faixa-topo" />
       {/* cabeçalho flutuante em pílula, com vidro fosco, como no site do CITi */}
       <header className="sticky top-0 z-20 px-2 pt-3 sm:px-4">
         <div
-          className={`mx-auto flex items-center justify-between gap-3 rounded-full border border-branco/12 bg-fundo/60 py-2 pr-1.5 pl-3.5 backdrop-blur-md backdrop-saturate-150 sm:pr-2 sm:pl-5 ${
-            caminho === "/" ? "max-w-5xl" : "max-w-6xl"
-          }`}
+          className={`mx-auto flex items-center justify-between gap-3 rounded-full border border-branco/12 bg-fundo/60 py-2 pr-1.5 pl-3.5 backdrop-blur-md backdrop-saturate-150 sm:pr-2 sm:pl-5 max-w-6xl`}
         >
           <Marca href={usuario ? "/projetos" : "/"} />
           {publica ? (
@@ -153,7 +151,7 @@ export function Estrutura({ children }: { children: ReactNode }) {
       </main>
       <Avisos />
       <footer className="border-t border-linha py-5 text-xs text-gray-500">
-        <div className={`mx-auto flex flex-wrap items-center justify-center gap-2 px-4 ${caminho === "/" ? "max-w-5xl" : "max-w-6xl"}`}>
+        <div className={`mx-auto flex flex-wrap items-center justify-center gap-2 px-4 max-w-6xl`}>
           <Lockup tamanho="pequeno" />
           <span aria-hidden="true">·</span>
           <span>protótipo para o desafio Inovação no PS</span>

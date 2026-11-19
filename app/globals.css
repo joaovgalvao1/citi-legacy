@@ -189,7 +189,46 @@ h3 {
 .anima-fade {
   animation: aparecer 0.35s ease-out;
 }
+/* página de entrada: órbita girando devagar e cards flutuando */
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes flutuar {
+  50% {
+    transform: translateY(-8px);
+  }
+}
+.anima-girar {
+  animation: girar 70s linear infinite;
+}
+.anima-girar-reverso {
+  animation: girar 110s linear infinite reverse;
+}
+.anima-flutuar {
+  animation: flutuar 6s ease-in-out infinite;
+}
+.anima-flutuar-lento {
+  animation: flutuar 8s ease-in-out 1.5s infinite;
+}
+@keyframes pulso {
+  0% {
+    box-shadow: 0 0 0 0 rgb(0 219 88 / 0.6);
+  }
+  100% {
+    box-shadow: 0 0 0 8px rgb(0 219 88 / 0);
+  }
+}
+.anima-pulso {
+  animation: pulso 1.8s ease-out infinite;
+}
 @media (prefers-reduced-motion: reduce) {
+  .anima-girar,
+  .anima-girar-reverso,
+  .anima-flutuar,
+  .anima-flutuar-lento,
+  .anima-pulso,
   .anima-barra,
   .anima-surgir,
   .anima-fade,
