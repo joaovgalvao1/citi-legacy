@@ -1,5 +1,7 @@
 # Pitch do CITi Legacy: roteiro do vídeo
 
+> **Versão final:** o roteiro foi reconstruído trecho a trecho em 19/11. As falas finais estão em [`NARRACAO.md`](NARRACAO.md) e as gravações em [`GRAVACOES.md`](GRAVACOES.md); este arquivo registra a primeira versão.
+
 **Duração:** cerca de 3:50 (o limite é 5:00).
 
 **Formato:** animação feita em código (Remotion), no visual do próprio app (pulso, constelação, órbitas), com gravações reais das telas, zoom e destaques. Ninguém aparece na câmera.

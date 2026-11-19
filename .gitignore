@@ -44,3 +44,5 @@ next-env.d.ts
 # vídeo do pitch: dependências e renderizações
 /video/node_modules
 /video/out
+/video/public/gravacoes
+/video/public/som/trilha.wav

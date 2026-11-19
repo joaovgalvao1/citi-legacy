@@ -282,6 +282,8 @@ A IA foi usada de **duas formas**: dentro do produto e no desenvolvimento.
 
 **Desenvolvimento (17 a 19/11):** feito com o **Claude Code** (modelo Claude Opus 5.5) como par de programação. Cada pedido, o que a IA fez e o que eu ajustei estão registrados em ordem no [`DEV_LOG.md`](DEV_LOG.md).
 
+**Vídeo do pitch:** o roteiro foi construído trecho a trecho com o Claude Code, com as minhas decisões em cada cena, e as gravações de tela são minhas. A narração usa **voz sintética (ElevenLabs)**; o texto da narração foi discutido comigo e aprovado por mim.
+
 **A regra do trabalho**, definida no primeiro prompt: *"Quem conduz sou eu. Você propõe, eu decido. Antes de escrever código, me mostre o plano da etapa e espere meu ok."*
 
 Na prática, o trabalho alternou entre três modos.

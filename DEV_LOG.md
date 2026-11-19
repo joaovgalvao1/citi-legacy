@@ -209,6 +209,20 @@ O **prompt inicial de 17/11** reuniu tudo isso:
   - animações no visual do app (pulso, constelações, órbitas, terminal, resumo da IA sendo escrito);
   - capturas reais das telas, com zoom e destaques;
   - legenda da narração.
+- **Versão final (19/11, à tarde):** depois de assistir à primeira versão, anotei os pontos a melhorar e conduzi a reconstrução **trecho por trecho**: a IA mostrava os quadros e eu aprovava ou corrigia antes de qualquer código.
+  - **Minhas decisões:**
+    - planilha escura e um quadro novo com o trabalho espalhado no GitHub;
+    - números reais do protótipo (892 commits);
+    - a Mezzalira como fio condutor da demonstração;
+    - o fluxo completo de marcar reunião até a agenda;
+    - o caso da Riachuelo pode aparecer, porque é público no site do CITi;
+    - as frases "Eu levanto a hipótese, a IA testa" (ideação) e "A IA propõe, eu decido" (construção do código);
+    - os modelos citados (Gemini 3.5 Flash-Lite no produto, Claude Opus 5.5 no desenvolvimento);
+    - a assinatura no fim.
+  - **Gravações:** gravei as telas (OBS), o iPad e o celular. A IA conferiu cada arquivo e apontou o que cortar ou borrar (e-mails de terceiros, endereços de link, arquivos pessoais).
+  - **Um teste meu achou um caso de borda:** marquei uma task e a previsão do projeto não mudou. A IA simulou com os dados e mostrou que estava certo (a etapa caiu na mesma data do gargalo); regravei marcando uma task do gargalo, e a previsão passou de 17/12 para 08/12.
+  - **Voz:** narração com voz sintética da ElevenLabs (escolhi o Eduardo S.), gerada por mim fala a fala. A IA mediu ritmo e pausas de cada arquivo e sugeriu a pontuação e as grafias que corrigiram a pronúncia (City, iá, tésk, brantches).
+  - **A IA fez:** as cenas novas em Remotion, a sincronia com a voz, as legendas, a trilha ambiente gerada em código e o render.
 
 - **A IA fez:**
   - a [`DOCUMENTACAO.md`](DOCUMENTACAO.md) a partir deste registro;
