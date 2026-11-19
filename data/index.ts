@@ -96,6 +96,9 @@ export type Commit = {
   efetivas: number;
 };
 
+/** Membro na lixeira (só quem não tem commits pode ser apagado). */
+export type MembroNaLixeira = { id: string; nome: string; entrada: string; apagadoEm: string };
+
 /** Projeto na lixeira: o suficiente para listar, restaurar ou apagar de vez. */
 export type ProjetoNaLixeira = { id: string; nome: string; cliente: string; apagadoEm: string; status: "andamento" | "concluido" };
 
@@ -140,6 +143,11 @@ export async function obterPessoa(id: string) {
 /** Projetos na lixeira (apagados há menos de 30 dias). */
 export async function obterLixeira() {
   return (await lerTudo()).lixeira;
+}
+
+/** Membros na lixeira. */
+export async function obterLixeiraMembros() {
+  return (await lerTudo()).lixeiraMembros;
 }
 
 export async function totalDeCommits() {

@@ -5,14 +5,14 @@ import { asc, desc, eq, isNotNull } from "drizzle-orm";
 import { db, esquema } from "@/db/conexao";
 import { hoje as hojeAgora, somarDias } from "@/lib/hoje";
 import { concentracao, indiceConhecimento, listaSemanas, PESOS_IC, semanasDe } from "@/lib/analise";
-import type { Commit, Pessoa, Projeto, ProjetoNaLixeira, Resumo } from "./index";
+import type { Commit, MembroNaLixeira, Pessoa, Projeto, ProjetoNaLixeira, Resumo } from "./index";
 
 
 export async function carregarTudo() {
   const hoje = hojeAgora();
   const ontem = somarDias(hoje, -1);
 
-  const [clientes, pessoas, projetos, membros, etapas, tasks, commits] = await Promise.all([
+  const [clientes, pessoas, projetos, membrosTodos, etapas, tasks, commits] = await Promise.all([
     db.select().from(esquema.clientes),
     db.select().from(esquema.pessoas).orderBy(asc(esquema.pessoas.nome)),
     db.select().from(esquema.projetos).orderBy(asc(esquema.projetos.ordem)),
@@ -22,7 +22,15 @@ export async function carregarTudo() {
     db.select().from(esquema.commits).orderBy(asc(esquema.commits.data)),
   ]);
 
-  const listaPessoas: Pessoa[] = pessoas.map((p) => ({ id: p.id, nome: p.nome, entrada: p.entrada, ...(p.saiuEm ? { saiuEm: p.saiuEm } : {}) }));
+  // pessoas na lixeira (só quem não tem commits) saem da lista de membros e das equipes
+  const pessoasNaLixeira = new Set(pessoas.filter((p) => p.apagadoEm).map((p) => p.id));
+  const lixeiraMembros: MembroNaLixeira[] = pessoas
+    .filter((p) => p.apagadoEm)
+    .map((p) => ({ id: p.id, nome: p.nome, entrada: p.entrada, apagadoEm: p.apagadoEm! }));
+  const listaPessoas: Pessoa[] = pessoas
+    .filter((p) => !p.apagadoEm)
+    .map((p) => ({ id: p.id, nome: p.nome, entrada: p.entrada, ...(p.saiuEm ? { saiuEm: p.saiuEm } : {}) }));
+  const membros = membrosTodos.filter((m) => !pessoasNaLixeira.has(m.pessoaId));
 
   // projetos na lixeira ficam fora de tudo (listas, indicadores, boletim, membros)
   const naLixeira = projetos.filter((p) => p.apagadoEm);
@@ -98,6 +106,7 @@ export async function carregarTudo() {
     pessoas: listaPessoas,
     projetos: listaProjetos,
     lixeira,
+    lixeiraMembros,
     totalCommits: commits.filter((c) => ativos.has(c.projetoId)).length,
   };
 }

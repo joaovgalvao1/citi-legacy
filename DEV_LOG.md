@@ -1167,3 +1167,38 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 **Verificação:**
 - **Botão:** marcado, ativo; desmarcado, desativado e com o aviso; marcado de novo, ativo.
 - **Atalhos:** a IA conferiu também que Esc e P apertados dentro da janela não saem da apresentação nem abrem a impressão.
+
+### Bloco 5: membros (19/11)
+
+**O que pedi:**
+- seguir as recomendações da IA (cargo = papel no projeto mais recente, calendário com todo o período rolando na horizontal, sem o alerta de carga, que ninguém dispararia nos dados);
+- avatares no **verde do CITi** para todos, em vez de uma cor por pessoa;
+- ícones de **e-mail, LinkedIn e GitHub**, deixando claro ao passar o mouse que é protótipo;
+- membros editáveis e apagáveis como os projetos, com confirmação **menos incisiva** (só uma caixa) e lixeira no mesmo formato;
+- **quem tem commits não pode ser apagado**: a única mudança possível é virar ex-membro;
+- um botão **"+ Adicionar membro"**.
+
+**O que a IA fez:**
+- **Lista:** avatar verde com iniciais, cargo, "No CITi desde", nº de projetos e minibarra do maior IC. O botão "+ Adicionar membro" fica ao lado do título; o link "Lixeira · N" só aparece com itens.
+- **Perfil:**
+  - cabeçalho com avatar grande, cargo, selo "Ex-membro" e contatos;
+  - 3 indicadores: commits, etapas em que é referência e projetos atrasados (em âmbar se houver);
+  - **calendário de contribuições** em 4 tons, com dica de data e commits, legenda "menos → mais" e abertura na parte mais recente;
+  - **"Referência em"**, com barra de IC;
+  - os cards de projeto de antes.
+- **Contatos:** os ícones parecem links, mas não abrem nada. A dica diz "Protótipo. No app real, abriria o LinkedIn de Helena Duarte". Nenhum endereço fictício foi inventado.
+- **Menu "⋯" do perfil:** "Editar membro" e "Mover para a lixeira…". Para quem tem commits, a opção de apagar fica desativada com a explicação "tem commits nos projetos; para registrar a saída, marque como ex-membro". O servidor confere a mesma regra.
+- **Formulário (adicionar e editar):** nome, mês de entrada e "Ex-membro" com a data de saída.
+- **Lixeira de membros** (`/membros/lixeira`):
+  - Restaurar e Apagar de vez, com a confirmação de uma caixa ("Entendo que…");
+  - limpeza automática em 30 dias, no mesmo cron;
+  - quem está na lixeira sai da lista e das equipes dos projetos.
+- **Banco:** coluna `apagado_em` em `pessoas`.
+
+**Verificação no navegador:**
+- **Lista:** avatares verdes, cargos e barras de IC.
+- **Perfil da Helena:** 78 commits, 4 etapas como referência; calendário e dica de protótipo conferidos; o menu bloqueia o apagar porque ela tem commits.
+- **Fluxo completo com um membro de teste:** adicionar → mover para a lixeira (o botão só libera com a caixa marcada) → "Lixeira · 1" → apagar de vez (lixeira vazia).
+- **Edição:** a página abre preenchida, com Marcos Vilela como ex-membro desde 15/07/2026.
+
+**Não testado:** o botão Restaurar da lixeira de membros. Usa o mesmo caminho da lixeira de projetos, que foi testado.

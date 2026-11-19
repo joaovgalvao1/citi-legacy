@@ -7,12 +7,13 @@ import { updateTag } from "next/cache";
 import { db, esquema } from "@/db/conexao";
 import { hoje, somarDias } from "@/lib/hoje";
 import { confereConfirmacao, DIAS_NA_LIXEIRA, linhas, slug, validarProjeto, type ProjetoNovo } from "@/lib/novo-projeto";
+import { validarMembro, type MembroForm } from "@/lib/membros";
 import { carregarCommits, carregarResumos, carregarTudo } from "@/data/carregar";
 import { montarBoletim } from "@/lib/boletim";
 import { destinatarios, enviarBoletim, enviarReuniao, eventoReuniao, listaDestinatarios } from "@/lib/email";
 import { linkGoogleAgenda, textoQuando, validarConvite, type Convite } from "@/lib/convite";
 
-const { clientes, commits, etapas, membrosProjeto, projetos, resumos, tasks } = esquema;
+const { clientes, commits, etapas, membrosProjeto, pessoas, projetos, resumos, tasks } = esquema;
 
 /**
  * Marca ou desmarca uma task no banco. Vale para todos os usuários.
@@ -263,7 +264,15 @@ export async function limparLixeira() {
   const ids = vencidos.map((v) => v.id);
   await db.delete(resumos).where(inArray(resumos.projetoId, ids));
   await db.delete(projetos).where(inArray(projetos.id, ids)); // etapas, tasks, membros e commits vão junto (cascade)
-  return ids.length;
+  return ids.length + (await limparLixeiraMembros());
+}
+
+/** Apaga de vez os membros que estão na lixeira há 30 dias ou mais (só existem lá membros sem commits). */
+async function limparLixeiraMembros() {
+  const limite = somarDias(hoje(), -DIAS_NA_LIXEIRA);
+  const vencidos = await db.select({ id: pessoas.id }).from(pessoas).where(and(isNotNull(pessoas.apagadoEm), lte(pessoas.apagadoEm, limite)));
+  for (const { id } of vencidos) if (!(await temCommits(id))) await apagarPessoa(id);
+  return vencidos.length;
 }
 
 /**
@@ -298,5 +307,67 @@ export async function apagarDeVez(projetoId: string, confirmacao: string): Promi
   await db.delete(projetos).where(eq(projetos.id, projetoId));
   updateTag("dados");
   updateTag("resumos");
+  return { ok: true };
+}
+
+/* ---------- membros ---------- */
+
+async function temCommits(pessoaId: string) {
+  const [linha] = await db.select({ n: sql<number>`count(*)::int` }).from(commits).where(eq(commits.autor, pessoaId));
+  return linha.n > 0;
+}
+
+async function apagarPessoa(pessoaId: string) {
+  await db.delete(membrosProjeto).where(eq(membrosProjeto.pessoaId, pessoaId));
+  await db.delete(pessoas).where(eq(pessoas.id, pessoaId));
+}
+
+/** Cadastra um membro novo (sem commits ainda). */
+export async function criarMembro(m: MembroForm): Promise<{ id: string } | { erros: string[] }> {
+  const erros = validarMembro(m);
+  if (erros.length) return { erros };
+  const base = slug(m.nome) || "membro";
+  const existentes = new Set((await db.select({ id: pessoas.id }).from(pessoas)).map((r) => r.id));
+  let id = base;
+  for (let i = 2; existentes.has(id) || IDS_RESERVADOS.has(id); i++) id = `${base}-${i}`;
+  await db.insert(pessoas).values({ id, nome: m.nome.trim(), entrada: m.entrada, saiuEm: m.saiuEm || null });
+  updateTag("dados");
+  return { id };
+}
+
+/** Edita nome, entrada e saída (marcar como ex-membro = preencher a saída). */
+export async function editarMembro(pessoaId: string, m: MembroForm): Promise<{ id: string } | { erros: string[] }> {
+  const erros = validarMembro(m);
+  if (erros.length) return { erros };
+  await db.update(pessoas).set({ nome: m.nome.trim(), entrada: m.entrada, saiuEm: m.saiuEm || null }).where(eq(pessoas.id, pessoaId));
+  updateTag("dados");
+  return { id: pessoaId };
+}
+
+/**
+ * Move um membro para a lixeira. Quem tem commits não pode ser apagado (os commits são o legado
+ * dos projetos): para essa pessoa, o caminho é marcar como ex-membro.
+ */
+export async function moverMembroParaLixeira(pessoaId: string): Promise<{ ok: true } | { erro: string }> {
+  if (await temCommits(pessoaId)) return { erro: "Esta pessoa tem commits e não pode ser apagada. Marque como ex-membro." };
+  await db.update(pessoas).set({ apagadoEm: hoje() }).where(eq(pessoas.id, pessoaId));
+  await limparLixeira();
+  updateTag("dados");
+  return { ok: true };
+}
+
+export async function restaurarMembro(pessoaId: string): Promise<{ ok: true } | { erro: string }> {
+  await db.update(pessoas).set({ apagadoEm: null }).where(eq(pessoas.id, pessoaId));
+  updateTag("dados");
+  return { ok: true };
+}
+
+/** Apaga de vez um membro que está na lixeira (e sem commits). */
+export async function apagarMembroDeVez(pessoaId: string): Promise<{ ok: true } | { erro: string }> {
+  const [p] = await db.select({ apagadoEm: pessoas.apagadoEm }).from(pessoas).where(eq(pessoas.id, pessoaId));
+  if (!p?.apagadoEm) return { erro: "Só dá para apagar de vez um membro que está na lixeira." };
+  if (await temCommits(pessoaId)) return { erro: "Esta pessoa tem commits e não pode ser apagada." };
+  await apagarPessoa(pessoaId);
+  updateTag("dados");
   return { ok: true };
 }

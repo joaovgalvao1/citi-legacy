@@ -13,6 +13,7 @@ export function Dialogo({
   rotuloConfirmar,
   perigo = false,
   exigir,
+  caixa,
   ocupado = false,
   bloqueado = false,
   erro,
@@ -26,6 +27,8 @@ export function Dialogo({
   perigo?: boolean;
   /** Texto que precisa ser digitado para liberar o botão. */
   exigir?: string;
+  /** Confirmação mais leve: uma caixa que precisa ser marcada para liberar o botão. */
+  caixa?: string;
   ocupado?: boolean;
   /** Desativa o botão de confirmar (ex.: falta escolher algo no formulário). */
   bloqueado?: boolean;
@@ -36,6 +39,7 @@ export function Dialogo({
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const [digitado, setDigitado] = useState("");
+  const [marcado, setMarcado] = useState(false);
   const idCampo = useId();
 
   useEffect(() => {
@@ -45,9 +49,10 @@ export function Dialogo({
     if (!aberto && d.open) d.close();
   }, [aberto]);
 
-  const liberado = !bloqueado && (!exigir || confereConfirmacao(digitado, exigir));
+  const liberado = !bloqueado && (!exigir || confereConfirmacao(digitado, exigir)) && (!caixa || marcado);
   const fechar = () => {
     setDigitado("");
+    setMarcado(false);
     aoFechar();
   };
 
@@ -81,6 +86,12 @@ export function Dialogo({
               spellCheck={false}
               className="w-full rounded-xl border border-gray-400 bg-fundo px-3 py-2 text-sm outline-none transition-colors focus:border-vermelho"
             />
+          </label>
+        )}
+        {caixa && (
+          <label className="flex cursor-pointer items-start gap-2 text-sm text-gray-800">
+            <input type="checkbox" checked={marcado} onChange={(e) => setMarcado(e.target.checked)} className="mt-0.5 accent-[#ff3b3b]" />
+            {caixa}
           </label>
         )}
         {erro && (
