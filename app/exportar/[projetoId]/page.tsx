@@ -11,7 +11,8 @@ import { emPct } from "@/lib/indice";
 import { progressoProjeto, statusEtapa, statusProjeto, textoEntrega, textoPrazo } from "@/lib/status";
 import { ddmm, fimDaSemana, ROTULO_FONTE } from "@/components/projeto/resumos";
 import { BarraDeImpressao } from "@/components/exportar/imprimir";
-import { CabecalhoFolha, Dado, Secoes, Titulo } from "@/components/exportar/folha";
+import { CabecalhoFolha, SeloIAFolha, Dado, Secoes, Titulo } from "@/components/exportar/folha";
+import { EsqueletoFolha } from "@/components/ui/esqueletos";
 
 export async function generateStaticParams() {
   return (await obterProjetos()).map((p) => ({ projetoId: p.id }));
@@ -41,7 +42,7 @@ function Etapas({ projeto }: { projeto: Projeto }) {
                 </div>
               </td>
               <td className="dado w-12 py-1.5 pr-3 text-right text-[#444]">{emPct(e.progresso)}</td>
-              <td className={`w-28 py-1.5 text-right ${s === "Atrasada" ? "text-[#b86e00]" : s === "Concluída" ? "text-[#00873a]" : "text-[#666]"}`}>
+              <td className={`w-28 py-1.5 text-right ${s === "Atrasada" ? "text-[#d42020]" : s === "Concluída" ? "text-[#00873a]" : "text-[#666]"}`}>
                 {s}
               </td>
             </tr>
@@ -76,7 +77,7 @@ async function Documento({ params }: { params: PageProps<"/exportar/[projetoId]"
           <p className="mt-2 max-w-[150mm] text-[11.5px] leading-relaxed text-[#555]">{projeto.descricao}</p>
 
           <div className="mt-5 grid grid-cols-4 gap-2.5">
-            <Dado rotulo="Status" valor={status} destaque={status === "Atrasado" ? "ambar" : status === "Concluído" ? "verde" : undefined} />
+            <Dado rotulo="Status" valor={status} destaque={status === "Atrasado" ? "vermelho" : status === "Concluído" ? "verde" : undefined} />
             <Dado rotulo="Progresso" valor={emPct(progressoProjeto(projeto))} />
             <Dado rotulo={concluido ? "Entrega" : "Prazo"} valor={concluido ? textoEntrega(projeto) : textoPrazo(projeto)} />
             <Dado
@@ -88,10 +89,13 @@ async function Documento({ params }: { params: PageProps<"/exportar/[projetoId]"
 
         {/* resumo em destaque */}
         <section className="mt-7 break-inside-avoid">
-          <Titulo>
-            <span className="text-[#00873a]">✦</span> {concluido ? "Resumo final" : `Resumo da semana · ${principal ? semana(principal) : ""}`}
-          </Titulo>
-          <div className="rounded-xl border border-[#cdeedb] bg-[#f3fbf6] p-5">
+          <Titulo>{concluido ? "Resumo final" : `Resumo da semana · ${principal ? semana(principal) : ""}`}</Titulo>
+          <div className={`rounded-xl p-5 ${principal?.fonte === "regras" ? "border border-[#e4e4e4]" : "borda-ia-folha"}`}>
+            {principal && principal.fonte !== "regras" && (
+              <p className="mb-3">
+                <SeloIAFolha />
+              </p>
+            )}
             {principal ? (
               <Secoes resumo={principal} />
             ) : (
@@ -146,7 +150,7 @@ async function Documento({ params }: { params: PageProps<"/exportar/[projetoId]"
 export default function PaginaExportar(props: PageProps<"/exportar/[projetoId]">) {
   return (
     <div className="impressao min-h-screen px-4 py-8">
-      <Suspense fallback={<p className="text-center text-sm text-gray-500">Carregando…</p>}>
+      <Suspense fallback={<EsqueletoFolha />}>
         <Documento params={props.params} />
       </Suspense>
     </div>

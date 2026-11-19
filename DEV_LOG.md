@@ -752,3 +752,44 @@ Ficaram de fora o boletim da empresa inteira e a imagem para WhatsApp/Slack.
 - a barra da versão de impressão (`BarraDeImpressao`) ganhou um espaço para ações extras, usado só no boletim.
 
 **Verificação:** cliquei pela tela. O botão mostrou "Enviando…" e depois "Boletim enviado para jv***@cin.ufpe.br", e o Resend aceitou o envio.
+
+## Melhorias visuais para a banca (18/11)
+
+Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 blocos e em ordem de prioridade, com as regras da identidade do CITi. A IA trabalha bloco a bloco: apresenta o plano e espera o meu ok.
+
+### Bloco 1: logotipo, base visual e duas correções
+
+**O que pedi:**
+- lockup "citi | LEGACY" no padrão de submarca do CITi;
+- semáforo de status em três níveis;
+- assinatura visual para tudo o que a IA gera;
+- skeletons no lugar de "Carregando…";
+- corrigir a Visão geral do GALT, parada em "Carregando…", e os gráficos apagados da Participação.
+
+**Antes de escrever código**, a IA verificou os dados do Gantt (bloco 3) e investigou as duas falhas no site publicado.
+
+**Decisões que tomei (a IA recomendou):**
+- **Cores dos membros:** a paleta atual tem azul e rosa, que o documento proíbe. Ficou como exceção, só para identificar pessoas nos gráficos.
+- **"Atenção" (âmbar):** projeto ainda no prazo, mas com alguma etapa atrasada ou parada.
+- **PDF e e-mail:** o PDF ganhou o semáforo e a borda da IA. O e-mail só o rótulo "✦ Gerado por IA", porque gradiente falha em leitores de e-mail.
+- **Corte:** o bloco 5 (membros) fica reduzido, para sobrar tempo para o vídeo e a documentação.
+
+**O que a IA fez:**
+- **Identidade:**
+  - cores novas (vermelho `#FF3B3B`, roxo `#A78BFA`, borda em branco a 8%) e rótulo de seção em maiúsculas espaçadas;
+  - botão secundário com fundo branco a 5% e borda a 25%; cards com cantos de 12px.
+- **Logotipo:** componente `Lockup` em três tamanhos: o normal no cabeçalho, o pequeno no rodapé (e no Modo Reunião), o grande no login. A versão clara vai nas folhas em PDF e no e-mail.
+- **Semáforo:** `nivelProjeto` e `nivelEtapa` (`lib/status.ts`) dão verde, âmbar ou vermelho a partir das regras que já existiam. Os selos do projeto viraram "No prazo", "Atenção", "Atrasado" e "Concluído", e barras, alertas, boletim e e-mail seguem a mesma cor.
+- **Assinatura de IA:** borda de 1px em gradiente roxo→verde e o rótulo "✦ GERADO POR IA" em gradiente, no resumo do projeto e nos PDFs. Resumos feitos sem IA (por regras) não recebem a assinatura. Os títulos "O que andou" e "O que travou" ficaram verde e vermelho.
+- **Skeletons:** os 9 "Carregando…" viraram blocos animados no formato de cada tela (`components/ui/esqueletos.tsx`).
+
+**As duas correções (causa encontrada pela IA):**
+- **GALT em "Carregando…":** o conteúdo já vinha pronto do servidor, mas o React só o põe na tela no próximo quadro de animação (`requestAnimationFrame`). Em aba em segundo plano esse quadro não acontece, e a página ficava presa no carregamento. Acontecia em qualquer projeto concluído aberto assim.
+  - Correção: um temporizador aplica o conteúdo que estiver esperando (`useMostrarConteudoPendente`, em `components/layout/estrutura.tsx`).
+- **Participação apagada:** a animação de entrada começava em opacidade 0 e, quando o navegador não animava, o bloco ficava transparente. As animações agora não mexem na opacidade e não seguram o estado inicial: se não rodarem, o conteúdo aparece completo.
+
+**Verificação:**
+- **Correção do GALT:** na versão de produção (`next build` + `next start`), simulei uma aba que não desenha bloqueando o quadro de animação. Sem a correção, a página ficou no skeleton; com ela, o conteúdo apareceu.
+- **No navegador:** conferi lista de projetos, Visão geral, Participação, boletim e PDF do projeto.
+- **E-mail:** gerei o HTML sem enviar (`npm run boletim:enviar -- --html`).
+- **Código:** `tsc`, `eslint` e `next build` sem erros.

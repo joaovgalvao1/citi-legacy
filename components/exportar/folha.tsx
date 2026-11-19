@@ -4,8 +4,8 @@ import type { ReactNode } from "react";
 import type { Resumo } from "@/data";
 import { formatarData } from "@/data/formatos";
 
-export function Dado({ rotulo, valor, destaque }: { rotulo: string; valor: string; destaque?: "ambar" | "verde" }) {
-  const cor = destaque === "ambar" ? "text-[#b86e00]" : destaque === "verde" ? "text-[#00873a]" : "text-[#161616]";
+export function Dado({ rotulo, valor, destaque }: { rotulo: string; valor: string; destaque?: "ambar" | "verde" | "vermelho" }) {
+  const cor = destaque === "vermelho" ? "text-[#d42020]" : destaque === "ambar" ? "text-[#b86e00]" : destaque === "verde" ? "text-[#00873a]" : "text-[#161616]";
   return (
     <div className="rounded-lg border border-[#e4e4e4] px-3 py-2.5">
       <p className="text-[9px] font-semibold uppercase tracking-[0.14em] text-[#8a8a8a]">{rotulo}</p>
@@ -14,13 +14,21 @@ export function Dado({ rotulo, valor, destaque }: { rotulo: string; valor: strin
   );
 }
 
+/** Títulos das partes do resumo: o que andou (verde), o que travou (vermelho), o resto em preto. */
+const corDoTitulo = (t: string) => (/andou/i.test(t) ? "text-[#00873a]" : /travou/i.test(t) ? "text-[#d42020]" : "text-[#161616]");
+
+/** Rótulo "✦ GERADO POR IA" em gradiente (assinatura de conteúdo gerado por IA). */
+export function SeloIAFolha() {
+  return <span className="texto-ia text-[8.5px] font-bold uppercase tracking-[0.18em]">✦ Gerado por IA</span>;
+}
+
 export function Secoes({ resumo, compacto = false }: { resumo: Resumo; compacto?: boolean }) {
   return (
     <div className={compacto ? "grid grid-cols-3 gap-4" : "space-y-4"}>
       {resumo.secoes.map((s) => (
         <div key={s.titulo} className={compacto ? "" : "grid grid-cols-[38mm_1fr] gap-4"}>
           <h4
-            className={`font-semibold uppercase tracking-[0.12em] text-[#00873a] ${compacto ? "mb-1.5 text-[8.5px]" : "pt-0.5 text-[9.5px]"}`}
+            className={`font-semibold uppercase tracking-[0.12em] ${corDoTitulo(s.titulo)} ${compacto ? "mb-1.5 text-[8.5px]" : "pt-0.5 text-[9.5px]"}`}
           >
             {s.titulo}
           </h4>
@@ -46,10 +54,12 @@ export function Titulo({ children }: { children: ReactNode }) {
 export function CabecalhoFolha({ rotulo, data }: { rotulo: string; data: string }) {
   return (
     <header className="flex items-start justify-between gap-6 border-b-2 border-[#00DB58] pb-4">
-      <div className="flex items-center gap-2">
+      {/* lockup "citi | LEGACY" (versão para fundo claro) */}
+      <div className="flex items-center gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element -- imagem simples para impressão */}
         <img src="/marca/citi-logo-verde.png" alt="CITi" className="h-7 w-auto" />
-        <span className="text-lg font-bold tracking-tight">Legacy</span>
+        <span aria-hidden="true" className="h-[22px] w-px bg-[#161616]/35" />
+        <span className="text-[11.5px] font-medium uppercase leading-none tracking-[3.75px] text-[#161616]">Legacy</span>
       </div>
       <div className="text-right">
         <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#00873a]">{rotulo}</p>

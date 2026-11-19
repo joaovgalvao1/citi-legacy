@@ -7,7 +7,7 @@ import Link from "next/link";
 import type { Projeto } from "@/data";
 import { formatarData } from "@/data/formatos";
 import { emPct, lider } from "@/lib/indice";
-import { alertas, statusEtapa, textoPrazoEtapa } from "@/lib/status";
+import { alertas, nivelEtapa, statusEtapa, textoPrazoEtapa } from "@/lib/status";
 import { useTasks } from "@/lib/tasks";
 import { Alerta, Caixa } from "@/components/ui";
 import type { ReactNode } from "react";
@@ -32,7 +32,9 @@ export function VisaoGeral({ projeto: original, resumo }: { projeto: Projeto; re
           {lista.length ? (
             <div className="space-y-2">
               {lista.map((a) => (
-                <Alerta key={a.etapaId}>{a.texto}</Alerta>
+                <Alerta key={a.etapaId} tom={a.nivel}>
+                  {a.texto}
+                </Alerta>
               ))}
             </div>
           ) : (
@@ -59,7 +61,7 @@ export function VisaoGeral({ projeto: original, resumo }: { projeto: Projeto; re
                 <p className="text-sm text-gray-700">{e.descricao}</p>
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
                   <div className="w-full max-w-xs flex-1">
-                    <BarraProgresso valor={e.progresso} compacta />
+                    <BarraProgresso valor={e.progresso} compacta tom={nivelEtapa(projeto, e)} />
                   </div>
                   <span className="text-sm tabular-nums">{emPct(e.progresso)}</span>
                   <span className="text-sm text-gray-600">

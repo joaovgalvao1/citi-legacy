@@ -14,6 +14,12 @@
   --color-verde: #00db58;
   --color-verde-escuro: #00a843;
   --color-ambar: #ffa630;
+  --color-vermelho: #ff3b3b;
+  --color-roxo: #a78bfa;
+  /* branco de verdade ("white" é a superfície), para opacidades: text-branco/70, border-branco/25 */
+  --color-branco: #ffffff;
+  /* borda fina dos cards: branco a 8% */
+  --color-linha: rgb(255 255 255 / 0.08);
 
   --color-white: #141414;
   --color-gray-50: #0a0a0a;
@@ -64,7 +70,60 @@ h3 {
   font-variant-numeric: tabular-nums;
 }
 
-/* animações discretas (desligadas para quem prefere menos movimento) */
+/* rótulo de seção: pequeno, maiúsculas, espaçado */
+.rotulo {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.45);
+}
+
+/* ---------- assinatura de conteúdo gerado por IA (só para IA) ---------- */
+.gradiente-ia {
+  background-image: linear-gradient(90deg, var(--color-roxo), var(--color-verde));
+}
+/* borda de 1px em gradiente roxo→verde, com fundo de superfície */
+.borda-ia {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--color-white), var(--color-white)) padding-box,
+    linear-gradient(120deg, var(--color-roxo), var(--color-verde)) border-box;
+}
+/* a mesma borda nas folhas de impressão (fundo branco) */
+.borda-ia-folha {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(120deg, var(--color-roxo), var(--color-verde)) border-box;
+}
+.texto-ia {
+  background-image: linear-gradient(90deg, var(--color-roxo), var(--color-verde));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- skeleton (no lugar de "Carregando…") ---------- */
+@keyframes pulsar {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+.esqueleto {
+  background: #1e1e1e;
+  border-radius: 8px;
+  animation: pulsar 1.4s ease-in-out infinite;
+}
+
+/* animações discretas (desligadas para quem prefere menos movimento).
+   Sem "fill-mode" e sem mexer na opacidade: se o navegador não animar (aba em segundo plano,
+   economia de energia), o conteúdo aparece no estado final, com contraste total. */
 @keyframes crescer {
   from {
     transform: scaleX(0);
@@ -75,7 +134,6 @@ h3 {
 }
 @keyframes surgir {
   from {
-    opacity: 0;
     transform: translateY(6px);
   }
   to {
@@ -85,14 +143,15 @@ h3 {
 }
 .anima-barra {
   transform-origin: left;
-  animation: crescer 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation: crescer 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .anima-surgir {
-  animation: surgir 0.45s ease-out both;
+  animation: surgir 0.45s ease-out;
 }
 @media (prefers-reduced-motion: reduce) {
   .anima-barra,
-  .anima-surgir {
+  .anima-surgir,
+  .esqueleto {
     animation: none;
   }
 }

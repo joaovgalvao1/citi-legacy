@@ -2,7 +2,7 @@
 
 import { obterProjetos } from "@/data";
 import { formatarData } from "@/data/formatos";
-import { alertaDoCard, duracaoEmMeses, progressoProjeto, statusProjeto, textoPrazo } from "@/lib/status";
+import { alertaDoCard, duracaoEmMeses, nivelProjeto, progressoProjeto, rotuloNivelProjeto, statusProjeto, textoPrazo } from "@/lib/status";
 import { ListaProjetos, type ResumoProjeto } from "@/components/projetos/lista";
 import { BotaoLink } from "@/components/ui";
 
@@ -17,6 +17,8 @@ export default async function Projetos() {
       cliente: p.cliente.split(" · ")[0],
       subtitulo: p.cliente.split(" · ").slice(1).join(" · "),
       status: statusProjeto(p),
+      nivel: nivelProjeto(p),
+      rotulo: rotuloNivelProjeto(p),
       progresso: progressoProjeto(p),
       prazo: textoPrazo(p),
       alerta: alertaDoCard(p),

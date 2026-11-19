@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { obterProjeto, obterProjetos, obterResumos, projetoEnxuto } from "@/data";
 import { VisaoGeral } from "@/components/projeto/visao-geral";
 import { ResumosDoProjeto } from "@/components/projeto/resumos";
+import { EsqueletoVisaoGeral } from "@/components/ui/esqueletos";
 
 export async function generateStaticParams() {
   return (await obterProjetos()).map((p) => ({ projetoId: p.id }));
@@ -25,7 +26,7 @@ async function Conteudo({ params }: { params: PageProps<"/projetos/[projetoId]">
 
 export default function PaginaVisaoGeral(props: PageProps<"/projetos/[projetoId]">) {
   return (
-    <Suspense fallback={<p className="text-sm text-gray-500">Carregando…</p>}>
+    <Suspense fallback={<EsqueletoVisaoGeral />}>
       <Conteudo params={props.params} />
     </Suspense>
   );

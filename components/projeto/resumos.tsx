@@ -1,6 +1,7 @@
 // Resumos da IA guardados no banco (sem chamar a IA na visita).
 //   • Em andamento: o resumo da semana mais recente e, abaixo, o histórico das semanas anteriores.
 //   • Concluído: o resumo final, fixo.
+// Assinatura de IA: borda em gradiente roxo→verde e o rótulo "✦ GERADO POR IA" (só quando veio da IA).
 
 import Link from "next/link";
 import type { Resumo } from "@/data";
@@ -15,12 +16,20 @@ export const ROTULO_FONTE: Record<Resumo["fonte"], string> = {
 export const ddmm = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
 export const fimDaSemana = (iso: string) => new Date(new Date(`${iso}T12:00:00Z`).getTime() + 6 * 86400000).toISOString().slice(0, 10);
 
+/** Cor do título de cada parte: o que andou (verde), o que travou (vermelho), o resto em branco. */
+function corDoTitulo(titulo: string) {
+  const t = titulo.toLowerCase();
+  if (t.includes("andou")) return "text-verde";
+  if (t.includes("travou")) return "text-vermelho";
+  return "text-branco";
+}
+
 function Secoes({ resumo, compacto = false }: { resumo: Resumo; compacto?: boolean }) {
   return (
-    <div className={`grid gap-5 ${compacto ? "sm:grid-cols-3" : "sm:grid-cols-3"}`}>
+    <div className="grid gap-5 sm:grid-cols-3">
       {resumo.secoes.map((s) => (
         <div key={s.titulo} className="space-y-2">
-          <h3 className={`font-semibold text-gray-900 ${compacto ? "text-xs" : "text-sm"}`}>{s.titulo}</h3>
+          <h3 className={`font-semibold ${corDoTitulo(s.titulo)} ${compacto ? "text-xs" : "text-sm"}`}>{s.titulo}</h3>
           <ul className="space-y-1.5">
             {s.itens.map((item, i) => (
               <li key={i} className={`flex gap-2 text-gray-700 ${compacto ? "text-xs" : "text-sm"}`}>
@@ -45,30 +54,43 @@ function Fonte({ resumo }: { resumo: Resumo }) {
   );
 }
 
+/** Rótulo "✦ GERADO POR IA" com o texto em gradiente (assinatura de conteúdo gerado por IA). */
+export function SeloIA({ texto = "Gerado por IA" }: { texto?: string }) {
+  return (
+    <span className="dado texto-ia text-[11px] font-semibold uppercase tracking-[0.16em]">
+      <span aria-hidden="true">✦ </span>
+      {texto}
+    </span>
+  );
+}
+
 export function ResumosDoProjeto({ projetoId, resumos, concluido }: { projetoId: string; resumos: Resumo[]; concluido: boolean }) {
   const titulo = concluido ? "Resumo final do projeto" : "Resumo da semana";
   const principal = concluido ? resumos.find((r) => r.tipo === "final") : resumos.find((r) => r.tipo === "semanal");
   const anteriores = concluido ? [] : resumos.filter((r) => r.tipo === "semanal" && r !== principal);
+  const daIA = !principal || principal.fonte !== "regras";
 
   return (
-    <section className="anima-surgir rounded-2xl border border-verde/30 bg-white p-5">
-      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="dado flex items-center gap-2 text-xs font-medium uppercase tracking-[0.14em] text-verde">
-          <span aria-hidden="true">✦</span>
-          {titulo}
-          {principal && !concluido && (
-            <span className="normal-case tracking-normal text-gray-500">
-              · {ddmm(principal.semana)} a {ddmm(fimDaSemana(principal.semana))}
-            </span>
-          )}
-        </h2>
+    <section className={`anima-surgir rounded-xl p-5 ${daIA ? "borda-ia" : "border border-linha bg-white"}`}>
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+        <div className="space-y-1">
+          {daIA ? <SeloIA /> : <span className="rotulo">Resumo automático</span>}
+          <h2 className="text-base font-bold tracking-tight">
+            {titulo}
+            {principal && !concluido && (
+              <span className="dado ml-2 text-xs font-normal text-gray-500">
+                {ddmm(principal.semana)} a {ddmm(fimDaSemana(principal.semana))}
+              </span>
+            )}
+          </h2>
+        </div>
         <div className="flex items-center gap-3">
           <span className="text-xs text-gray-500">
             {concluido ? "Gerado uma vez, ao concluir o projeto" : "Gerado toda sexta-feira às 23h"}
           </span>
           <Link
             href={`/exportar/${projetoId}`}
-            className="inline-flex items-center gap-1.5 rounded-full border border-verde/40 px-3 py-1 text-xs text-verde transition-colors hover:bg-verde/10"
+            className="inline-flex items-center gap-1.5 rounded-full border border-branco/25 bg-branco/5 px-3 py-1 text-xs text-branco transition-colors hover:border-branco/50"
           >
             <IconeExportar className="h-3.5 w-3.5" />
             Exportar PDF
@@ -88,7 +110,7 @@ export function ResumosDoProjeto({ projetoId, resumos, concluido }: { projetoId:
       )}
 
       {anteriores.length > 0 && (
-        <details className="mt-5 border-t border-gray-300 pt-4">
+        <details className="mt-5 border-t border-linha pt-4">
           <summary className="cursor-pointer text-sm text-gray-700">Semanas anteriores ({anteriores.length})</summary>
           <ol className="mt-4 space-y-5">
             {anteriores.map((r) => (

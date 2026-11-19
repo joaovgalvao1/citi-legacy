@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { obterProjeto, obterProjetos } from "@/data";
 import { formatarData } from "@/data/formatos";
 import { Caixa, Selo } from "@/components/ui";
+import { EsqueletoSobre } from "@/components/ui/esqueletos";
 
 export async function generateStaticParams() {
   return (await obterProjetos()).map((p) => ({ projetoId: p.id }));
@@ -71,7 +72,7 @@ async function Sobre({ params }: { params: PageProps<"/projetos/[projetoId]/sobr
 
 export default function PaginaSobre(props: PageProps<"/projetos/[projetoId]/sobre">) {
   return (
-    <Suspense fallback={<p className="text-sm text-gray-500">Carregando…</p>}>
+    <Suspense fallback={<EsqueletoSobre />}>
       <Sobre params={props.params} />
     </Suspense>
   );

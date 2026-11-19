@@ -1,6 +1,18 @@
-// Barra de progresso simples (0 a 100).
+// Barra de progresso simples (0 a 100), na cor do semáforo.
 
-export function BarraProgresso({ valor, rotulo, compacta = false }: { valor: number; rotulo?: string; compacta?: boolean }) {
+const COR = { verde: "bg-verde", ambar: "bg-ambar", vermelho: "bg-vermelho", neutro: "bg-branco/30" };
+
+export function BarraProgresso({
+  valor,
+  rotulo,
+  compacta = false,
+  tom = "verde",
+}: {
+  valor: number;
+  rotulo?: string;
+  compacta?: boolean;
+  tom?: keyof typeof COR;
+}) {
   const v = Math.max(0, Math.min(100, Math.round(valor)));
   return (
     <div className="space-y-1">
@@ -16,9 +28,9 @@ export function BarraProgresso({ valor, rotulo, compacta = false }: { valor: num
         aria-valuemin={0}
         aria-valuemax={100}
         aria-label={rotulo ?? "Progresso"}
-        className={`w-full overflow-hidden rounded-full bg-gray-200 ${compacta ? "h-1.5" : "h-2.5"}`}
+        className={`w-full overflow-hidden rounded-full bg-branco/10 ${compacta ? "h-1.5" : "h-2.5"}`}
       >
-        <div className="anima-barra h-full rounded-full bg-verde" style={{ width: `${v}%` }} />
+        <div className={`anima-barra h-full rounded-full ${COR[tom]}`} style={{ width: `${v}%` }} />
       </div>
     </div>
   );

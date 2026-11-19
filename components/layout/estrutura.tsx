@@ -5,14 +5,35 @@
 // quem não está logado volta ao login.
 
 import { useEffect, useRef, type ReactNode } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { destinoDepoisDoLogin, sair, useUsuario } from "@/lib/sessao";
 import { IconeEntrar, IconeSair, IconeUsuario } from "@/components/ui/icones";
-import { Marca } from "./marca";
+import { CaixaEsqueleto } from "@/components/ui";
+import { Lockup, Marca } from "./marca";
 
 const PUBLICAS = ["/", "/login"];
+
+type JanelaComReact = Window & { $RB?: unknown[]; $RV?: (fila: unknown[]) => void };
+
+/**
+ * Mostra o conteúdo que já chegou do servidor mesmo sem o navegador desenhar a página.
+ * O React só troca o skeleton pelo conteúdo pronto no próximo quadro de animação
+ * (requestAnimationFrame), que não acontece em abas em segundo plano: a página ficava
+ * parada no carregamento (ex.: Visão geral do GALT aberta numa aba nova). Aqui, se houver
+ * conteúdo esperando, ele é aplicado por um temporizador, que funciona com a aba escondida.
+ */
+function useMostrarConteudoPendente() {
+  useEffect(() => {
+    const w = window as JanelaComReact;
+    let vezes = 0;
+    const id = window.setInterval(() => {
+      if (w.$RB?.length && w.$RV) w.$RV(w.$RB);
+      if (++vezes >= 20) window.clearInterval(id);
+    }, 500);
+    return () => window.clearInterval(id);
+  }, []);
+}
 
 export function Estrutura({ children }: { children: ReactNode }) {
   const usuario = useUsuario();
@@ -20,6 +41,7 @@ export function Estrutura({ children }: { children: ReactNode }) {
   const router = useRouter();
   // ao clicar em "Sair", vai para a entrada (e não para o login)
   const saindo = useRef(false);
+  useMostrarConteudoPendente();
   const publica = PUBLICAS.includes(caminho);
   // versão de impressão (PDF): sem cabeçalho nem rodapé do site
   const impressao = caminho.startsWith("/exportar/");
@@ -42,7 +64,7 @@ export function Estrutura({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <header className="sticky top-0 z-20 border-b border-gray-300 bg-fundo/85 backdrop-blur">
+      <header className="sticky top-0 z-20 border-b border-linha bg-fundo/85 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-3">
           <Marca href={usuario ? "/projetos" : "/"} />
           {publica ? (
@@ -109,12 +131,11 @@ export function Estrutura({ children }: { children: ReactNode }) {
               : "mx-auto w-full max-w-5xl flex-1 px-4 py-8"
         }
       >
-        {liberado ? children : <p className="text-sm text-gray-500">Carregando…</p>}
+        {liberado ? children : <CaixaEsqueleto linhas={3} />}
       </main>
-      <footer className="border-t border-gray-300 py-5 text-xs text-gray-500">
+      <footer className="border-t border-linha py-5 text-xs text-gray-500">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-2 px-4">
-          <Image src="/marca/citi-logo-verde.png" alt="CITi" width={225} height={115} className="h-4 w-auto" />
-          <span className="font-semibold text-gray-700">Legacy</span>
+          <Lockup tamanho="pequeno" />
           <span aria-hidden="true">·</span>
           <span>protótipo para o desafio Inovação no PS</span>
         </div>

@@ -96,6 +96,8 @@ export type Alerta = {
   /** Frase curta, para os cards da lista de projetos. */
   curto: string;
   gravidade: number; // maior = mais grave
+  /** vermelho = etapa atrasada; âmbar = só parada. */
+  nivel: "vermelho" | "ambar";
 };
 
 /** Um alerta por etapa atrasada e/ou parada, do mais grave para o menos grave. */
@@ -115,6 +117,7 @@ export function alertas(projeto: Projeto): Alerta[] {
       etapaId: etapa.id,
       texto: `${etapa.nome}: ${partes.join(" e ")}`,
       curto: `${etapa.nome} ${atrasada ? "atrasada" : "parada"}`,
+      nivel: atrasada ? "vermelho" : "ambar",
       gravidade: (atrasada ? 20 + Math.min(diasAtraso, 60) / 10 : 0) + (parada !== null ? 10 + Math.min(parada, 60) / 10 : 0),
     });
   }
@@ -134,4 +137,34 @@ export function alertaDoCard(projeto: Projeto): string | null {
 export function duracaoEmMeses(projeto: Projeto) {
   const fim = projeto.entrega ?? projeto.fimPrevisto;
   return Math.max(1, Math.round(diasEntre(projeto.inicio, fim) / 30.4));
+}
+
+/* ---------- semáforo (verde, âmbar, vermelho) ---------- */
+//   vermelho  atrasado (projeto) / atrasada (etapa)
+//   âmbar     atenção: projeto no prazo com alguma etapa atrasada ou parada; etapa parada
+//   verde     concluído ou no prazo
+//   neutro    etapa ainda em planejamento
+
+export type Nivel = "verde" | "ambar" | "vermelho" | "neutro";
+
+export function nivelProjeto(projeto: Projeto): Exclude<Nivel, "neutro"> {
+  const s = statusProjeto(projeto);
+  if (s === "Concluído") return "verde";
+  if (s === "Atrasado") return "vermelho";
+  return alertas(projeto).length ? "ambar" : "verde";
+}
+
+/** Rótulo do selo do projeto: "Concluído", "Atrasado", "Atenção" ou "No prazo". */
+export function rotuloNivelProjeto(projeto: Projeto) {
+  const n = nivelProjeto(projeto);
+  if (projeto.status === "concluido") return "Concluído";
+  return n === "vermelho" ? "Atrasado" : n === "ambar" ? "Atenção" : "No prazo";
+}
+
+export function nivelEtapa(projeto: Projeto, etapa: Etapa): Nivel {
+  const s = statusEtapa(projeto, etapa);
+  if (s === "Concluída") return "verde";
+  if (s === "Atrasada") return "vermelho";
+  if (diasParada(projeto, etapa) !== null) return "ambar";
+  return s === "Em planejamento" ? "neutro" : "verde";
 }

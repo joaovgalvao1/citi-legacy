@@ -10,14 +10,15 @@ import { montarBoletim } from "@/lib/boletim";
 import { ddmm } from "@/components/projeto/resumos";
 import { BarraDeImpressao } from "@/components/exportar/imprimir";
 import { BotaoEnviarBoletim } from "@/components/exportar/enviar-email";
-import { CabecalhoFolha, Secoes, Titulo } from "@/components/exportar/folha";
+import { CabecalhoFolha, SeloIAFolha, Secoes, Titulo } from "@/components/exportar/folha";
+import { EsqueletoFolha } from "@/components/ui/esqueletos";
 
 export const metadata: Metadata = { title: "Boletim semanal · CITi Legacy" };
 
-function Numero({ valor, rotulo, alerta }: { valor: number; rotulo: string; alerta?: boolean }) {
+function Numero({ valor, rotulo, alerta }: { valor: number; rotulo: string; alerta?: "ambar" | "vermelho" }) {
   return (
     <div className="rounded-xl border border-[#e4e4e4] px-4 py-3">
-      <p className={`dado text-[24px] leading-none font-semibold ${alerta && valor > 0 ? "text-[#b86e00]" : "text-[#161616]"}`}>{valor}</p>
+      <p className={`dado text-[24px] leading-none font-semibold ${alerta && valor > 0 ? (alerta === "vermelho" ? "text-[#d42020]" : "text-[#b86e00]") : "text-[#161616]"}`}>{valor}</p>
       <p className="mt-1.5 text-[9.5px] text-[#666]">{rotulo}</p>
     </div>
   );
@@ -45,8 +46,8 @@ async function Documento() {
           </p>
           <div className="mt-5 grid grid-cols-4 gap-2.5">
             <Numero valor={b.numeros.andamento} rotulo="projetos em andamento" />
-            <Numero valor={b.numeros.atrasados} rotulo="projetos atrasados" alerta />
-            <Numero valor={b.numeros.etapasParadas} rotulo="etapas paradas (14+ dias)" alerta />
+            <Numero valor={b.numeros.atrasados} rotulo="projetos atrasados" alerta="vermelho" />
+            <Numero valor={b.numeros.etapasParadas} rotulo="etapas paradas (14+ dias)" alerta="ambar" />
             <Numero valor={b.numeros.commitsSemana} rotulo="commits na semana" />
           </div>
         </section>
@@ -63,15 +64,19 @@ async function Documento() {
                   </div>
                   <span
                     className={`shrink-0 rounded-full border px-2.5 py-0.5 text-[9.5px] font-medium ${
-                      p.status === "Atrasado" ? "border-[#f3c98b] bg-[#fff6e8] text-[#b86e00]" : "border-[#cdeedb] bg-[#f3fbf6] text-[#00873a]"
+                      p.status === "Atrasado"
+                        ? "border-[#f5b5b5] bg-[#fff0f0] text-[#d42020]"
+                        : p.alertas.length
+                          ? "border-[#f3c98b] bg-[#fff6e8] text-[#b86e00]"
+                          : "border-[#cdeedb] bg-[#f3fbf6] text-[#00873a]"
                     }`}
                   >
-                    {p.status}
+                    {p.status === "Atrasado" ? "Atrasado" : p.alertas.length ? "Atenção" : "No prazo"}
                   </span>
                 </div>
                 <div className="mt-3 flex items-center gap-3">
                   <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#ececec]">
-                    <div className="h-full rounded-full bg-[#00DB58]" style={{ width: `${p.progresso}%` }} />
+                    <div className={`h-full rounded-full ${p.status === "Atrasado" ? "bg-[#FF3B3B]" : p.alertas.length ? "bg-[#FFA630]" : "bg-[#00DB58]"}`} style={{ width: `${p.progresso}%` }} />
                   </div>
                   <span className="dado text-[10px] text-[#444]">{emPct(p.progresso)}</span>
                   <span className="dado text-[10px] text-[#8a8a8a]">{p.prazo}</span>
@@ -79,15 +84,22 @@ async function Documento() {
                 {p.alertas.length > 0 && (
                   <ul className="mt-2.5 space-y-0.5">
                     {p.alertas.map((a) => (
-                      <li key={a} className="text-[9.5px] text-[#b86e00]">
+                      <li key={a} className={`text-[9.5px] ${/atrasad/.test(a) ? "text-[#d42020]" : "text-[#b86e00]"}`}>
                         ▲ {a}
                       </li>
                     ))}
                   </ul>
                 )}
-                <div className="mt-3 rounded-lg bg-[#f6fbf8] p-3">
+                <div className={`mt-3 rounded-lg p-3 ${p.resumo && p.resumo.fonte !== "regras" ? "borda-ia-folha" : "bg-[#f7f7f7]"}`}>
                   {p.resumo ? (
-                    <Secoes resumo={p.resumo} compacto />
+                    <>
+                      {p.resumo.fonte !== "regras" && (
+                        <p className="mb-2">
+                          <SeloIAFolha />
+                        </p>
+                      )}
+                      <Secoes resumo={p.resumo} compacto />
+                    </>
                   ) : (
                     <p className="text-[10px] text-[#666]">Ainda não há resumo da IA para esta semana.</p>
                   )}
@@ -125,7 +137,7 @@ async function Documento() {
 export default function PaginaBoletim() {
   return (
     <div className="impressao min-h-screen px-4 py-8">
-      <Suspense fallback={<p className="text-center text-sm text-gray-500">Carregando…</p>}>
+      <Suspense fallback={<EsqueletoFolha />}>
         <Documento />
       </Suspense>
     </div>

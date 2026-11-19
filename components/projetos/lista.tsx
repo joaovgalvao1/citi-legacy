@@ -13,6 +13,9 @@ export type ResumoProjeto = {
   cliente: string;
   subtitulo: string;
   status: "Em andamento" | "Atrasado" | "Concluído";
+  /** Semáforo: verde (no prazo/concluído), âmbar (atenção), vermelho (atrasado). */
+  nivel: "verde" | "ambar" | "vermelho";
+  rotulo: string;
   progresso: number;
   prazo: string;
   alerta: string | null;
@@ -84,7 +87,7 @@ export function ListaProjetos({ projetos }: { projetos: ResumoProjeto[] }) {
                     <div className="text-lg font-semibold">{p.nome}</div>
                     <div className="text-sm text-gray-600">{p.cliente === p.nome ? p.subtitulo : p.cliente}</div>
                   </div>
-                  <Selo tom={p.status === "Atrasado" ? "ambar" : p.status === "Concluído" ? "verde" : "neutro"}>{p.status}</Selo>
+                  <Selo tom={p.nivel}>{p.rotulo}</Selo>
                 </div>
                 {p.status === "Concluído" ? (
                   <>
@@ -94,13 +97,13 @@ export function ListaProjetos({ projetos }: { projetos: ResumoProjeto[] }) {
                 ) : (
                   <>
                     <div className="space-y-1">
-                      <BarraProgresso valor={p.progresso} compacta />
+                      <BarraProgresso valor={p.progresso} compacta tom={p.nivel} />
                       <div className="flex justify-between text-sm text-gray-600">
                         <span className="dado">{Math.round(p.progresso)}%</span>
                         <span className="dado">{p.prazo}</span>
                       </div>
                     </div>
-                    {p.alerta && <div className="text-sm font-medium text-ambar">▲ {p.alerta}</div>}
+                    {p.alerta && <div className={`text-sm font-medium ${p.nivel === "vermelho" ? "text-vermelho" : "text-ambar"}`}>▲ {p.alerta}</div>}
                   </>
                 )}
               </Link>

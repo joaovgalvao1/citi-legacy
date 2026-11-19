@@ -7,6 +7,7 @@ import { formatarData, formatarMesAno, obterCommits, obterPessoa, obterPessoas, 
 import { emPct } from "@/lib/indice";
 import { Selo, Voltar } from "@/components/ui";
 import { SeloStatusProjeto } from "@/components/projeto/status";
+import { EsqueletoMembro } from "@/components/ui/esqueletos";
 
 export async function generateStaticParams() {
   return (await obterPessoas()).map((p) => ({ membroId: p.id }));
@@ -70,7 +71,7 @@ async function MembroConteudo({ params }: { params: PageProps<"/membros/[membroI
 
 export default function PaginaDoMembro(props: PageProps<"/membros/[membroId]">) {
   return (
-    <Suspense fallback={<p className="text-sm text-gray-500">Carregando…</p>}>
+    <Suspense fallback={<EsqueletoMembro />}>
       <MembroConteudo params={props.params} />
     </Suspense>
   );

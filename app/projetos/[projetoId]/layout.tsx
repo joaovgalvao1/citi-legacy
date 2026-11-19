@@ -9,6 +9,7 @@ import { Voltar } from "@/components/ui";
 import { ProgressoDoProjeto } from "@/components/projeto/progresso";
 import { SeloStatusProjeto } from "@/components/projeto/status";
 import { AbasDoProjeto } from "@/components/projeto/abas";
+import { EsqueletoCabecalhoProjeto } from "@/components/ui/esqueletos";
 
 export async function generateStaticParams() {
   return (await obterProjetos()).map((p) => ({ projetoId: p.id }));
@@ -43,7 +44,7 @@ async function Cabecalho({ params }: { params: LayoutProps<"/projetos/[projetoId
 export default function LayoutDoProjeto(props: LayoutProps<"/projetos/[projetoId]">) {
   return (
     <div className="space-y-6">
-      <Suspense fallback={<p className="text-sm text-gray-500">Carregando…</p>}>
+      <Suspense fallback={<EsqueletoCabecalhoProjeto />}>
         <Cabecalho params={props.params} />
       </Suspense>
       {props.children}
