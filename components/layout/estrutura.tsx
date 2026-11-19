@@ -8,7 +8,7 @@ import { useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { destinoDepoisDoLogin, sair, useUsuario } from "@/lib/sessao";
-import { IconeEntrar, IconeSair, IconeUsuario } from "@/components/ui/icones";
+import { IconeCasa, IconeEntrar, IconeSair, IconeUsuario } from "@/components/ui/icones";
 import { CaixaEsqueleto } from "@/components/ui";
 import { Avisos } from "@/components/ui/avisos";
 import { Lockup, Marca } from "./marca";
@@ -89,6 +89,14 @@ export function Estrutura({ children }: { children: ReactNode }) {
           ) : (
             usuario && (
               <nav className="flex items-center gap-0.5 text-sm sm:gap-1">
+                <Link
+                  href="/"
+                  aria-label="Página inicial"
+                  title="Página inicial"
+                  className="rounded-full p-1.5 text-gray-600 transition-colors hover:text-verde"
+                >
+                  <IconeCasa className="h-4 w-4" />
+                </Link>
                 {[
                   ["/projetos", "Projetos"],
                   ["/membros", "Membros"],

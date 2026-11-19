@@ -7,7 +7,13 @@ import Link from "next/link";
 const TAMANHOS = {
   // logo, divisória, texto, espaço de cada lado da divisória
   pequeno: { logo: "h-[18px]", divisoria: "h-[14px]", texto: "text-[9px] tracking-[3px]", espaco: "gap-2" },
-  normal: { logo: "h-7", divisoria: "h-[22px]", texto: "text-[11.5px] tracking-[3.75px]", espaco: "gap-3" },
+  // um pouco menor no celular, para o cabeçalho caber numa linha
+  normal: {
+    logo: "h-6 sm:h-7",
+    divisoria: "h-[18px] sm:h-[22px]",
+    texto: "text-[10px] tracking-[3px] sm:text-[11.5px] sm:tracking-[3.75px]",
+    espaco: "gap-2 sm:gap-3",
+  },
   grande: { logo: "h-12", divisoria: "h-9", texto: "text-[17px] tracking-[5.5px]", espaco: "gap-4" },
 } as const;
 
