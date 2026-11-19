@@ -185,8 +185,8 @@ export default async function Entrada() {
           <Recurso
             className="lg:col-span-4"
             icone={IconeProgresso}
-            titulo="Semáforo e previsão de entrega"
-            texto="Cada projeto ganha uma cor pelo andamento real das tasks. A previsão usa o ritmo das últimas semanas e mostra se a entrega cabe no prazo."
+            titulo="Semáforo, pulso e previsão de entrega"
+            texto="Cada projeto ganha uma cor pelo andamento real das tasks, um pulso com o ritmo dos commits e a previsão de entrega pelas últimas semanas. O mais crítico sobe para o topo, com o resumo da IA ao lado."
           >
             <MiniSemaforo />
           </Recurso>
@@ -203,7 +203,7 @@ export default async function Entrada() {
             className="lg:col-span-2"
             icone={IconeConhecimento}
             titulo="Quem conhece cada parte"
-            texto="O Índice de Conhecimento mostra quem domina cada etapa, para distribuir o trabalho e saber a quem perguntar."
+            texto="O Índice de Conhecimento mostra quem domina cada etapa. A órbita de membros apresenta a equipe, e a órbita de colaboração mostra quem trabalhou com quem."
           >
             <MiniConhecimento />
           </Recurso>
@@ -227,7 +227,7 @@ export default async function Entrada() {
             className="lg:col-span-6"
             icone={IconeGithub}
             titulo="Conectado ao repositório"
-            texto="Vincule o repositório do GitHub ao projeto e pronto: cada push chega pelo webhook, e o cron de domingo garante que nada fique de fora."
+            texto="Vincule o repositório do GitHub ao projeto e pronto: cada push chega pelo webhook, o cron de domingo garante que nada fique de fora e cada membro aparece com a foto do GitHub."
           >
             <FluxoGithub />
           </Recurso>
@@ -252,7 +252,7 @@ export default async function Entrada() {
               },
               {
                 titulo: "Chegue pronto na segunda",
-                texto: "Resumo da IA, boletim por e-mail e slides da reunião, todo fim de semana.",
+                texto: "Todo domingo à noite: resumo da IA, boletim por e-mail e slides da reunião prontos.",
                 codigo: "domingo · 23h · resumo + boletim",
               },
             ].map((p, i) => (

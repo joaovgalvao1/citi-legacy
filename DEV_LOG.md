@@ -1652,3 +1652,14 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
   - tudo na parte parada do desenho, sem custo de animação;
   - sorteio com semente fixa por órbita, para servidor e navegador desenharem igual.
 - **Onde aparece:** em todas as órbitas da página inicial e nas duas de Membros (modos Órbita e Cards).
+
+### Textos da página inicial com as novidades (19/11)
+
+**O que pedi:** atualizar os textos da página inicial com as mudanças recentes.
+
+**O que a IA mudou:**
+- **"Semáforo, pulso e previsão de entrega"** (antes "Semáforo e previsão de entrega"): agora cita o pulso de commits de cada projeto e o destaque do projeto mais crítico no topo, com o resumo da IA ao lado.
+- **"Quem conhece cada parte":** cita a órbita de membros e a órbita de colaboração.
+- **"Conectado ao repositório":** cada membro aparece com a foto do GitHub.
+- **Como funciona, passo 3:** "Todo domingo à noite: resumo da IA, boletim por e-mail e slides da reunião prontos." (antes "todo fim de semana").
+- **Sem mudança:** os outros textos já refletiam o domingo, a reunião de segunda e o foco no acompanhamento.
