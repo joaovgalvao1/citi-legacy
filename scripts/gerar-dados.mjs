@@ -16,6 +16,9 @@
 // Etapas ↔ repositório: cada etapa tem caminhos (ex.: "src/estoque/**"). Um commit pertence às etapas
 // cujos caminhos casam com algum arquivo que ele alterou (pode ser mais de uma).
 // Progresso: cada etapa tem tasks; progresso = tasks concluídas ÷ total.
+// Conclusão de cada task (feitaEm): a data do último commit da etapa cuja mensagem cita a task.
+// Com "recentes" na etapa, as últimas tasks feitas são trazidas para as últimas 4 semanas
+// (o ritmo usado na previsão de entrega).
 //
 // O gerador é determinístico (semente fixa): rodar de novo produz os mesmos dados.
 
@@ -148,7 +151,7 @@ function arquivosDoCommit(etapa, tipo, texto) {
 }
 
 /** Tasks de uma etapa: as definidas no cenário ou, por padrão, as entregas (feat/chore/docs/perf) das mensagens. */
-function tasksDa(c, etapa) {
+function tasksDa(c, etapa, commitsDaEtapa) {
   let titulos = etapa.tasks;
   if (!titulos) {
     const modelos = c.mensagens[etapa.id] ?? [];
@@ -160,7 +163,33 @@ function tasksDa(c, etapa) {
   let feitas = Math.round((etapa.progresso / 100) * total);
   if (etapa.progresso > 0 && feitas === 0) feitas = 1;
   if (etapa.progresso < 100 && feitas === total) feitas = total - 1;
-  return titulos.map((titulo, i) => ({ titulo, feita: i < feitas }));
+  const tasks = titulos.map((titulo, i) => ({ titulo, feita: i < feitas, feitaEm: null }));
+
+  // data de conclusão: o último commit que cita a task (ou o último da etapa, ou o fim previsto)
+  const ultimo = commitsDaEtapa.at(-1)?.data.slice(0, 10) ?? etapa.previsto[1];
+  for (const t of tasks.filter((t) => t.feita)) {
+    const cita = commitsDaEtapa.filter((cm) => cm.mensagem.toLowerCase().includes(t.titulo.toLowerCase()));
+    t.feitaEm = cita.at(-1)?.data.slice(0, 10) ?? ultimo;
+  }
+  if (c.status === "concluido") {
+    // nunca depois da entrega
+    for (const t of tasks) if (t.feitaEm && t.feitaEm > c.entrega) t.feitaEm = c.entrega;
+  }
+
+  // "recentes": garante um mínimo de tasks concluídas nas últimas 4 semanas, espaçadas a cada 6 dias
+  if (etapa.recentes) {
+    const ref = paraData(dataReferencia).getTime();
+    const corte = new Date(ref - 27 * DIA).toISOString().slice(0, 10);
+    const feitasOrdem = tasks.filter((t) => t.feita).sort((a, b) => a.feitaEm.localeCompare(b.feitaEm));
+    const faltam = etapa.recentes - feitasOrdem.filter((t) => t.feitaEm >= corte).length;
+    feitasOrdem
+      .filter((t) => t.feitaEm < corte)
+      .slice(-Math.max(0, faltam))
+      .forEach((t, i, lista) => {
+        t.feitaEm = new Date(ref - (2 + 6 * (lista.length - 1 - i)) * DIA).toISOString().slice(0, 10);
+      });
+  }
+  return tasks;
 }
 
 /* ---------- geração ---------- */
@@ -244,7 +273,7 @@ for (const c of cenarios) {
     fimPrevisto: c.fimPrevisto,
     ...(c.entrega ? { entrega: c.entrega } : {}),
     etapas: c.etapas.map((e) => {
-      const tasks = tasksDa(c, e);
+      const tasks = tasksDa(c, e, commits.filter((cm) => cm.etapas.includes(e.id)));
       return {
         id: e.id,
         nome: e.nome,

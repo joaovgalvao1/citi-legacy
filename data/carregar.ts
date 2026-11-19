@@ -52,7 +52,7 @@ export async function carregarTudo() {
         .map((e) => {
           const daEtapa = doProjeto.filter((c) => c.etapas.includes(e.id));
           const r = indiceConhecimento(daEtapa, ids, fim);
-          const tasksDaEtapa = tasks.filter((t) => t.projetoId === p.id && t.etapaId === e.id).map((t) => ({ titulo: t.titulo, feita: t.feita }));
+          const tasksDaEtapa = tasks.filter((t) => t.projetoId === p.id && t.etapaId === e.id).map((t) => ({ titulo: t.titulo, feita: t.feita, feitaEm: t.feitaEm }));
           return {
             id: e.id,
             nome: e.nome,

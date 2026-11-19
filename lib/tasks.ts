@@ -14,7 +14,7 @@ function aplicar(projeto: Projeto, m: Mudanca): Projeto {
     ...projeto,
     etapas: projeto.etapas.map((e) => {
       if (e.id !== m.etapaId) return e;
-      const tasks = e.tasks.map((t, i) => (i === m.ordem ? { ...t, feita: m.feita } : t));
+      const tasks = e.tasks.map((t, i) => (i === m.ordem ? { ...t, feita: m.feita, feitaEm: m.feita ? projeto.hoje : null } : t));
       return { ...e, tasks, progresso: Math.round((tasks.filter((t) => t.feita).length / tasks.length) * 100) };
     }),
   };

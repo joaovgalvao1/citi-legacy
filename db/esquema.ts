@@ -78,6 +78,8 @@ export const tasks = pgTable("tasks", {
   ordem: integer("ordem").notNull(),
   titulo: text("titulo").notNull(),
   feita: boolean("feita").notNull().default(false),
+  /** Quando a task foi concluída ("aaaa-mm-dd"); base do ritmo e da previsão de entrega. */
+  feitaEm: text("feita_em"),
 });
 
 export const commits = pgTable(

@@ -80,7 +80,7 @@ export function Estrutura({ children }: { children: ReactNode }) {
             )
           ) : (
             usuario && (
-              <nav className="flex flex-wrap items-center gap-1 text-sm">
+              <nav className="flex items-center gap-0.5 text-sm sm:gap-1">
                 {[
                   ["/projetos", "Projetos"],
                   ["/membros", "Membros"],
@@ -91,7 +91,7 @@ export function Estrutura({ children }: { children: ReactNode }) {
                       key={href}
                       href={href}
                       aria-current={ativo ? "page" : undefined}
-                      className={`rounded-full px-3 py-1.5 transition-colors ${
+                      className={`rounded-full px-2.5 py-1.5 transition-colors sm:px-3 ${
                         ativo ? "bg-verde/10 text-verde" : "text-gray-600 hover:text-gray-900"
                       }`}
                     >
@@ -99,8 +99,9 @@ export function Estrutura({ children }: { children: ReactNode }) {
                     </Link>
                   );
                 })}
-                <span className="mx-2 h-5 w-px bg-gray-400" aria-hidden="true" />
-                <span className="flex items-center gap-1.5 text-gray-600">
+                <span className="mx-2 hidden h-5 w-px bg-gray-400 sm:block" aria-hidden="true" />
+                {/* no celular, só "Sair": o usuário fica escondido para caber numa linha */}
+                <span className="hidden items-center gap-1.5 text-gray-600 sm:flex">
                   <IconeUsuario className="h-4 w-4" />
                   {usuario}
                 </span>

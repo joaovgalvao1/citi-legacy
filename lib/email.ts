@@ -83,8 +83,8 @@ export function htmlBoletim(b: Boletim, site = siteUrl(), tema: TemaEmail = "esc
     </td>`;
 
   const projeto = (p: Boletim["projetos"][number]) => {
-    const atrasado = p.status === "Atrasado";
-    const atencao = !atrasado && p.alertas.length > 0;
+    const atrasado = p.nivel === "vermelho";
+    const atencao = p.nivel === "ambar";
     const secoes = p.resumo
       ? p.resumo.secoes
           .map(
@@ -117,6 +117,7 @@ export function htmlBoletim(b: Boletim, site = siteUrl(), tema: TemaEmail = "esc
           <td><div style="height:6px;background:${c.trilho};border-radius:99px;"><div style="height:6px;width:${Math.round(p.progresso)}%;background:${atrasado ? "#FF3B3B" : atencao ? "#FFA630" : "#00DB58"};border-radius:99px;"></div></div></td>
           <td width="210" align="right" style="white-space:nowrap;padding-left:10px;font:12px 'Courier New',monospace;color:${c.suave};">${Math.round(p.progresso)}% · ${esc(p.prazo)}</td>
         </tr></table>
+        <p style="margin:4px 0 0;text-align:right;font:700 12px 'Courier New',monospace;color:${p.previsao.tom === "vermelho" ? c.vermelho : p.previsao.tom === "ambar" ? c.ambar : c.verde};">${esc(p.previsao.texto)} <span style="font-weight:400;color:${c.fraco};">· ritmo das últimas 4 semanas</span></p>
         ${alertas}
         <div style="border:1px solid ${c.bordaIA};border-radius:8px;padding:10px 14px 12px;margin-top:12px;background:${c.caixa};">
           ${p.resumo && p.resumo.fonte !== "regras" ? `<div style="font:700 10px Arial,sans-serif;letter-spacing:1.6px;text-transform:uppercase;color:${c.verde};">✦ Gerado por IA</div>` : ""}

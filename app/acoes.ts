@@ -25,7 +25,7 @@ export async function alternarTask(projetoId: string, etapaId: string, ordem: nu
 
   await db
     .update(tasks)
-    .set({ feita })
+    .set({ feita, feitaEm: feita ? hoje() : null })
     .where(and(eq(tasks.projetoId, projetoId), eq(tasks.etapaId, etapaId), eq(tasks.ordem, ordem)));
 
   const todas = await db.select({ feita: tasks.feita }).from(tasks).where(eq(tasks.projetoId, projetoId));

@@ -64,23 +64,26 @@ async function Documento() {
                   </div>
                   <span
                     className={`shrink-0 rounded-full border px-2.5 py-0.5 text-[9.5px] font-medium ${
-                      p.status === "Atrasado"
+                      p.nivel === "vermelho"
                         ? "border-(--f-vermelho-borda) bg-(--f-vermelho-fundo) text-(--f-vermelho)"
-                        : p.alertas.length
+                        : p.nivel === "ambar"
                           ? "border-(--f-ambar-borda) bg-(--f-ambar-fundo) text-(--f-ambar)"
                           : "border-(--f-verde-borda) bg-(--f-verde-fundo) text-(--f-verde)"
                     }`}
                   >
-                    {p.status === "Atrasado" ? "Atrasado" : p.alertas.length ? "Atenção" : "No prazo"}
+                    {p.nivel === "vermelho" ? "Atrasado" : p.nivel === "ambar" ? "Atenção" : "No prazo"}
                   </span>
                 </div>
                 <div className="mt-3 flex items-center gap-3">
                   <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-(--f-trilho)">
-                    <div className={`h-full rounded-full ${p.status === "Atrasado" ? "bg-[#FF3B3B]" : p.alertas.length ? "bg-[#FFA630]" : "bg-[#00DB58]"}`} style={{ width: `${p.progresso}%` }} />
+                    <div className={`h-full rounded-full ${p.nivel === "vermelho" ? "bg-[#FF3B3B]" : p.nivel === "ambar" ? "bg-[#FFA630]" : "bg-[#00DB58]"}`} style={{ width: `${p.progresso}%` }} />
                   </div>
                   <span className="dado text-[10px] text-(--f-texto-3)">{emPct(p.progresso)}</span>
                   <span className="dado text-[10px] text-(--f-fraco)">{p.prazo}</span>
                 </div>
+                <p className={`dado mt-1 text-right text-[10px] font-semibold ${p.previsao.tom === "vermelho" ? "text-(--f-vermelho)" : p.previsao.tom === "ambar" ? "text-(--f-ambar)" : "text-(--f-verde)"}`}>
+                  {p.previsao.texto} <span className="font-normal text-(--f-fraco)">· ritmo das últimas 4 semanas</span>
+                </p>
                 {p.alertas.length > 0 && (
                   <ul className="mt-2.5 space-y-0.5">
                     {p.alertas.map((a) => (

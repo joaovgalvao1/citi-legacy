@@ -25,7 +25,7 @@ export function Lockup({ tamanho = "normal" }: { tamanho?: keyof typeof TAMANHOS
 
 export function Marca({ href = "/", grande = false }: { href?: string; grande?: boolean }) {
   return (
-    <Link href={href} aria-label="CITi Legacy" className="inline-flex items-center">
+    <Link href={href} aria-label="CITi Legacy" className="inline-flex shrink-0 items-center">
       <Lockup tamanho={grande ? "grande" : "normal"} />
     </Link>
   );

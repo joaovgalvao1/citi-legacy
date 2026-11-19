@@ -8,6 +8,8 @@
 // Cada etapa tem: período previsto [início, fim], progresso (%) de referência (vira o número de tasks
 // concluídas), "janela" (fração do período de commits em que a etapa recebeu commits) e, opcionalmente,
 // caminhos do repositório (padrão: src/<etapa>/**) e tasks (padrão: as entregas das mensagens de commit).
+// "recentes" (opcional): mínimo de tasks concluídas nas últimas 4 semanas (ritmo da previsão de entrega);
+// sem ele, as datas de conclusão vêm só dos commits.
 //
 // plano de cada membro: { etapaId: [nº de commits, média de linhas adicionadas, sobrevivência] }
 //   sobrevivência = fração das linhas adicionadas que continua no código hoje (vira "linhas efetivas")
@@ -53,8 +55,8 @@ export const cenarios = [
       { id: "autenticacao", nome: "Autenticação", descricao: "Login de funcionários e permissões", janela: [0, 0.35], previsto: ["2026-08-03", "2026-09-11"], progresso: 100 },
       { id: "catalogo", nome: "Catálogo de plantas", descricao: "CRUD de plantas, categorias e fotos", janela: [0.05, 0.7], previsto: ["2026-08-10", "2026-10-16"], progresso: 100 },
       { id: "estoque", nome: "Estoque", descricao: "Entradas, saídas, alertas de reposição", janela: [0.25, 1], previsto: ["2026-09-01", "2026-11-27"], progresso: 75 },
-      { id: "pedidos", nome: "Pedidos e checkout", descricao: "Carrinho, pedidos e status de entrega", janela: [0.45, 1], previsto: ["2026-09-28", "2026-12-11"], progresso: 55 },
-      { id: "infra", nome: "Infra/Deploy", descricao: "CI, banco e deploy", janela: [0, 1], previsto: ["2026-08-03", "2026-12-18"], progresso: 60 },
+      { id: "pedidos", nome: "Pedidos e checkout", descricao: "Carrinho, pedidos e status de entrega", janela: [0.45, 1], previsto: ["2026-09-28", "2026-12-11"], progresso: 55, recentes: 3 },
+      { id: "infra", nome: "Infra/Deploy", descricao: "CI, banco e deploy", janela: [0, 1], previsto: ["2026-08-03", "2026-12-18"], progresso: 60, recentes: 2 },
       { id: "relatorios", nome: "Relatórios de vendas", descricao: "Vendas por planta, categoria e período, e plantas mais vendidas", janela: [0, 0], previsto: ["2026-11-30", "2026-12-18"], progresso: 0, tasks: ["Relatório de vendas por planta", "Filtro por período e categoria", "Ranking das plantas mais vendidas", "Exportação em PDF"] },
     ],
     membros: [

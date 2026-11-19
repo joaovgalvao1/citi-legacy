@@ -17,7 +17,7 @@ type EtapaJson = {
   inicioPrevisto: string;
   fimPrevisto: string;
   caminhos: string[];
-  tasks: { titulo: string; feita: boolean }[];
+  tasks: { titulo: string; feita: boolean; feitaEm: string | null }[];
 };
 type ProjetoJson = {
   id: string;
@@ -107,7 +107,7 @@ async function main() {
         })),
       );
       await tx.insert(esquema.tasks).values(
-        p.etapas.flatMap((e) => e.tasks.map((t, i) => ({ projetoId: p.id, etapaId: e.id, ordem: i, titulo: t.titulo, feita: t.feita }))),
+        p.etapas.flatMap((e) => e.tasks.map((t, i) => ({ projetoId: p.id, etapaId: e.id, ordem: i, titulo: t.titulo, feita: t.feita, feitaEm: t.feitaEm }))),
       );
     }
 

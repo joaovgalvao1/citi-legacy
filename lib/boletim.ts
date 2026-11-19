@@ -2,7 +2,8 @@
 // Montado uma vez e usado pelo PDF (/exportar/boletim) e pelo e-mail de sexta-feira.
 
 import type { Commit, Projeto, Resumo } from "@/data";
-import { alertas, diasParada, progressoProjeto, statusProjeto, textoPrazo, type StatusProjeto } from "./status";
+import { alertas, diasParada, nivelProjeto, progressoProjeto, statusProjeto, textoPrazo, type StatusProjeto } from "./status";
+import { previsaoProjeto, textoPrevisao } from "./previsao";
 import { inicioDaSemana } from "./analise";
 import { somarDias } from "./hoje";
 
@@ -11,6 +12,10 @@ export type ItemBoletim = {
   nome: string;
   cliente: string;
   status: StatusProjeto;
+  /** Semáforo: vermelho (atrasado), âmbar (atenção), verde (no prazo). */
+  nivel: "verde" | "ambar" | "vermelho";
+  /** Previsão de entrega pelo ritmo das últimas 4 semanas ("prev. 16/12 · no prazo"). */
+  previsao: { texto: string; tom: "verde" | "vermelho" | "ambar" };
   progresso: number;
   prazo: string;
   alertas: string[];
@@ -27,6 +32,8 @@ export type Boletim = {
   concluidos: { id: string; nome: string; cliente: string; entrega: string }[];
 };
 
+const ORDEM_NIVEL = { vermelho: 0, ambar: 1, verde: 2 } as const;
+
 export function montarBoletim(projetos: Projeto[], resumos: Record<string, Resumo[]>, commits: Commit[]): Boletim {
   const hoje = projetos[0]?.hoje ?? new Date().toISOString().slice(0, 10);
   const andamento = projetos.filter((p) => p.status !== "concluido");
@@ -42,13 +49,15 @@ export function montarBoletim(projetos: Projeto[], resumos: Record<string, Resum
       nome: p.nome,
       cliente: p.cliente,
       status: statusProjeto(p),
+      nivel: nivelProjeto(p),
+      previsao: textoPrevisao(previsaoProjeto(p)),
       progresso: progressoProjeto(p),
       prazo: textoPrazo(p),
       alertas: alertas(p).map((a) => a.texto),
       resumo: (resumos[p.id] ?? []).find((r) => r.tipo === "semanal" && r.semana === semana) ?? null,
     }))
-    // atrasados primeiro, depois os que têm alertas
-    .sort((a, b) => Number(b.status === "Atrasado") - Number(a.status === "Atrasado") || b.alertas.length - a.alertas.length);
+    // atrasados primeiro, depois atenção, depois no prazo
+    .sort((a, b) => ORDEM_NIVEL[a.nivel] - ORDEM_NIVEL[b.nivel] || b.alertas.length - a.alertas.length);
 
   const ids = new Set(andamento.map((p) => p.id));
   return {

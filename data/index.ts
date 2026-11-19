@@ -10,7 +10,8 @@ import { carregarClientes, carregarCommits, carregarResumos, carregarTudo } from
 
 export type { Semana, Sinais };
 
-export type Task = { titulo: string; feita: boolean };
+/** Task de uma etapa. `feitaEm`: dia da conclusão ("aaaa-mm-dd"), null se não está feita. */
+export type Task = { titulo: string; feita: boolean; feitaEm: string | null };
 
 export type Etapa = {
   id: string;

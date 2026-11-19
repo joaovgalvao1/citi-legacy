@@ -16,6 +16,7 @@
 
 import type { Etapa, Projeto } from "@/data";
 import { emPct } from "./indice";
+import { previsaoForaDoPrazo } from "./previsao";
 
 export const DIAS_PARADA = 14;
 
@@ -141,7 +142,8 @@ export function duracaoEmMeses(projeto: Projeto) {
 
 /* ---------- semáforo (verde, âmbar, vermelho) ---------- */
 //   vermelho  atrasado (projeto) / atrasada (etapa)
-//   âmbar     atenção: projeto no prazo com alguma etapa atrasada ou parada; etapa parada
+//   âmbar     atenção: projeto no prazo com alguma etapa atrasada ou parada, ou com a previsão
+//             de entrega (lib/previsao.ts) depois do prazo; etapa parada
 //   verde     concluído ou no prazo
 //   neutro    etapa ainda em planejamento
 
@@ -151,7 +153,7 @@ export function nivelProjeto(projeto: Projeto): Exclude<Nivel, "neutro"> {
   const s = statusProjeto(projeto);
   if (s === "Concluído") return "verde";
   if (s === "Atrasado") return "vermelho";
-  return alertas(projeto).length ? "ambar" : "verde";
+  return alertas(projeto).length || previsaoForaDoPrazo(projeto) ? "ambar" : "verde";
 }
 
 /** Rótulo do selo do projeto: "Concluído", "Atrasado", "Atenção" ou "No prazo". */

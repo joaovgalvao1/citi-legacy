@@ -825,3 +825,41 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 **Verificação:**
 - **E-mail:** gerei o HTML nos dois temas, sem enviar, e conferi no navegador.
 - **Link:** abri `/exportar/boletim?tema=claro`. A folha ficou clara, o botão marcou "Claro" e a URL foi limpa.
+
+### Bloco 2: tela de Projetos com previsão de entrega (18/11)
+
+**Verificação dos dados (antes do código):**
+- **Data de conclusão das tasks:** não existia. A IA conferiu que todas as tasks feitas citadas nos dados fictícios têm um commit com o mesmo texto, de onde dá para tirar a data.
+- **Simulação da previsão:** com essas datas, todos os projetos apareciam atrasados na previsão, porque a Infra/Deploy dura o projeto inteiro e conclui tasks devagar. Sem contraste para a banca.
+
+**Decisões que tomei (a IA recomendou):**
+1. **"Entregas na semana":** tasks concluídas nos últimos 7 dias.
+2. **Datas fictícias:** ajustadas para ter contraste. A Folhagem fica no prazo; Clínica e Mezzalira um pouco fora; a Plataforma bem atrasada.
+3. **Previsão e status:** a previsão entra no semáforo. Um projeto no prazo cuja previsão passa do prazo vira "Atenção".
+4. **Botão "Apresentar":** fica para o bloco 4, com o Modo Reunião.
+
+**O que a IA fez:**
+- **Banco:** campo `feita_em` nas tasks. Marcar uma task grava a data de hoje; desmarcar apaga.
+- **Gerador:** a data de cada task feita vem do último commit que a cita. Etapas com `recentes` no cenário têm um mínimo de tasks concluídas nas últimas 4 semanas (usado em 2 etapas da Folhagem).
+- **`lib/previsao.ts`:**
+  - ritmo = tasks das últimas 4 semanas ÷ 4;
+  - previsão da etapa = hoje + restantes ÷ ritmo;
+  - etapa sem ritmo fica "parada" e sem previsão;
+  - previsão do projeto = a maior data entre as etapas abertas, e essa etapa é o gargalo.
+- **Tela de Projetos:**
+  - faixa com 4 indicadores (em andamento, atrasados em vermelho, tasks entregues na semana, commits na semana em verde);
+  - cards com barra segmentada por etapa, "2 de 6 etapas · 70%", previsão ("prev. 16/12 · no prazo" em verde, "prev. 13/01 · +68 dias" em vermelho) e avatares da equipe nas cores dos gráficos;
+  - borda vermelha nos atrasados e ordem atrasados → atenção → no prazo, com legenda abaixo da lista.
+- **Boletim (PDF e e-mail):** o mesmo semáforo e a linha de previsão em cada projeto.
+- **Celular:** os cards não estouram mais a largura, e o cabeçalho cabe numa linha (o nome do usuário some; o botão Sair fica).
+
+**Resultado (hoje, 18/11):**
+
+| Projeto | Status | Previsão |
+|---|---|---|
+| Plataforma de Voluntariado | Atrasado | 13/01, +68 dias |
+| Clínica Movimento | Atenção | 30/12, +19 dias |
+| Metalúrgica Mezzalira | Atenção | 13/01, +26 dias |
+| Folhagem & Cia | No prazo | 16/12 |
+
+**Verificação:** conferi as previsões direto do banco local, a tela no navegador (desktop e celular, 375 px sem rolagem lateral), `tsc` e `eslint`.
