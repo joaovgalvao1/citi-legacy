@@ -115,10 +115,26 @@ h3 {
     linear-gradient(120deg, var(--color-roxo), var(--color-verde)) border-box;
 }
 .texto-ia {
+  /* o gradiente cobre só a largura do texto (num bloco, só o roxo do começo aparecia) */
+  display: inline-block;
   background-image: linear-gradient(90deg, var(--color-roxo), var(--color-verde));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+/* Na impressão, texto em gradiente vira imagem de baixa resolução (no Firefox fica pixelado):
+   o rótulo da IA sai em verde sólido, como no e-mail. A borda em gradiente continua. */
+@media print {
+  .texto-ia {
+    background: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    color: #00a843;
+  }
+  html:not([data-tema-folha="claro"]) .folha .texto-ia,
+  .slides-impressao .texto-ia {
+    color: #00db58;
+  }
 }
 
 /* ---------- skeleton (no lugar de "Carregando…") ---------- */

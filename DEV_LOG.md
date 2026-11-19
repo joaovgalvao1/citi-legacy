@@ -1096,3 +1096,16 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 **Verificação:** conferi de novo no Chromium (7 páginas em 16:9). No Firefox, a IA não conseguiu gerar o PDF sem janela; a conferência fica para eu exportar de novo.
 
 **Nome do arquivo:** pedi que o PDF se chamasse algo como "reunião da diretoria semana x a y". O título da página, que vira o nome do arquivo, agora é "Reunião da diretoria - semana 09-11 a 15-11", calculado a partir da semana do boletim. As datas usam hífen porque o navegador troca "/" por "_" no nome do arquivo.
+
+**Ajuste que pedi depois:** no PDF exportado pelo Firefox, a caixa de texto da IA vinha com defeito.
+
+**Causa (a IA analisou o meu PDF):**
+- **Texto pixelado:** o rótulo em gradiente ("✦ IA · O QUE TRAVOU", "✦ DOS RESUMOS DA IA") usa texto recortado do fundo (`background-clip: text`), que na impressão o Firefox transforma em imagem de baixa resolução.
+- **Gradiente cortado:** o gradiente ocupava a caixa inteira, então o rótulo curto mostrava só o roxo do começo.
+
+**Correção:**
+- **Na impressão:** o rótulo da IA sai em verde sólido, como texto de verdade (nítido e selecionável), igual ao e-mail. A borda em gradiente continua.
+- **Na tela:** o gradiente agora cobre só a largura do texto e vai do roxo ao verde.
+- **Alcance:** vale para todos os PDFs (reunião, resumo do projeto e boletim).
+
+**Verificação:** gerei o PDF de novo. O rótulo virou texto extraível ("✦ IA · O QUE TRAVOU") e aparece nítido no recorte ampliado.
