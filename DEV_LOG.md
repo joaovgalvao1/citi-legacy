@@ -1558,3 +1558,4 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
   - a foto só carrega quando o card aparece na tela (lazy) e some se não carregar;
   - quem passa de 3 membros ("+N") aparece listado na dica do "+N".
 - **Verificação:** a foto do João Vitor (joaovgalvao1) aparece ao passar o mouse no card do CITi Legacy.
+- **Foto sempre visível:** pedi a foto como padrão, sem precisar passar o mouse. Os avatares saíram do bloco de detalhes e foram para a linha do pulso, sempre visíveis, também no destaque. Quem tem GitHub cadastrado aparece com a foto, e os outros com as iniciais.

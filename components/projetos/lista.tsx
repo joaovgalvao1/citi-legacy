@@ -2,7 +2,7 @@
 
 // Projetos com abas (em andamento / concluídos) e busca. Cada card tem um sinal só (a cor da
 // situação no monograma, no anel e na data prevista) e um pulso em miniatura com o ritmo de commits;
-// etapas, prazo e equipe aparecem ao passar o mouse (sempre visíveis em telas de toque).
+// etapas e prazo aparecem ao passar o mouse (sempre visíveis em telas de toque).
 // No topo, o projeto atrasado mais grave ganha o destaque "Precisa de você agora", com o resumo da IA.
 
 import { useState } from "react";
@@ -56,7 +56,6 @@ const normalizar = (s: string) =>
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "");
 
-
 /** Ponto + rótulo da situação (a única etiqueta colorida do card). */
 function Situacao({ nivel, rotulo }: { nivel: Tom; rotulo: string }) {
   return (
@@ -76,8 +75,8 @@ function Barra({ progresso, nivel }: { progresso: number; nivel: Tom }) {
   );
 }
 
-/** Foto do GitHub por cima das iniciais, revelada ao passar o mouse (some se não carregar). */
-function FotoNoHover({ github, nome }: { github: string; nome: string }) {
+/** Foto do GitHub por cima das iniciais (se não carregar, ficam as iniciais). */
+function FotoGithub({ github, nome }: { github: string; nome: string }) {
   const [falhou, setFalhou] = useState(false);
   if (falhou) return null;
   return (
@@ -87,12 +86,12 @@ function FotoNoHover({ github, nome }: { github: string; nome: string }) {
       alt={`Foto de ${nome}`}
       loading="lazy"
       onError={() => setFalhou(true)}
-      className="absolute inset-0 h-full w-full rounded-full object-cover opacity-0 transition-opacity duration-200 group-hover/av:opacity-100"
+      className="absolute inset-0 h-full w-full rounded-full object-cover"
     />
   );
 }
 
-/** Até 3 iniciais da equipe; o resto vira "+N". Ao passar o mouse, quem tem GitHub mostra a foto. */
+/** Até 3 membros da equipe (foto do GitHub, ou as iniciais); o resto vira "+N". */
 function Avatares({ membros }: { membros: ResumoProjeto["membros"] }) {
   const visiveis = membros.slice(0, 3);
   const resto = membros.length - visiveis.length;
@@ -102,11 +101,11 @@ function Avatares({ membros }: { membros: ResumoProjeto["membros"] }) {
         <span
           key={m.id}
           title={m.nome}
-          className="group/av dado relative flex h-6 w-6 items-center justify-center rounded-full border-2 border-white text-[9px] font-semibold text-fundo transition-transform duration-200 hover:z-10 hover:scale-150"
+          className="dado relative flex h-6 w-6 items-center justify-center rounded-full border-2 border-white text-[9px] font-semibold text-fundo transition-transform duration-200 hover:z-10 hover:scale-150"
           style={{ backgroundColor: m.cor }}
         >
           {m.iniciais}
-          {m.github && <FotoNoHover github={m.github} nome={m.nome} />}
+          {m.github && <FotoGithub github={m.github} nome={m.nome} />}
         </span>
       ))}
       {resto > 0 && (
@@ -215,8 +214,11 @@ function CardAndamento({ p }: { p: ResumoProjeto }) {
             )}
             {p.gargalo && <span className="text-gray-500"> · {p.gargalo}</span>}
           </p>
-          <div className="mt-1.5">
-            <MiniPulso pulso={p.pulso} nivel={p.nivel} />
+          <div className="mt-1.5 flex items-center gap-3">
+            <div className="min-w-0 flex-1">
+              <MiniPulso pulso={p.pulso} nivel={p.nivel} />
+            </div>
+            <Avatares membros={p.membros} />
           </div>
         </div>
         <Anel progresso={p.progresso} nivel={p.nivel} />
@@ -229,7 +231,6 @@ function CardAndamento({ p }: { p: ResumoProjeto }) {
           </p>
           {p.alerta && <p>{p.alerta}</p>}
         </div>
-        <Avatares membros={p.membros} />
       </div>
     </Link>
   );
@@ -257,7 +258,12 @@ function CardDestaque({ p, d }: { p: ResumoProjeto; d: NonNullable<Destaque> }) 
               <Anel progresso={p.progresso} nivel={p.nivel} />
             </span>
           </div>
-          <MiniPulso pulso={p.pulso} nivel={p.nivel} />
+          <div className="flex items-center gap-3">
+            <div className="min-w-0 flex-1">
+              <MiniPulso pulso={p.pulso} nivel={p.nivel} />
+            </div>
+            <Avatares membros={p.membros} />
+          </div>
           <p className="text-sm text-gray-600">
             <span className="font-semibold text-branco tabular-nums">{Math.round(p.progresso)}%</span>
             {p.entregaPrevista && (
