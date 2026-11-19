@@ -395,6 +395,13 @@ html:not([data-tema-folha="claro"]) .folha {
   html:not([data-tema-folha="claro"]) body {
     background: #121212 !important;
   }
+  /* o fundo da página inteira (inclusive o resto da última página, depois do conteúdo) só sai
+     impresso se a raiz também pedir as cores exatas; senão o navegador deixava uma faixa branca */
+  html,
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
   html:not([data-tema-folha="claro"]) .folha {
     --f-fundo: #121212;
     border: 0 !important;

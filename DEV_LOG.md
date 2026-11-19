@@ -1768,3 +1768,4 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
   - **Brilho verde do canto do slide:** no Safari virava um círculo verde sólido (a impressão perde a transparência do degradê). Agora fica escondido na impressão do Safari.
   - **Chrome e Firefox:** continuam em 16:9, com 1 slide por página e o brilho. Conferido com um PDF gerado no Chromium.
   - **Falta:** testar de novo no iPad depois do push.
+- **Faixa branca no fim do boletim e do projeto (computador):** a última página ficava branca depois do conteúdo, porque a raiz da página não pedia as cores exatas na impressão e o navegador não pintava o fundo ali. O `html` e o `body` passaram a usar `print-color-adjust: exact`, então o fundo escuro vai até o fim da página.
