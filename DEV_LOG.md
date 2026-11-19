@@ -1406,3 +1406,25 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
   - rodapé do boletim (PDF e e-mail);
   - comentários do código e README.
 - **Sem mudança:** a semana de segunda a domingo e a escolha da semana mais recente com resumo para o painel e o boletim. Na segunda, a reunião mostra a semana que acabou de fechar.
+
+### Textos da página inicial: foco no acompanhamento (19/11)
+
+**O que pedi:** revisar os textos que ainda falavam do objetivo antigo (guardar o conhecimento de quem sai) e recalcular a rota.
+
+**Como chegamos na mensagem:**
+- **Dor:** a IA propôs três frases para a dor. A mais forte ("a diretoria descobre os problemas tarde demais") afirmava algo que eu não tenho como comprovar no CITi.
+- **Decisão:** em vez de afirmar uma dor, a página mostra o que o produto faz. O foco é o acompanhamento dos projetos: atualizações por e-mail, prazos, resumos da IA para ver a situação e manter o escopo, e a reunião semanal da diretoria.
+
+**O que mudou:**
+- **Destaque:**
+  - "Todos os projetos do CITi, **acompanhados semana a semana.**" / "Prazos, escopo e prioridades à vista, **direto do código.**";
+  - parágrafo novo sobre andamento, previsão, resumo da IA e reunião de segunda;
+  - título um pouco menor, para caber em 3 linhas no desktop.
+- **Números:** "projetos entregues" e "pessoas nas equipes".
+- **Recursos:**
+  - subtítulo novo, sobre andamento, prazos, escopo e prioridades num só lugar;
+  - textos do semáforo ("mostra se a entrega cabe no prazo"), do resumo da IA (manter o foco no escopo), do modo reunião e do boletim;
+  - "Quem sabe o quê" virou "Quem conhece cada parte".
+- **Seção do legado:** saiu "Quando alguém sai, o conhecimento fica.", que vendia uma dor, e entrou "E quando a equipe muda, **o histórico fica.**", como benefício de fechamento. Os rótulos dos números foram suavizados.
+- **Chamada final:** "Pronto para a **reunião de segunda?**".
+- **Descrição do site** (Google e compartilhamento): "Todos os projetos do CITi, acompanhados semana a semana: andamento, prazos, resumo com IA e reunião da diretoria."

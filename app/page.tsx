@@ -111,15 +111,17 @@ export default async function Entrada() {
               <Ponto tom="verde" pulsa />
               Ferramenta interna do CITi · CIn UFPE
             </p>
-            <h1 className="text-5xl leading-[1.02] tracking-[-0.045em] sm:text-6xl lg:text-7xl">
-              <span className="font-light">Todo projeto deixa um</span> <span className="font-bold text-verde">legado.</span>
+            <h1 className="text-[2.6rem] leading-[1.05] tracking-[-0.045em] sm:text-6xl lg:text-[3.5rem]">
+              <span className="font-light">Todos os projetos do CITi,</span>{" "}
+              <span className="font-bold text-verde">acompanhados semana a semana.</span>
             </h1>
             <p className="text-2xl leading-snug font-light tracking-[-0.02em] text-gray-800 sm:text-3xl">
-              Quem chega <span className="font-semibold text-branco">não começa do zero.</span>
+              Prazos, escopo e prioridades à vista, <span className="font-semibold text-branco">direto do código.</span>
             </p>
             <p className="max-w-lg text-gray-600">
-              Progresso, previsão de entrega, quem sabe o quê e o resumo da semana feito pela IA. Tudo direto dos commits do GitHub, para a
-              diretoria decidir na reunião de segunda e para quem entra amanhã.
+              O CITi Legacy acompanha cada projeto pelos commits do GitHub: mostra o andamento, prevê a entrega, resume a semana com IA e
+              prepara a reunião da diretoria de segunda. Fica mais fácil manter prazos e escopo, e o histórico de cada projeto fica
+              guardado.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link href="/login" className={botaoPrincipal}>
@@ -151,8 +153,8 @@ export default async function Entrada() {
         <dl className="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-8 px-4 py-10 sm:grid-cols-3 lg:grid-cols-5">
           {[
             { valor: andamento.length, rotulo: "projetos em andamento", extra: niveis },
-            { valor: projetos.length - andamento.length, rotulo: "projetos concluídos e consultáveis" },
-            { valor: pessoas.length, rotulo: "pessoas no histórico" },
+            { valor: projetos.length - andamento.length, rotulo: "projetos entregues" },
+            { valor: pessoas.length, rotulo: "pessoas nas equipes" },
             { valor: commits, rotulo: "commits analisados" },
             { valor: resumosIA, rotulo: "resumos escritos pela IA", ia: true },
           ].map((d) => (
@@ -176,14 +178,14 @@ export default async function Entrada() {
       {/* ---------- recursos ---------- */}
       <section id="recursos" className="mx-auto max-w-6xl scroll-mt-24 px-4 py-20">
         <Titulo rotulo="O que faz" fino="Tudo o que a diretoria precisa" destaque="na segunda.">
-          Do “como está cada projeto?” ao “quem sabe mexer nisso?”, sem planilha e sem perguntar no grupo.
+          Andamento, prazos, escopo e prioridades de cada projeto num só lugar, atualizados pelo próprio código.
         </Titulo>
         <ul className="mt-10 grid gap-4 lg:grid-cols-6">
           <Recurso
             className="lg:col-span-4"
             icone={IconeProgresso}
             titulo="Semáforo e previsão de entrega"
-            texto="Cada projeto ganha uma cor pelo andamento real. A previsão usa o ritmo das últimas semanas e aponta o gargalo principal antes de virar atraso."
+            texto="Cada projeto ganha uma cor pelo andamento real das tasks. A previsão usa o ritmo das últimas semanas e mostra se a entrega cabe no prazo."
           >
             <MiniSemaforo />
           </Recurso>
@@ -192,15 +194,15 @@ export default async function Entrada() {
             ia
             icone={IconeIA}
             titulo="Resumo semanal com IA"
-            texto="Todo domingo, a IA lê a semana de cada projeto e escreve o que andou, o que travou e o que fazer primeiro."
+            texto="Todo domingo, a IA lê a semana de cada projeto e resume o que andou, o que ficou parado e o que fazer primeiro. Ajuda a ver a situação de relance e a manter o foco no escopo."
           >
             <MiniIA />
           </Recurso>
           <Recurso
             className="lg:col-span-2"
             icone={IconeConhecimento}
-            titulo="Quem sabe o quê"
-            texto="O Índice de Conhecimento mostra quanto de cada etapa está com cada pessoa. A órbita mostra quem trabalhou com quem."
+            titulo="Quem conhece cada parte"
+            texto="O Índice de Conhecimento mostra quem domina cada etapa, para distribuir o trabalho e saber a quem perguntar."
           >
             <MiniConhecimento />
           </Recurso>
@@ -208,7 +210,7 @@ export default async function Entrada() {
             className="lg:col-span-2"
             icone={IconeExportar}
             titulo="Modo reunião"
-            texto="Os slides da reunião de diretoria se montam sozinhos: panorama, um slide por projeto e as prioridades. Sai em PDF 16:9."
+            texto="A reunião semanal da diretoria já chega montada: panorama, um slide por projeto e as prioridades da semana. Sai em PDF 16:9."
           >
             <MiniReuniao />
           </Recurso>
@@ -216,7 +218,7 @@ export default async function Entrada() {
             className="lg:col-span-2"
             icone={IconeEmail}
             titulo="Boletim e convite"
-            texto="O boletim da semana chega por e-mail, e a reunião é marcada com link direto para o Google Agenda."
+            texto="O resumo da semana chega por e-mail para a diretoria, com o PDF e o link para marcar a reunião de segunda no Google Agenda."
           >
             <MiniEmail />
           </Recurso>
@@ -275,21 +277,21 @@ export default async function Entrada() {
             <IconeLegado className="h-6 w-6" />
           </span>
           <h2 className="text-4xl leading-tight tracking-[-0.04em] sm:text-5xl">
-            <span className="font-light">Quando alguém sai,</span> <span className="font-bold text-verde">o conhecimento fica.</span>
+            <span className="font-light">E quando a equipe muda,</span> <span className="font-bold text-verde">o histórico fica.</span>
           </h2>
           <p className="max-w-lg text-gray-600">
-            Em empresa júnior, a equipe muda todo semestre. O CITi Legacy guarda o que foi feito, quando e por quem, e mostra a quem
-            perguntar antes que essa pessoa vá embora.
+            Em empresa júnior, as equipes mudam a cada semestre. Tudo o que foi feito em cada projeto, quando e por quem, continua
+            registrado para quem chega depois.
           </p>
         </div>
         <dl className="grid grid-cols-2 gap-3">
           <div className="rounded-2xl border border-linha bg-white p-6">
             <dd className="dado text-5xl leading-none font-bold text-verde">{exMembros}</dd>
-            <dt className="mt-2 text-sm text-gray-600">ex-membros com o trabalho registrado</dt>
+            <dt className="mt-2 text-sm text-gray-600">pessoas que já saíram, com o trabalho registrado</dt>
           </div>
           <div className="rounded-2xl border border-linha bg-white p-6">
             <dd className="dado text-5xl leading-none font-bold text-branco">{etapasDeQuemSaiu}</dd>
-            <dt className="mt-2 text-sm text-gray-600">etapas em que quem mais sabia já saiu, e o histórico continua aqui</dt>
+            <dt className="mt-2 text-sm text-gray-600">etapas com o histórico de quem já saiu</dt>
           </div>
         </dl>
       </section>
@@ -305,7 +307,7 @@ export default async function Entrada() {
           <div className="relative flex flex-col items-center gap-5">
             <Lockup tamanho="grande" />
             <h2 className="text-3xl tracking-[-0.035em] sm:text-4xl">
-              <span className="font-light">Pronto para ver</span> <span className="font-bold">os projetos?</span>
+              <span className="font-light">Pronto para a</span> <span className="font-bold">reunião de segunda?</span>
             </h2>
             <p className="text-gray-700">Entre com o usuário de demonstração do protótipo.</p>
             <Link href="/login" className={botaoPrincipal}>

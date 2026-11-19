@@ -13,7 +13,7 @@ const plexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: "CITi Legacy",
-  description: "Todo projeto deixa um legado. Quem chega não começa do zero.",
+  description: "Todos os projetos do CITi, acompanhados semana a semana: andamento, prazos, resumo com IA e reunião da diretoria.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
