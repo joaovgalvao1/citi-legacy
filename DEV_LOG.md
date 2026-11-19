@@ -892,3 +892,23 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 **O que a IA fez:**
 - **Brilho:** um brilho verde suave (gradiente radial) no canto superior direito, fixo atrás do conteúdo, como no site do CITi. É um só por tela, como pede a identidade. Aparece nas telas internas e no login; fica fora da entrada, que tem foto de fundo própria, e da impressão.
 - **Largura:** o conteúdo das telas internas foi de 1024 px para 1152 px (`max-w-6xl`), para sobrar menos preto em telas largas.
+
+### Visual inspirado no site do CITi (18/11)
+
+**O que pedi:** analisar o citi.org.br e ver o que dava para aproveitar, com uma prévia visual de cada recomendação antes de alterar.
+
+**O que a IA encontrou:**
+- **Mesma base:** o site usa a mesma paleta do Legacy (fundo `#0A0A0A`, verde `#00DB58`, pílulas).
+- **Mais tratamento visual:** cabeçalho flutuante em pílula com vidro fosco; títulos em dois pesos ("Começamos pela **pergunta certa.**"); números enormes como destaque ("+30 anos"); seções com faixa verde-escura.
+- **Contradição:** o site usa glassmorphism no cabeçalho, que o meu documento proibia. Decidi seguir o site.
+
+**O que a IA fez (aprovei as 4 depois de ver a prévia):**
+1. **Faixa verde-escura no topo** das telas internas e do login, no lugar do brilho no canto. Desce do verde ao fundo e rola com a página.
+2. **Cabeçalho flutuante em pílula** com vidro fosco (`backdrop-blur`), solto do topo. O item ativo do menu é um botão verde sólido.
+3. **Títulos em dois pesos** (`TituloPagina`), com um rótulo verde acima:
+   - "Projetos **em andamento.**" (painel da semana, com as datas);
+   - "Membros **do CITi.**";
+   - "Novo **projeto.**"
+4. **Indicadores grandes** (44 a 52 px, Inter Tight), com a palavra-chave em negrito ("**commits** na semana").
+
+**Verificação:** conferi a tela de Projetos (1440 px e celular de 375 px, sem rolagem lateral), a Visão geral de um projeto e a entrada. No celular, o botão Sair estourava a pílula por 16 px; a IA ajustou os espaçamentos.

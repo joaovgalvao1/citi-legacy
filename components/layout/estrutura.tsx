@@ -64,10 +64,15 @@ export function Estrutura({ children }: { children: ReactNode }) {
 
   return (
     <>
-      {/* brilho no canto: só nas telas internas e no login (a entrada tem a foto de fundo própria) */}
-      {caminho !== "/" && <div aria-hidden="true" className="brilho-fundo" />}
-      <header className="sticky top-0 z-20 border-b border-linha bg-fundo/85 backdrop-blur">
-        <div className={`mx-auto flex items-center justify-between gap-3 px-4 py-3 ${caminho === "/" ? "max-w-5xl" : "max-w-6xl"}`}>
+      {/* faixa verde no topo: telas internas e login (a entrada tem a foto de fundo própria) */}
+      {caminho !== "/" && <div aria-hidden="true" className="faixa-topo" />}
+      {/* cabeçalho flutuante em pílula, com vidro fosco, como no site do CITi */}
+      <header className="sticky top-0 z-20 px-2 pt-3 sm:px-4">
+        <div
+          className={`mx-auto flex items-center justify-between gap-3 rounded-full border border-branco/12 bg-fundo/60 py-2 pr-1.5 pl-3.5 backdrop-blur-md backdrop-saturate-150 sm:pr-2 sm:pl-5 ${
+            caminho === "/" ? "max-w-5xl" : "max-w-6xl"
+          }`}
+        >
           <Marca href={usuario ? "/projetos" : "/"} />
           {publica ? (
             caminho === "/" && (
@@ -93,8 +98,8 @@ export function Estrutura({ children }: { children: ReactNode }) {
                       key={href}
                       href={href}
                       aria-current={ativo ? "page" : undefined}
-                      className={`rounded-full px-2.5 py-1.5 transition-colors sm:px-3 ${
-                        ativo ? "bg-verde/10 text-verde" : "text-gray-600 hover:text-gray-900"
+                      className={`rounded-full px-2 py-1.5 transition-colors sm:px-4 ${
+                        ativo ? "bg-verde font-semibold text-fundo" : "text-gray-700 hover:text-branco"
                       }`}
                     >
                       {rotulo}
@@ -116,7 +121,7 @@ export function Estrutura({ children }: { children: ReactNode }) {
                   }}
                   aria-label="Sair"
                   title="Sair"
-                  className="ml-1 cursor-pointer rounded-full p-1.5 text-gray-600 transition-colors hover:text-verde"
+                  className="cursor-pointer rounded-full p-1.5 text-gray-600 transition-colors hover:text-verde sm:ml-1"
                 >
                   <IconeSair className="h-4 w-4" />
                 </button>

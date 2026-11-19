@@ -2,6 +2,7 @@
 
 import { formatarMesAno, obterPessoas, obterProjetos } from "@/data";
 import { ListaMembros, type ResumoMembro } from "@/components/membros/lista";
+import { TituloPagina } from "@/components/ui";
 
 export default async function Membros() {
   const [pessoas, projetos] = await Promise.all([obterPessoas(), obterProjetos()]);
@@ -17,7 +18,7 @@ export default async function Membros() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Membros</h1>
+      <TituloPagina rotulo={`${resumos.length} pessoas`} fino="Membros" destaque="do CITi." />
       <ListaMembros membros={resumos} />
     </div>
   );

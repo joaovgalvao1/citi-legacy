@@ -1,7 +1,7 @@
 // Cadastro de projeto pelo admin
 
 import { obterClientes, obterPessoas, obterProjetos } from "@/data";
-import { Voltar } from "@/components/ui";
+import { TituloPagina, Voltar } from "@/components/ui";
 import { FormularioNovoProjeto } from "@/components/projetos/novo-projeto";
 
 export default async function NovoProjeto() {
@@ -11,7 +11,7 @@ export default async function NovoProjeto() {
     <div className="space-y-6">
       <div className="space-y-2">
         <Voltar href="/projetos">Projetos</Voltar>
-        <h1 className="text-2xl font-bold">Novo projeto</h1>
+        <TituloPagina fino="Novo" destaque="projeto." />
         <p className="text-sm text-gray-600">
           Cadastre o projeto, a equipe e as etapas. Cada etapa aponta para as pastas do repositório que ela cobre, e o progresso vem das tasks.
         </p>

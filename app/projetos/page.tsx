@@ -7,7 +7,9 @@ import { previsaoProjeto, textoPrevisao } from "@/lib/previsao";
 import { alertaDoCard, duracaoEmMeses, nivelEtapa, nivelProjeto, progressoProjeto, rotuloNivelProjeto, statusEtapa, statusProjeto, textoPrazo } from "@/lib/status";
 import { corDoMembro } from "@/components/graficos/cores";
 import { ListaProjetos, type ResumoProjeto } from "@/components/projetos/lista";
-import { BotaoLink } from "@/components/ui";
+import { BotaoLink, TituloPagina } from "@/components/ui";
+
+const ddmm = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
 
 const iniciais = (nome: string) =>
   nome
@@ -25,11 +27,14 @@ function tomDoSegmento(p: Projeto, e: Etapa): ResumoProjeto["etapas"][number]["t
   return n === "neutro" ? "verde" : n;
 }
 
-function Indicador({ valor, rotulo, cor = "text-branco" }: { valor: number; rotulo: string; cor?: string }) {
+/** Indicador no estilo do site do CITi ("+30 anos de mercado"): número grande e legenda com a palavra-chave em negrito. */
+function Indicador({ valor, destaque, resto, cor = "text-branco" }: { valor: number; destaque: string; resto: string; cor?: string }) {
   return (
-    <div className="rounded-xl border border-linha bg-white px-4 py-3.5">
-      <p className={`dado text-[28px] leading-none font-bold ${cor}`}>{valor}</p>
-      <p className="mt-2 text-xs text-gray-600">{rotulo}</p>
+    <div className="rounded-xl border border-linha bg-white px-5 py-4">
+      <p className={`text-[44px] leading-[0.9] font-bold tracking-[-0.04em] tabular-nums sm:text-[52px] ${cor}`}>{valor}</p>
+      <p className="mt-2.5 text-sm">
+        <span className="font-semibold text-branco">{destaque}</span> <span className="text-gray-600">{resto}</span>
+      </p>
     </div>
   );
 }
@@ -76,8 +81,8 @@ export default async function Projetos() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold tracking-tight">Projetos</h1>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <TituloPagina rotulo={`Painel da semana · ${ddmm(semanaPassada)} a ${ddmm(hoje)}`} fino="Projetos" destaque="em andamento." />
         <div className="flex flex-wrap gap-2">
           <BotaoLink href="/exportar/boletim" variante="secundario">
             Boletim da semana (PDF)
@@ -87,10 +92,10 @@ export default async function Projetos() {
       </div>
 
       <section aria-label="Indicadores da semana" className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <Indicador valor={andamento.length} rotulo="projetos em andamento" />
-        <Indicador valor={atrasados} rotulo="projetos atrasados" cor={atrasados ? "text-vermelho" : "text-branco"} />
-        <Indicador valor={entregasSemana} rotulo="tasks entregues na semana" />
-        <Indicador valor={commitsSemana} rotulo="commits na semana" cor="text-verde" />
+        <Indicador valor={andamento.length} destaque="projetos" resto="em andamento" />
+        <Indicador valor={atrasados} destaque={atrasados === 1 ? "atrasado" : "atrasados"} resto="no momento" cor={atrasados ? "text-vermelho" : "text-branco"} />
+        <Indicador valor={entregasSemana} destaque="tasks" resto="entregues na semana" />
+        <Indicador valor={commitsSemana} destaque="commits" resto="na semana" cor="text-verde" />
       </section>
 
       <ListaProjetos projetos={resumos} />

@@ -22,6 +22,21 @@ export function Caixa({
   );
 }
 
+/**
+ * Título de página em dois pesos, como no site do CITi ("Começamos pela **pergunta certa.**"):
+ * a primeira parte fina, o destaque em negrito. `rotulo` é a linha pequena em verde acima.
+ */
+export function TituloPagina({ fino, destaque, rotulo }: { fino: string; destaque: string; rotulo?: ReactNode }) {
+  return (
+    <div className="space-y-1.5">
+      {rotulo && <p className="rotulo text-verde!">{rotulo}</p>}
+      <h1 className="text-3xl leading-tight tracking-[-0.035em] sm:text-4xl">
+        <span className="font-light">{fino}</span> <span className="font-bold">{destaque}</span>
+      </h1>
+    </div>
+  );
+}
+
 export function Placeholder({ texto, altura = "h-40" }: { texto: string; altura?: string }) {
   return (
     <div
