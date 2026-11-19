@@ -236,7 +236,7 @@ function LinhaEtapa({
     `início ${ddmm(l.inicio)} · prazo ${ddmm(etapa.fimPrevisto)}`,
     `${emPct(etapa.progresso)} · ${feitas} de ${etapa.tasks.length} tasks`,
     p.tipo === "prevista"
-      ? `previsão ${ddmm(p.data)}${p.noPrazo ? " (no prazo)" : ` (+${p.diasAlemDoPrazo} dias)`}`
+      ? `previsão ${ddmm(p.data)}${p.noPrazo ? " (no prazo)" : ` (+${p.diasAlemDoPrazo} dias)`}${p.base === "media" ? " · etapa contínua: ritmo médio das outras etapas" : ""}`
       : p.tipo === "parada"
         ? `sem previsão · parada há ${p.semanas} semanas`
         : p.tipo === "concluida"
@@ -310,6 +310,7 @@ function LinhaEtapa({
                     style={{ left: x(p.data) }}
                   >
                     prev. {ddmm(p.data)}
+                    {p.base === "media" && <span className="text-gray-500"> · média</span>}
                   </span>
                 </>
               )}

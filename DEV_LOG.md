@@ -1005,3 +1005,33 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - **Interação:** dica e clique conferidos; no celular, sem rolagem lateral na página.
 - **Ajuste feito durante o teste:** os rótulos "prev. DD/MM" cortavam no fim do eixo, então a IA aumentou a folga.
 - **Ajuste que pedi depois:** a dica da primeira etapa abria para cima e era cortada pela borda do gráfico. Agora, nas duas primeiras linhas, a dica abre para baixo.
+
+### Previsão das etapas contínuas (Infra/Deploy) (19/11)
+
+**O que propus:** usar a média do projeto como ritmo da Infra/Deploy, para ela não distorcer a previsão. Discutimos e deleguei à IA a escolha da melhor opção, com testes.
+
+**O problema:** a Infra/Deploy dura o projeto inteiro e as tasks dela vêm em pulsos (CI no começo, deploy no fim). O ritmo das últimas 4 semanas sai baixo ou zero, o que gerava atraso falso ("+26 dias") ou "sem previsão · parada há 11 semanas".
+
+**Opções testadas pela IA** (4 projetos × 3 datas: 19/11, 26/11 e 03/12):
+- **A:** a etapa contínua usa o ritmo médio das outras etapas em execução.
+- **B:** a etapa contínua fica fora da previsão ("acompanha o projeto").
+- **C:** a etapa contínua usa o próprio ritmo, com janela de 8 semanas.
+
+**Resultado:**
+- **C** continuou gerando atraso falso (Folhagem e Mezzalira com +27 dias em 19/11).
+- **A e B** deram a mesma previsão do projeto nos 12 cenários, e a Infra nunca virou gargalo falso.
+- **A** mantém a informação de quanto falta na Infra; **B** esconde.
+
+**Decisão da IA: opção A.**
+- **Etapa contínua:** é a que tem a janela planejada cobrindo 80% ou mais do prazo do projeto. Hoje são só as 4 Infra/Deploy; a maior etapa comum, Estoque, cobre 69%.
+- **Sem média disponível:** se nenhuma outra etapa tem ritmo, usa o próprio ritmo e pode aparecer como parada.
+- **Na tela:** o Gantt mostra "prev. DD/MM · média", e a dica explica "etapa contínua: ritmo médio das outras etapas".
+
+**Resultado nos dados:** a previsão de nenhum projeto mudou. A Infra/Deploy ganhou data própria:
+
+| Projeto | Previsão da Infra/Deploy |
+|---|---|
+| Folhagem | 03/12 |
+| Clínica | 12/12 |
+| Mezzalira | 12/12 |
+| Plataforma | 17/12 (antes: "parada há 11 semanas") |

@@ -4,6 +4,9 @@
 // 2. Previsão da etapa: hoje + (tasks restantes ÷ ritmo) semanas.
 // 3. Etapa aberta sem nenhuma task concluída nas últimas 4 semanas: sem previsão ("parada há X semanas").
 // 4. Previsão do projeto: a maior data prevista entre as etapas abertas; essa etapa é o gargalo.
+// 5. Etapa contínua (a janela planejada cobre 80% ou mais do prazo do projeto, como a Infra/Deploy):
+//    as tasks dela acontecem em pulsos (CI no começo, deploy no fim), então o ritmo próprio engana.
+//    Ela usa o ritmo médio das outras etapas em execução; sem nenhuma com ritmo, usa o próprio.
 // É uma extrapolação, não uma certeza: as telas mostram a base do cálculo ("ritmo das últimas 4 semanas").
 
 import type { Etapa, Projeto } from "@/data";
@@ -20,7 +23,30 @@ export type PrevisaoEtapa =
   | { tipo: "concluida"; data: string | null }
   | { tipo: "nao-iniciada" }
   | { tipo: "parada"; semanas: number }
-  | { tipo: "prevista"; data: string; ritmo: number; restantes: number; noPrazo: boolean; diasAlemDoPrazo: number };
+  | {
+      tipo: "prevista";
+      data: string;
+      ritmo: number;
+      /** "etapa" = ritmo da própria etapa; "media" = ritmo médio das outras etapas (etapa contínua). */
+      base: "etapa" | "media";
+      restantes: number;
+      noPrazo: boolean;
+      diasAlemDoPrazo: number;
+    };
+
+/** Etapa contínua: a janela planejada cobre 80% ou mais do prazo do projeto (ex.: Infra/Deploy). */
+export function etapaContinua(projeto: Projeto, etapa: Etapa) {
+  return dias(etapa.inicioPrevisto, etapa.fimPrevisto) >= 0.8 * dias(projeto.inicio, projeto.fimPrevisto);
+}
+
+/** Ritmo médio das etapas em execução que não são contínuas e tiveram tasks concluídas nas últimas 4 semanas. */
+export function ritmoMedioDasEtapas(projeto: Projeto) {
+  const ritmos = projeto.etapas
+    .filter((e) => !etapaContinua(projeto, e) && e.tasks.some((t) => !t.feita))
+    .map((e) => ritmoEtapa(projeto, e))
+    .filter((r) => r > 0);
+  return ritmos.length ? ritmos.reduce((a, b) => a + b, 0) / ritmos.length : 0;
+}
 
 /** Tasks concluídas por semana nas últimas 4 semanas. */
 export function ritmoEtapa(projeto: Projeto, etapa: Etapa) {
@@ -45,7 +71,9 @@ export function previsaoEtapa(projeto: Projeto, etapa: Etapa): PrevisaoEtapa {
   if (restantes === 0 || projeto.status === "concluido") return { tipo: "concluida", data: conclusaoEtapa(etapa) };
   if (feitas === 0 && !etapa.ultimoCommit) return { tipo: "nao-iniciada" };
 
-  const ritmo = ritmoEtapa(projeto, etapa);
+  const media = etapaContinua(projeto, etapa) ? ritmoMedioDasEtapas(projeto) : 0;
+  const base = media > 0 ? "media" : "etapa";
+  const ritmo = media > 0 ? media : ritmoEtapa(projeto, etapa);
   if (ritmo === 0) {
     // parada desde a última task concluída (ou, sem nenhuma, desde o primeiro commit)
     const desde = ultimaTaskFeita(etapa) ?? etapa.primeiroCommit ?? etapa.inicioPrevisto;
@@ -53,7 +81,7 @@ export function previsaoEtapa(projeto: Projeto, etapa: Etapa): PrevisaoEtapa {
   }
   const data = somarDias(projeto.hoje, Math.ceil((restantes / ritmo) * 7));
   const alem = dias(etapa.fimPrevisto, data);
-  return { tipo: "prevista", data, ritmo, restantes, noPrazo: alem <= 0, diasAlemDoPrazo: Math.max(0, alem) };
+  return { tipo: "prevista", data, ritmo, base, restantes, noPrazo: alem <= 0, diasAlemDoPrazo: Math.max(0, alem) };
 }
 
 export type PrevisaoProjeto =
