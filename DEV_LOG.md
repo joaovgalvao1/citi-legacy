@@ -1737,3 +1737,23 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
   - **Logo:** ficou maior (60% da largura).
   - **"LEGACY":** com um traço fino em cima, como a divisória do logo no cabeçalho, e letras mais espaçadas.
   - **PNGs:** foram exportados de novo em `public/marca/icones/`.
+
+### PDFs no iPad (19/11)
+
+**O que pedi:** corrigir a exportação dos PDFs no iPad (modo reunião, boletim e PDF do projeto), que saíam com o layout quebrado.
+
+**Causas encontradas pela IA:**
+- **Página 16:9 ignorada:** o Safari do iPad/iPhone ignora o tamanho de página da apresentação (`@page size: 1280px 720px`) e imprime em A4/Carta retrato. O slide de 1280 px passava da largura da página e era cortado.
+- **Recorte no `body`:** o `overflow: clip` que eu tinha posto hoje no `html`/`body`, para os fundos não criarem rolagem, também pode cortar a impressão no Safari.
+
+**O que a IA fez** (`app/globals.css`):
+- **Impressão sem recorte:** `overflow: visible` no `html` e no `body`.
+- **Slides em página menor que 1280 px** (o caso do Safari):
+  - o slide é reduzido para caber na largura (`zoom` por faixa de largura da página, pelo limite de baixo de cada faixa);
+  - saem 2 slides por página, com espaço entre eles.
+- **No Chrome e no Firefox:** a página continua 16:9 com 1 slide por página, sem mudança.
+
+**Verificação** (simulação do Safari: Chromium com tela de iPad, papel Carta retrato e as regras de tamanho de página removidas):
+- **Modo reunião:** 4 páginas com 2 slides cada, inteiros (antes cortava à direita).
+- **Boletim e PDF do projeto:** inteiros, em 3 e 2 páginas.
+- **Falta:** conferir num iPad de verdade.

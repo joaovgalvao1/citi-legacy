@@ -90,6 +90,12 @@ h3 {
   .faixa-topo {
     display: none;
   }
+  /* o recorte dos fundos decorativos (overflow: clip) não vale na impressão: no Safari do iPad
+     ele cortava o PDF na primeira página */
+  html,
+  body {
+    overflow: visible !important;
+  }
 }
 
 /* rótulo de seção: pequeno, maiúsculas, espaçado */
@@ -291,6 +297,49 @@ h3 {
   }
   .pagina-slide:last-child {
     break-after: auto;
+  }
+  /* Safari (iPad/iPhone) ignora o tamanho de página 16:9 e imprime em A4/Carta retrato: o slide de
+     1280 px é reduzido para caber na largura da página (escala pelo limite de baixo de cada faixa)
+     e saem 2 slides por página. No Chrome a página já tem 1280 px e nada disso vale. */
+  @media (max-width: 1279px) {
+    .pagina-slide {
+      zoom: 0.86;
+      break-after: auto;
+      margin-bottom: 18px;
+    }
+    .pagina-slide:nth-child(2n) {
+      break-after: page;
+    }
+  }
+  @media (max-width: 1100px) {
+    .pagina-slide {
+      zoom: 0.78;
+    }
+  }
+  @media (max-width: 1000px) {
+    .pagina-slide {
+      zoom: 0.7;
+    }
+  }
+  @media (max-width: 900px) {
+    .pagina-slide {
+      zoom: 0.62;
+    }
+  }
+  @media (max-width: 800px) {
+    .pagina-slide {
+      zoom: 0.54;
+    }
+  }
+  @media (max-width: 700px) {
+    .pagina-slide {
+      zoom: 0.46;
+    }
+  }
+  @media (max-width: 600px) {
+    .pagina-slide {
+      zoom: 0.38;
+    }
   }
   /* na impressão as animações não rodam: tudo já no estado final */
   .slides-impressao * {
