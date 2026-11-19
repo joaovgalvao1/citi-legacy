@@ -172,3 +172,10 @@ export function nivelEtapa(projeto: Projeto, etapa: Etapa): Nivel {
   if (p.tipo === "prevista" && !p.noPrazo) return "ambar";
   return s === "Em planejamento" ? "neutro" : "verde";
 }
+
+/** Cor do segmento de uma etapa nas barras por etapa (cards e Modo Reunião): "vazia" = não iniciada. */
+export function tomSegmentoEtapa(projeto: Projeto, etapa: Etapa): "verde" | "ambar" | "vermelho" | "vazia" {
+  if (etapa.progresso === 0 && statusEtapa(projeto, etapa) !== "Atrasada") return "vazia";
+  const n = nivelEtapa(projeto, etapa);
+  return n === "neutro" ? "verde" : n;
+}

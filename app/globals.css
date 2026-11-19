@@ -164,9 +164,19 @@ h3 {
 .anima-surgir {
   animation: surgir 0.45s ease-out;
 }
+/* troca de slide no Modo Reunião (sem fill-mode: se não animar, o slide aparece inteiro) */
+@keyframes aparecer {
+  from {
+    opacity: 0;
+  }
+}
+.anima-fade {
+  animation: aparecer 0.35s ease-out;
+}
 @media (prefers-reduced-motion: reduce) {
   .anima-barra,
   .anima-surgir,
+  .anima-fade,
   .esqueleto {
     animation: none;
   }

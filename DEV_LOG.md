@@ -1045,3 +1045,33 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - **Celular:** o ícone empurrava o botão Sair para fora da pílula, então o lockup ficou um pouco menor no celular (logo de 24 px e texto de 10 px). O tamanho no computador não mudou.
 
 **Verificação:** desktop e celular de 375 px, sem rolagem lateral.
+
+### Bloco 4: Modo Reunião (19/11)
+
+**O que pedi:** transformar os dados do app numa apresentação pronta para a reunião semanal da diretoria (seção 7 do documento). Aprovei as três recomendações da IA:
+- **Frase principal de cada projeto:** o que travou, para atrasados e em atenção; o que andou, para os no prazo.
+- **Responsáveis nas prioridades:** encontrados pelos nomes da equipe citados no texto.
+- **Tela cheia:** botão e tecla F.
+
+**O que a IA fez:**
+- **Entrada:** botão **"▶ Apresentar"** na tela de Projetos, que abre `/reuniao`. A rota ocupa a tela inteira, sem cabeçalho nem rodapé, e continua exigindo login.
+- **Slides:** montados no servidor com os dados que já existem: a mesma semana do painel e do boletim, a previsão e os resumos da IA, **sem nova chamada à IA**.
+  1. **Capa:** "Semana de 09/11 a 15/11." e os 4 indicadores grandes.
+  2. **Panorama:** um projeto por linha, com barra por etapa, selo e previsão.
+  3. **Um slide por projeto** (atrasados → atenção → no prazo):
+     - selo, nome, cliente e % concluído em destaque;
+     - etapas atrasadas, commits na semana e quem mais sabe;
+     - **Gantt compacto**: as mesmas regras, sem rótulos de data;
+     - a previsão e a frase principal com o rótulo "✦ IA".
+  4. **Prioridades da semana:** até 2 itens "O que fazer primeiro" por projeto, com as iniciais coloridas de quem é citado.
+- **Navegação:** ← → e espaço, Home e End, **Esc** volta para Projetos, **F** para tela cheia; botões em pílula, barra de progresso e fade entre slides.
+- **Escala:** o slide é desenhado numa tela fixa de 1280 × 720 e escalado inteiro para o espaço disponível, como num programa de apresentação.
+
+**Problema que a IA encontrou e corrigiu:** na primeira versão, o tamanho dos textos acompanhava a largura, mas o Gantt tinha medidas fixas. Em janelas menores, ele invadia a previsão e o quadro da IA. A tela fixa escalada resolveu.
+
+**Verificação no navegador:**
+- **Slides:** todos os 7 conferidos numa janela de 736 px.
+- **Teclado:** ←, →, Home e End funcionaram; Esc voltou para `/projetos`.
+- **Ajuste durante o teste:** a lista de prioridades encostava no logo do rodapé; a IA diminuiu os espaços.
+
+**Não testado:** a tela cheia (tecla F). O navegador só a permite quando a pessoa clica ou aperta a tecla de verdade, o que o teste automático não faz.

@@ -61,7 +61,8 @@ export function Estrutura({ children }: { children: ReactNode }) {
   // (o Next precisa disso para pré-renderizar); no navegador, quem não está logado é redirecionado.
   const liberado = usuario === undefined || publica || !!usuario;
 
-  if (impressao) return liberado ? <main className="flex-1">{children}</main> : null;
+  // versão de impressão (PDF) e Modo Reunião (tela cheia): sem cabeçalho nem rodapé do site
+  if (impressao || caminho === "/reuniao") return liberado ? <main className="flex-1">{children}</main> : null;
 
   return (
     <>

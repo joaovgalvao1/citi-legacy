@@ -1,10 +1,10 @@
 // Lista de todos os projetos da empresa: indicadores da semana no topo e os cards dos projetos.
 
-import { obterCommits, obterLixeira, obterProjetos, obterResumos, type Etapa, type Projeto } from "@/data";
+import { obterCommits, obterLixeira, obterProjetos, obterResumos } from "@/data";
 import { montarBoletim } from "@/lib/boletim";
 import { formatarData } from "@/data/formatos";
 import { previsaoProjeto, textoPrevisao } from "@/lib/previsao";
-import { alertaDoCard, duracaoEmMeses, nivelEtapa, nivelProjeto, progressoProjeto, rotuloNivelProjeto, statusEtapa, statusProjeto, textoPrazo } from "@/lib/status";
+import { alertaDoCard, duracaoEmMeses, nivelProjeto, progressoProjeto, rotuloNivelProjeto, statusProjeto, textoPrazo, tomSegmentoEtapa } from "@/lib/status";
 import { corDoMembro } from "@/components/graficos/cores";
 import { ListaProjetos, type ResumoProjeto } from "@/components/projetos/lista";
 import { BotaoLink, TituloPagina } from "@/components/ui";
@@ -19,13 +19,6 @@ const iniciais = (nome: string) =>
     .map((p) => p[0])
     .join("")
     .toUpperCase();
-
-/** Cor do segmento da etapa na barra do card: não iniciada (vazia), atrasada, atenção ou em dia/concluída. */
-function tomDoSegmento(p: Projeto, e: Etapa): ResumoProjeto["etapas"][number]["tom"] {
-  if (e.progresso === 0 && statusEtapa(p, e) !== "Atrasada") return "vazia";
-  const n = nivelEtapa(p, e);
-  return n === "neutro" ? "verde" : n;
-}
 
 /** Indicador no estilo do site do CITi ("+30 anos de mercado"): número grande e legenda com a palavra-chave em negrito. */
 function Indicador({ valor, destaque, resto, cor = "text-branco" }: { valor: number; destaque: string; resto: string; cor?: string }) {
@@ -61,7 +54,7 @@ export default async function Projetos() {
       progresso: progressoProjeto(p),
       prazo: textoPrazo(p),
       alerta: alertaDoCard(p),
-      etapas: p.etapas.map((e) => ({ nome: e.nome, progresso: e.progresso, tom: tomDoSegmento(p, e) })),
+      etapas: p.etapas.map((e) => ({ nome: e.nome, progresso: e.progresso, tom: tomSegmentoEtapa(p, e) })),
       etapasConcluidas: p.etapas.filter((e) => e.progresso >= 100).length,
       previsao: textoPrevisao(previsao),
       // a etapa que empurra a entrega para depois do prazo
@@ -77,6 +70,9 @@ export default async function Projetos() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <TituloPagina rotulo={`Semana de ${ddmm(semana)} a ${ddmm(fimSemana)}`} fino="Projetos" destaque="em andamento." />
         <div className="flex flex-wrap gap-2">
+          <BotaoLink href="/reuniao" variante="secundario">
+            ▶ Apresentar
+          </BotaoLink>
           <BotaoLink href="/exportar/boletim" variante="secundario">
             Boletim da semana (PDF)
           </BotaoLink>

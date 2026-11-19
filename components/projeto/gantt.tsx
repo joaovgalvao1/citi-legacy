@@ -49,22 +49,21 @@ function montarLinhas(projeto: Projeto): Linha[] {
   });
 }
 
-export function Gantt({ projeto, aoSelecionar }: { projeto: Projeto; aoSelecionar: (etapaId: string) => void }) {
-  const hoje = projeto.hoje;
+/** Janela de tempo do gráfico: do início mais cedo até o mais tarde entre prazos, previsões, conclusões e hoje. */
+function janelaDeTempo(projeto: Projeto, linhas: Linha[]) {
   const concluido = projeto.status === "concluido";
-  const previsto = previsaoProjeto(projeto);
-  const linhas = montarLinhas(projeto);
-  const rolagem = useRef<HTMLDivElement>(null);
-
-  // janela de tempo: do início mais cedo até o mais tarde entre prazos, previsões, conclusões e hoje
   const datas = [
     projeto.inicio,
     projeto.fimPrevisto,
-    concluido ? (projeto.entrega ?? projeto.fimPrevisto) : hoje,
+    concluido ? (projeto.entrega ?? projeto.fimPrevisto) : projeto.hoje,
     ...linhas.flatMap((l) => [
       l.inicio,
       l.etapa.fimPrevisto,
-      l.previsao.tipo === "prevista" ? l.previsao.data : l.previsao.tipo === "concluida" ? (l.previsao.data ?? l.etapa.fimPrevisto) : l.etapa.fimPrevisto,
+      l.previsao.tipo === "prevista"
+        ? l.previsao.data
+        : l.previsao.tipo === "concluida"
+          ? (l.previsao.data ?? l.etapa.fimPrevisto)
+          : l.etapa.fimPrevisto,
     ]),
   ].sort();
   const de = somarDias(datas[0], -5);
@@ -81,9 +80,50 @@ export function Gantt({ projeto, aoSelecionar }: { projeto: Projeto; aoSeleciona
     if (d > ate) break;
     if (d >= de) meses.push(d);
   }
+  return { de, ate, total, x, largura, meses };
+}
+
+/**
+ * Versão compacta para o Modo Reunião: as mesmas regras, sem rótulos de data, dicas nem legenda.
+ * Ocupa a largura disponível (sem rolagem).
+ */
+export function GanttCompacto({ projeto }: { projeto: Projeto }) {
+  const linhas = montarLinhas(projeto);
+  const { x, largura, meses } = janelaDeTempo(projeto, linhas);
+  const concluido = projeto.status === "concluido";
+  return (
+    <div className="relative">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0" style={{ left: "24%" }}>
+        {meses.map((m) => (
+          <div key={m} className="absolute inset-y-0 w-px bg-branco/5" style={{ left: x(m) }} />
+        ))}
+        {!concluido && <div className="absolute inset-y-0 z-10 w-px bg-branco/55" style={{ left: x(projeto.hoje) }} />}
+      </div>
+      <ul>
+        {linhas.map((l) => (
+          <LinhaEtapa key={l.etapa.id} l={l} hoje={projeto.hoje} concluido={concluido} x={x} largura={largura} compacto />
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export function Gantt({ projeto, aoSelecionar }: { projeto: Projeto; aoSelecionar: (etapaId: string) => void }) {
+  const hoje = projeto.hoje;
+  const concluido = projeto.status === "concluido";
+  const previsto = previsaoProjeto(projeto);
+  const linhas = montarLinhas(projeto);
+  const rolagem = useRef<HTMLDivElement>(null);
+
+  const { de, ate, total, x, largura, meses } = janelaDeTempo(projeto, linhas);
 
   const atrasoProjeto = previsto.tipo === "prevista" && !previsto.noPrazo;
-  const brilho = concluido || (previsto.tipo === "prevista" && previsto.noPrazo) ? "rgb(0 219 88 / 0.14)" : previsto.tipo === "sem-previsao" ? "rgb(255 166 48 / 0.14)" : "rgb(255 59 59 / 0.16)";
+  const brilho =
+    concluido || (previsto.tipo === "prevista" && previsto.noPrazo)
+      ? "rgb(0 219 88 / 0.14)"
+      : previsto.tipo === "sem-previsao"
+        ? "rgb(255 166 48 / 0.14)"
+        : "rgb(255 59 59 / 0.16)";
 
   // em telas estreitas o gráfico rola na horizontal: já abre mostrando "hoje" (e a previsão logo depois)
   const posicaoHoje = diasEntre(de, concluido ? ate : hoje) / total;
@@ -95,7 +135,11 @@ export function Gantt({ projeto, aoSelecionar }: { projeto: Projeto; aoSeleciona
   return (
     <section className="anima-surgir relative overflow-hidden rounded-xl border border-linha bg-white p-5">
       {/* brilho num canto: vermelho se a entrega passa do prazo, verde se está no prazo */}
-      <div aria-hidden="true" className="pointer-events-none absolute -top-24 -right-24 h-72 w-96" style={{ background: `radial-gradient(closest-side, ${brilho}, transparent)` }} />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-24 -right-24 h-72 w-96"
+        style={{ background: `radial-gradient(closest-side, ${brilho}, transparent)` }}
+      />
 
       {/* cabeçalho */}
       <div className="relative mb-6 flex flex-wrap items-start justify-between gap-4">
@@ -113,7 +157,9 @@ export function Gantt({ projeto, aoSelecionar }: { projeto: Projeto; aoSeleciona
           ) : previsto.tipo === "sem-previsao" ? (
             <>
               <h2 className="text-2xl font-bold tracking-tight text-ambar sm:text-3xl">Sem previsão de entrega</h2>
-              <p className="text-sm text-gray-600">nenhuma etapa aberta concluiu tasks nas últimas 4 semanas · prazo {ddmm(projeto.fimPrevisto)}</p>
+              <p className="text-sm text-gray-600">
+                nenhuma etapa aberta concluiu tasks nas últimas 4 semanas · prazo {ddmm(projeto.fimPrevisto)}
+              </p>
             </>
           ) : previsto.tipo === "prevista" ? (
             <>
@@ -121,7 +167,9 @@ export function Gantt({ projeto, aoSelecionar }: { projeto: Projeto; aoSeleciona
                 Entrega prevista para <span className={atrasoProjeto ? "text-vermelho" : "text-verde"}>{ddmm(previsto.data)}</span>
               </h2>
               <p className="flex flex-wrap items-center gap-2 text-sm text-gray-600">
-                <span className={`rounded-full px-3 py-0.5 text-xs font-bold ${atrasoProjeto ? "bg-vermelho text-branco" : "bg-verde text-fundo"}`}>
+                <span
+                  className={`rounded-full px-3 py-0.5 text-xs font-bold ${atrasoProjeto ? "bg-vermelho text-branco" : "bg-verde text-fundo"}`}
+                >
                   {atrasoProjeto ? `${previsto.diasAlemDoPrazo} ${previsto.diasAlemDoPrazo === 1 ? "dia" : "dias"} de atraso` : "no prazo"}
                 </span>
                 prazo era {ddmm(projeto.fimPrevisto)} · {BASE_DO_CALCULO}
@@ -157,7 +205,9 @@ export function Gantt({ projeto, aoSelecionar }: { projeto: Projeto; aoSeleciona
               ))}
               {!concluido && (
                 <div className="absolute inset-y-0 z-10 w-px bg-branco/55" style={{ left: x(hoje) }}>
-                  <span className="dado absolute -top-7 left-1/2 -translate-x-1/2 rounded-full bg-branco px-2 py-0.5 text-[10px] font-semibold text-fundo">hoje</span>
+                  <span className="dado absolute -top-7 left-1/2 -translate-x-1/2 rounded-full bg-branco px-2 py-0.5 text-[10px] font-semibold text-fundo">
+                    hoje
+                  </span>
                 </div>
               )}
             </div>
@@ -215,16 +265,19 @@ function LinhaEtapa({
   x,
   largura,
   aoSelecionar,
-  dicaAbaixo,
+  dicaAbaixo = false,
+  compacto = false,
 }: {
   /** Nas primeiras linhas a dica abre para baixo (para cima, seria cortada pela borda do gráfico). */
-  dicaAbaixo: boolean;
+  dicaAbaixo?: boolean;
+  /** Modo Reunião: linha mais baixa, sem rótulos de data, dica nem clique. */
+  compacto?: boolean;
   l: Linha;
   hoje: string;
   concluido: boolean;
   x: (iso: string) => string;
   largura: (a: string, b: string) => string;
-  aoSelecionar: (etapaId: string) => void;
+  aoSelecionar?: (etapaId: string) => void;
 }) {
   const { etapa, previsao: p } = l;
   const feitas = etapa.tasks.filter((t) => t.feita).length;
@@ -244,24 +297,38 @@ function LinhaEtapa({
           : "não iniciada",
   ];
 
+  const Elemento = compacto ? "div" : "button";
   return (
     <li>
-      <button
-        type="button"
-        onClick={() => aoSelecionar(etapa.id)}
-        className="group relative flex h-14 w-full cursor-pointer items-center text-left transition-colors hover:bg-branco/[0.03]"
-        aria-label={`${dica.join(" · ")}. Abrir tasks da etapa.`}
+      <Elemento
+        {...(compacto
+          ? { "aria-label": dica.join(" · ") }
+          : {
+              type: "button" as const,
+              onClick: () => aoSelecionar?.(etapa.id),
+              "aria-label": `${dica.join(" · ")}. Abrir tasks da etapa.`,
+            })}
+        className={`group relative flex w-full items-center text-left ${compacto ? "h-[2.9cqw]" : "h-14 cursor-pointer transition-colors hover:bg-branco/[0.03]"}`}
       >
         {/* nome e quem mais sabe */}
-        <div className="shrink-0 pr-3" style={{ width: COLUNA }}>
-          <p className="truncate text-[13px] font-medium text-branco">{etapa.nome}</p>
-          <p className="truncate text-[10px] text-gray-500">{l.quemSabe ? `quem mais sabe: ${l.quemSabe.nome} · ${emPct(l.quemSabe.ic)}` : "ainda sem commits"}</p>
+        <div className="shrink-0 pr-3" style={{ width: compacto ? "24%" : COLUNA }}>
+          <p className={`truncate font-medium text-branco ${compacto ? "text-[1.05cqw]" : "text-[13px]"}`}>{etapa.nome}</p>
+          {!compacto && (
+            <p className="truncate text-[10px] text-gray-500">
+              {l.quemSabe ? `quem mais sabe: ${l.quemSabe.nome} · ${emPct(l.quemSabe.ic)}` : "ainda sem commits"}
+            </p>
+          )}
         </div>
 
         {/* trilho do tempo */}
         <div className="relative h-full flex-1">
           {/* faixa vermelha do período em atraso (prazo → hoje) */}
-          {l.atrasada && <div className="absolute inset-y-1 bg-vermelho/16" style={{ left: x(etapa.fimPrevisto), width: largura(etapa.fimPrevisto, hoje) }} />}
+          {l.atrasada && (
+            <div
+              className="absolute inset-y-1 bg-vermelho/16"
+              style={{ left: x(etapa.fimPrevisto), width: largura(etapa.fimPrevisto, hoje) }}
+            />
+          )}
 
           {p.tipo === "nao-iniciada" ? (
             // só a janela planejada, tracejada
@@ -270,7 +337,10 @@ function LinhaEtapa({
               style={{ left: x(etapa.inicioPrevisto), width: largura(etapa.inicioPrevisto, etapa.fimPrevisto) }}
             />
           ) : p.tipo === "concluida" || concluido ? (
-            <div className="anima-barra absolute top-1/2 h-2.5 -translate-y-1/2 rounded-full bg-verde" style={{ left: x(l.inicio), width: largura(l.inicio, fim) }} />
+            <div
+              className="anima-barra absolute top-1/2 h-2.5 -translate-y-1/2 rounded-full bg-verde"
+              style={{ left: x(l.inicio), width: largura(l.inicio, fim) }}
+            />
           ) : (
             <>
               {/* trilho do início até hoje, com o % concluído em verde */}
@@ -295,9 +365,11 @@ function LinhaEtapa({
                   </span>
                 </>
               )}
-              <span className="dado absolute bottom-0.5 text-[10px] text-gray-500" style={{ left: x(l.inicio) }}>
-                {emPct(etapa.progresso)}
-              </span>
+              {!compacto && (
+                <span className="dado absolute bottom-0.5 text-[10px] text-gray-500" style={{ left: x(l.inicio) }}>
+                  {emPct(etapa.progresso)}
+                </span>
+              )}
               {/* previsão: tracejado de hoje até a data prevista */}
               {p.tipo === "prevista" && (
                 <>
@@ -305,18 +377,23 @@ function LinhaEtapa({
                     className={`absolute top-1/2 -translate-y-1/2 border-t-2 border-dashed ${p.noPrazo ? "border-verde" : "border-vermelho"}`}
                     style={{ left: x(hoje), width: largura(hoje, p.data) }}
                   />
-                  <span
-                    className={`dado absolute top-0.5 ml-1.5 text-[10px] whitespace-nowrap ${p.noPrazo ? "text-verde" : "text-vermelho"}`}
-                    style={{ left: x(p.data) }}
-                  >
-                    prev. {ddmm(p.data)}
-                    {p.base === "media" && <span className="text-gray-500"> · média</span>}
-                  </span>
+                  {!compacto && (
+                    <span
+                      className={`dado absolute top-0.5 ml-1.5 text-[10px] whitespace-nowrap ${p.noPrazo ? "text-verde" : "text-vermelho"}`}
+                      style={{ left: x(p.data) }}
+                    >
+                      prev. {ddmm(p.data)}
+                      {p.base === "media" && <span className="text-gray-500"> · média</span>}
+                    </span>
+                  )}
                 </>
               )}
               {p.tipo === "parada" && (
-                <span className="dado absolute top-1/2 ml-2 -translate-y-1/2 text-[10px] whitespace-nowrap text-ambar" style={{ left: x(hoje) }}>
-                  sem previsão · parada há {p.semanas} semanas
+                <span
+                  className="dado absolute top-1/2 ml-2 -translate-y-1/2 text-[10px] whitespace-nowrap text-ambar"
+                  style={{ left: x(hoje) }}
+                >
+                  {compacto ? "parada" : `sem previsão · parada há ${p.semanas} semanas`}
                 </span>
               )}
             </>
@@ -326,19 +403,21 @@ function LinhaEtapa({
           <div className="absolute top-1/2 h-5 w-0.5 -translate-x-1/2 -translate-y-1/2 bg-branco" style={{ left: x(etapa.fimPrevisto) }} />
 
           {/* dica ao passar o mouse */}
-          <div
-            className={`pointer-events-none absolute right-0 z-20 hidden w-60 ${dicaAbaixo ? "top-full mt-1" : "bottom-full mb-1"} rounded-lg border border-branco/12 bg-[#1f1f1f] px-3 py-2 text-[11px] leading-relaxed text-gray-700 shadow-2xl group-hover:block group-focus-visible:block`}
-          >
-            <p className="font-semibold text-branco">{dica[0]}</p>
-            {dica.slice(1).map((t) => (
-              <p key={t} className="dado">
-                {t}
-              </p>
-            ))}
-            <p className="mt-1 text-verde">clique para ver as tasks →</p>
-          </div>
+          {!compacto && (
+            <div
+              className={`pointer-events-none absolute right-0 z-20 hidden w-60 ${dicaAbaixo ? "top-full mt-1" : "bottom-full mb-1"} rounded-lg border border-branco/12 bg-[#1f1f1f] px-3 py-2 text-[11px] leading-relaxed text-gray-700 shadow-2xl group-hover:block group-focus-visible:block`}
+            >
+              <p className="font-semibold text-branco">{dica[0]}</p>
+              {dica.slice(1).map((t) => (
+                <p key={t} className="dado">
+                  {t}
+                </p>
+              ))}
+              <p className="mt-1 text-verde">clique para ver as tasks →</p>
+            </div>
+          )}
         </div>
-      </button>
+      </Elemento>
     </li>
   );
 }
