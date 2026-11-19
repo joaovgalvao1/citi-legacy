@@ -1816,3 +1816,11 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
   5. o uso de IA no produto e no desenvolvimento: como trabalhamos, as decisões que foram minhas, os problemas que a IA investigou, onde errou e como foi corrigido, e a divisão do trabalho;
   6. limitações e próximos passos.
 - **README:** o topo agora aponta para a documentação e usa o slogan atual.
+- **Revisão da documentação:**
+  - **O que pedi:** tirar o Groq, que eu nunca configurei, e rever a seção de uso de IA, porque em várias etapas eu participei mais da decisão e guiei com hipóteses do que estava descrito.
+  - **Groq:** saiu do código (`lib/resumo.ts`, o tipo da fonte, o rótulo e o `.env.example`), do README e da documentação. O resumo fica: Gemini e, sem IA, o resumo por regras.
+  - **Seção 5.2 reescrita** em três modos de trabalho:
+    1. as hipóteses que eu levantei e a IA verificou e implementou: Mezzalira e a média de ritmo para a Infra/Deploy, a semana do painel, o limite de pedidos à IA, os resumos desatualizados, o domingo para a reunião de segunda, o PDF do iPad pela impressão, o travamento e o giro no iPad;
+    2. as decisões de produto e as regras de negócio, que foram minhas;
+    3. as ideias visuais, que partiram de mim (a visualização em círculo), com a IA desenhando as opções.
+  - **Também na seção:** o que a IA investigou por conta própria, os erros dela e a divisão do trabalho.

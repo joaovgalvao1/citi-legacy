@@ -4,7 +4,7 @@
 //     resumos das semanas anteriores, com a instrução de não repetir o que já foi dito.
 //   • Projeto concluído → resumo FINAL, gerado uma única vez e guardado.
 //
-// Provedores em ordem: Gemini (lista de modelos) → Groq → resumo automático pelas regras.
+// Provedores em ordem: Gemini (lista de modelos) → resumo automático pelas regras.
 
 import { and, desc, eq } from "drizzle-orm";
 import { db, esquema } from "@/db/conexao";
@@ -235,29 +235,6 @@ async function gemini(texto: string): Promise<{ secoes: Secao[]; modelo: string 
   throw new Error(`Gemini indisponível (${falhas.join(", ")})`);
 }
 
-async function groq(texto: string): Promise<{ secoes: Secao[]; modelo: string } | null> {
-  const chave = process.env.GROQ_API_KEY;
-  if (!chave) return null;
-  const modelo = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
-  if (!cabe(Math.max(0, proximoLivre - Date.now()))) throw new Error("Groq: sem tempo");
-  await aguardarVez();
-  const r = await comTempoLimite("https://api.groq.com/openai/v1/chat/completions", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${chave}` },
-    body: JSON.stringify({
-      model: modelo,
-      temperature: 0.4,
-      response_format: { type: "json_object" },
-      messages: [{ role: "user", content: texto }],
-    }),
-  });
-  if (!r.ok) throw new Error(`Groq respondeu ${r.status}`);
-  const dados = (await r.json()) as { choices?: { message?: { content?: string } }[] };
-  const secoes = validar(dados.choices?.[0]?.message?.content ?? "");
-  if (!secoes) throw new Error("Groq devolveu um formato inesperado");
-  return { secoes, modelo };
-}
-
 async function pedirIA(texto: string, reserva: () => Secao[]): Promise<Gerado> {
   const falhas: string[] = [];
   let algumaChave = false;
@@ -267,17 +244,12 @@ async function pedirIA(texto: string, reserva: () => Secao[]): Promise<Gerado> {
       if (!cabe(espera)) break;
       await dormir(espera);
     }
-    for (const [fonte, provedor] of [
-      ["gemini", gemini],
-      ["groq", groq],
-    ] as const) {
-      try {
-        const r = await provedor(texto);
-        if (r) return { secoes: r.secoes, fonte, modelo: r.modelo };
-      } catch (erro) {
-        algumaChave = true;
-        falhas.push(erro instanceof Error ? erro.message : String(erro));
-      }
+    try {
+      const r = await gemini(texto);
+      if (r) return { secoes: r.secoes, fonte: "gemini", modelo: r.modelo };
+    } catch (erro) {
+      algumaChave = true;
+      falhas.push(erro instanceof Error ? erro.message : String(erro));
     }
     if (!algumaChave) break; // sem nenhuma chave configurada: não adianta tentar de novo
   }

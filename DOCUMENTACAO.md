@@ -217,7 +217,7 @@ domingo 23h (cron) ──► resumo da IA por projeto ──► boletim por e-ma
 |---|---|
 | Aplicação | **Next.js 16** (App Router, Server Components, Server Actions, Cache Components), **TypeScript**, **Tailwind CSS 4** |
 | Banco | **Postgres**: Docker no computador, **Neon** em produção. ORM **Drizzle** |
-| IA do produto | **Google Gemini** (principal), **Groq / Llama 3.3** (reserva) e resumo automático por regras (quando não há IA) |
+| IA do produto | **Google Gemini** (com uma lista de modelos tentados em ordem) e resumo automático por regras quando a IA não está disponível |
 | E-mail | **Resend** (API HTTP) |
 | GitHub | API REST com token *fine-grained* somente leitura e webhook com assinatura HMAC SHA-256 |
 | PDF | Chromium sem tela no servidor (`puppeteer-core` com `@sparticuz/chromium`) |
@@ -267,7 +267,7 @@ A IA foi usada de **duas formas**: dentro do produto e no desenvolvimento.
 
 ### 5.1 IA dentro do produto
 
-- **O que faz:** o resumo semanal e o resumo final de cada projeto são escritos por um modelo de linguagem (Gemini, com Groq de reserva).
+- **O que faz:** o resumo semanal e o resumo final de cada projeto são escritos pelo **Google Gemini** (o app tenta uma lista de modelos em ordem, começando pelo de maior cota gratuita).
 - **O que recebe:** o contexto da semana (commits, etapas, tasks, prazos, alertas) e os **resumos das semanas anteriores**, com a instrução de não repetir o que já foi dito.
 - **O que devolve:** sempre três seções fixas, para caber no painel, no PDF, no e-mail e nos slides.
 - **Quando a IA não está disponível** (sem chave, cota esgotada ou sobrecarga): o resumo sai por regras, e o app mostra claramente que não é IA (a assinatura roxo e verde só aparece em texto gerado pela IA).
@@ -275,53 +275,92 @@ A IA foi usada de **duas formas**: dentro do produto e no desenvolvimento.
 
 ### 5.2 IA no desenvolvimento
 
-O protótipo foi construído em **3 dias (17 a 19/11/2026)** com o **Claude Code** (modelo Claude Opus 5.5) como par de programação.
+O protótipo foi construído em **3 dias (17 a 19/11/2026)** com o **Claude Code** (modelo Claude Opus 5.5) como par de programação. Cada pedido, o que a IA fez e o que eu ajustei estão registrados em ordem no [`DEV_LOG.md`](DEV_LOG.md).
 
-**Como foi o trabalho:**
+**A regra do trabalho**, definida no primeiro prompt: *"Quem conduz sou eu. Você propõe, eu decido. Antes de escrever código, me mostre o plano da etapa e espere meu ok."*
 
-- **Eu conduzi, a IA propôs.** A regra do projeto, definida no primeiro prompt: "Você propõe, eu decido. Antes de escrever código, me mostre o plano da etapa e espere meu ok." Cada etapa começou com um plano. Nas decisões visuais, a IA mostrou **protótipos interativos** antes de aplicar, por exemplo:
-  - quatro fundos para a página inicial;
-  - três modos de visualização para os projetos;
-  - a roda de membros.
-- **Decisões de produto foram minhas.** Exemplos registrados no DEV_LOG:
-  - **Mudança de rota (17/11):** a ideia inicial era passar conhecimento por perguntas e "legados". Mudei para **acompanhamento de projetos**, mantendo o nome Legacy para o histórico.
-  - **Textos:** recusei uma frase de dor que eu não podia comprovar ("a diretoria descobre os problemas tarde demais") e escolhi falar do que o produto faz.
-  - **Rotina:** mudei os resumos de sexta para **domingo**, para a reunião acontecer na segunda.
-  - **Visuais:** escolhi entre as propostas (órbita, constelação, sinais vitais) e ajustei detalhes por prints anotados.
-- **A IA investigou e explicou os problemas antes de corrigir.** Exemplos:
-  - **Previsão distorcida (Mezzalira):** veio da etapa de Infra/Deploy, que dura o projeto todo. A IA testou três alternativas e adotou o ritmo médio das outras etapas.
-  - **Página inicial travando:** a IA mediu as animações (20 anéis girando dentro de SVG, desfoque sobre movimento) e as refez para a placa de vídeo mover sem redesenhar.
-  - **PDF no iPad:** a IA mostrou que o Safari só gera PDF pela impressão, que força A4 com margens brancas. A solução foi gerar o PDF no servidor.
-  - **Giro da órbita no iPad:** o Safari não repassava os movimentos do dedo; a IA passou a usar os eventos de toque nativos.
-- **Verificação em cada mudança:**
-  - verificação de tipos e lint;
-  - testes no navegador em computador, tablet e celular;
-  - simulações (toque, impressão do Safari, PDFs gerados e conferidos página a página);
-  - build de produção antes de mudanças que afetam a Vercel.
-- **Registro:** cada pedido, o que a IA fez e o que eu ajustei estão no [`DEV_LOG.md`](DEV_LOG.md), em ordem.
+Na prática, o trabalho alternou entre três modos.
 
-**Onde a IA errou e como foi corrigido** (também registrado no DEV_LOG):
+#### 1. Eu levantei a hipótese, a IA verificou e implementou
+
+Em boa parte dos problemas, o ponto de partida foi algo que eu notei usando o protótipo ou uma suspeita minha sobre a causa. Nesses casos, o papel da IA foi conferir nos dados e no código, confirmar ou ajustar a hipótese e implementar.
+
+| O que eu percebi ou supus | O que a IA fez com isso |
+|---|---|
+| **Os dados da Mezzalira estavam estranhos:** o projeto aparecia muito atrasado na previsão, mas nenhuma etapa estava vermelha. Lembrei que a Infra/Deploy tinha um ritmo diferente das outras etapas e **propus usar a média do projeto como ritmo dela**. | Discutimos a ideia, e eu deleguei a escolha final com testes. A IA comparou três opções em 4 projetos × 3 datas, e a minha proposta (ritmo médio das outras etapas) foi a que resolveu sem esconder informação. |
+| **As datas do painel não batiam com o resto:** perguntei se o período mostrado correspondia aos dados do painel e do boletim. | A IA achou três inconsistências: o rótulo de 8 dias, duas semanas diferentes na tela e dados que acabavam antes da entrega. Unificou a semana em todo o app. |
+| **Gerar todos os resumos de uma vez deveria sobrecarregar a API.** Pedi um limite de pedidos de acordo com os limites da API. | A IA confirmou o risco (falhas 503 e 429 e o limite de 60 s da função) e implementou o ritmo de pedidos, as novas tentativas e o cron em duas etapas. |
+| **Os resumos do site deviam estar desatualizados, porque o script só rodava na sexta.** | A IA confirmou: no banco do site, 4 dos 5 projetos estavam com a semana anterior. Copiou os resumos já gerados, sem gastar a cota da IA. |
+| **A reunião na segunda não fechava com o resumo saindo na sexta.** | Pedi a mudança para domingo. A IA revisou todas as datas do código e encontrou um erro escondido: o cron de domingo à noite em Recife já é segunda em UTC e gravaria o resumo na semana errada. |
+| **O PDF do iPad era ruim porque o Safari gera o PDF pela impressão.** | A IA confirmou a causa e propôs gerar o PDF no servidor. Depois **eu decidi usar o mesmo modelo no computador**, porque o Firefox também tinha problemas. |
+| **A página inicial travava no meu navegador** e a órbita não girava no iPad (testei nos meus aparelhos). | A IA mediu as animações e o tratamento de toque, explicou as causas e corrigiu. |
+
+#### 2. Decisões de produto e de regra de negócio foram minhas
+
+- **Mudança de rota (17/11):** a ideia inicial era passar o conhecimento de quem sai por meio de perguntas e "legados". Mudei o produto para **acompanhamento de projetos**, mantendo o nome Legacy para o histórico.
+- **Índice de Conhecimento:** pedi um único número que juntasse as métricas de commits. A IA propôs o IC com quatro sinais e simulou antes de implementar.
+- **Textos:** recusei uma frase de dor que eu não podia comprovar ("a diretoria descobre os problemas tarde demais") e escolhi falar do que o produto faz: acompanhamento, prazos, escopo e a reunião semanal.
+- **Regras de segurança e de dados:**
+  - apagar um projeto exige digitar o nome do cliente **nas duas etapas**, por ser uma ação grave;
+  - membro com commits **não pode ser apagado**, só virar ex-membro;
+  - os destinatários dos e-mails são definidos só no servidor.
+- **Integração com o GitHub:** primeiro pedi só a parte visual do vínculo com o repositório. Depois decidi que ela fosse **funcional**, e a IA me orientou nas opções gratuitas: token somente leitura, webhook assinado e sincronização pelo cron.
+
+#### 3. Nas ideias visuais, eu dei a direção e a IA desenhou as opções
+
+- **A ideia de partida foi minha:** uma visualização em círculo com os membros girando em volta. A IA desenhou protótipos interativos no chat antes de aplicar, e daí vieram a **Órbita de membros** e a **Órbita de colaboração**.
+- **Mais alternativas:** pedi várias vezes algo "que fuja do óbvio". As propostas da IA passaram por linha do tempo, mapa, anéis, sinais vitais e constelação, e eu escolhi em cada rodada.
+- **Combinações:**
+  - a ramificação de commits no lugar de uma órbita repetida;
+  - as constelações integradas às órbitas;
+  - o rodapé transparente para não cortar o pontilhado da órbita.
+- **Ajustes finos por prints anotados:** o limite exato da órbita, as constelações espalhadas pela tela e o espaçamento dos PDFs.
+
+#### O que a IA investigou por conta própria
+
+- **Arquitetura e código:** a estrutura do app, as consultas com cache, a previsão, o PDF no servidor e o PWA.
+- **Desempenho:** as animações da página inicial (20 anéis girando dentro de SVG, desfoque sobre movimento) foram refeitas para a placa de vídeo mover sem redesenhar.
+- **Problemas de navegador:** o Safari ignora o formato 16:9 na impressão e não repassava os movimentos do dedo à órbita, e o Chrome avalia as regras de impressão pelo papel padrão.
+
+#### Onde a IA errou e como foi corrigido
+
+Tudo isso está registrado no DEV_LOG, e quase sempre fui eu que percebi ao testar.
 
 | Erro | Correção |
 |---|---|
-| Um ajuste de estilo deixava a impressão do Safari e do Firefox sem margem e cortada | margem desenhada pela própria folha e, depois, PDF no servidor |
+| Um ajuste de estilo deixou os PDFs do Firefox e do Safari sem margem e cortados | margem desenhada pela própria folha e, depois, PDF no servidor |
 | Uma regra para o Safari reduziu os slides também no Chrome | regra limitada ao Safari |
 | Arredondamentos diferentes entre servidor e navegador geravam avisos de hidratação | posições arredondadas antes de renderizar |
-| Botões ← → da roda brigando com o arraste | o arraste termina quando o "soltar" do mouse se perde |
+| Os botões ← → da roda brigavam com o arraste | o arraste termina quando o "soltar" do mouse se perde |
+| O primeiro conserto do giro no iPad não funcionou no aparelho de verdade | eventos de toque nativos do iOS, testados por mim de novo |
 
-**Divisão do trabalho:**
+#### Verificação
+
+A cada mudança:
+
+- verificação de tipos e lint;
+- testes no navegador em computador, tablet e celular;
+- simulações (toque, impressão do Safari, PDFs gerados e conferidos página a página);
+- build de produção antes de mudanças que afetam a Vercel.
+
+Os testes finais nos aparelhos reais (iPad, PDFs, e-mail, webhook) foram feitos por mim.
+
+#### Divisão do trabalho
 
 - **Eu (humano):**
-  - visão do produto e as decisões de rumo;
-  - escolhas visuais e textos finais;
-  - os testes reais (iPad, PDFs, e-mail, webhook);
+  - a visão do produto e o rumo;
+  - as hipóteses sobre os problemas que apareciam nos testes;
+  - as regras de negócio;
+  - as escolhas visuais e os textos finais;
+  - os testes reais;
   - os passos com credenciais e produção: chaves, `git push`, comandos no banco hospedado.
 - **A IA:**
-  - planos e alternativas;
-  - código;
-  - investigação de erros;
-  - testes automatizados no navegador;
-  - registro no DEV_LOG.
+  - planos e alternativas (inclusive protótipos visuais);
+  - o código;
+  - a checagem das hipóteses nos dados;
+  - a investigação técnica dos erros;
+  - os testes automatizados;
+  - o registro no DEV_LOG.
 
 ---
 

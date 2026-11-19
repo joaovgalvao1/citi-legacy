@@ -69,8 +69,7 @@ Os resumos são gerados **fora da visita** e guardados no banco. A tela só lê,
 
 Os provedores são tentados nesta ordem:
 1. **Gemini**, que tenta uma lista de modelos começando pelo `gemini-3.5-flash-lite`, o de maior cota gratuita;
-2. **Groq**;
-3. o **resumo automático pelas regras**.
+2. o **resumo automático pelas regras**, quando a IA não está disponível.
 
 A tela sempre indica a fonte.
 
@@ -221,7 +220,7 @@ lib/analise.ts             IC, concentração e atividade semanal a partir dos c
 lib/hoje.ts                data de hoje (fuso de Recife)
 lib/indice.ts              Índice de Conhecimento
 lib/sessao.ts              sessão de demonstração (login/sair)
-lib/resumo.ts              resumos semanais (com memória) e final; Gemini → Groq → regras
+lib/resumo.ts              resumos semanais (com memória) e final; Gemini → regras
 lib/tasks.ts               marcar tasks (ação do servidor + atualização otimista)
 app/api/cron/resumos/      rota do cron semanal
 scripts/carregar-banco.ts  gera os dados fictícios e grava no banco

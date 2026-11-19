@@ -125,7 +125,7 @@ export const resumos = pgTable(
     tipo: text("tipo").notNull(), // "semanal" | "final"
     semana: text("semana").notNull().default(""), // segunda-feira "aaaa-mm-dd" (vazio no final)
     secoes: jsonb("secoes").notNull().$type<{ titulo: string; itens: string[] }[]>(),
-    fonte: text("fonte").notNull(), // "gemini" | "groq" | "regras"
+    fonte: text("fonte").notNull(), // "gemini" | "regras"
     modelo: text("modelo"),
     geradoEm: timestamp("gerado_em", { withTimezone: true }).notNull().defaultNow(),
   },

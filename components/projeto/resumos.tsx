@@ -9,7 +9,6 @@ import { IconeExportar } from "@/components/ui/icones";
 
 export const ROTULO_FONTE: Record<Resumo["fonte"], string> = {
   gemini: "Gerado por IA · Gemini",
-  groq: "Gerado por IA · Groq",
   regras: "Resumo automático (sem IA)",
 };
 

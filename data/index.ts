@@ -113,7 +113,7 @@ export type Resumo = {
   tipo: "semanal" | "final";
   semana: string;
   secoes: { titulo: string; itens: string[] }[];
-  fonte: "gemini" | "groq" | "regras";
+  fonte: "gemini" | "regras";
   modelo: string | null;
   geradoEm: string;
 };
