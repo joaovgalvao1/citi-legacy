@@ -1614,3 +1614,28 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
   - a área da Órbita ganhou espaço em cima e embaixo, e o rodapé desceu junto, para o anel maior aparecer inteiro;
   - no desktop, as órbitas passaram a 190% da roda: o anel maior vai de 17 px a 1164 px e o rodapé começa em 1299 px;
   - no celular, o anel cabe na altura (de 126 px a 1010 px, rodapé em 1143 px), mas na largura continua maior que a tela.
+
+### Constelação de commits em Projetos e ajustes finos em Membros (19/11)
+
+**O que pedi:**
+- **Membros:**
+  - descer a órbita até o limite que desenhei num print (logo abaixo dos filtros);
+  - subir o rodapé para um pouco abaixo do piso da órbita;
+  - deixar o rodapé transparente, para não cortar o círculo pontilhado.
+- **Projetos:** não gostei da ramificação. Pedi para idealizar algo no chat antes. Entre as três ideias (ondas de atividade, pulso da empresa e constelação), escolhi a **constelação**. Depois pedi, com outro print desenhado, as constelações espalhadas pela largura toda.
+
+**O que a IA fez:**
+- **Membros:**
+  - **Posição:** a área da Órbita ganhou mais espaço em cima, e o anel começa logo abaixo dos filtros (239 px, com os filtros terminando em 218 px).
+  - **Espaço embaixo:** menor, com o rodapé uns 40 px abaixo do piso no desktop e uns 70 px no celular.
+- **Rodapé:** transparente. O recorte dos fundos saiu do conteúdo e foi para o fim da página (`overflow: clip` no `body`), então o pontilhado passa por trás do rodapé sem alongar a página.
+- **Projetos** (`components/projetos/constelacao.tsx`, no lugar de `grafo.tsx`):
+  - **Estrelas:** cada commit da semana é uma estrela (até 18 por projeto), e as estrelas de um projeto se ligam numa constelação na cor da situação.
+  - **Posições:** relativas ao centro da tela, valendo em qualquer largura, como no desenho:
+    - a constelação do projeto atrasado fica na margem esquerda, descendo ao lado dos indicadores;
+    - as de atenção vão logo depois do título até o centro-direita;
+    - a do projeto no prazo fica à direita, entrando na margem.
+  - **Espaço livre:** as estrelas evitam o título e os indicadores, e uma poeira de estrelas brancas pequenas cobre a faixa.
+  - **Sorteio** com semente fixa (o id do projeto): a constelação é sempre a mesma. Sem animação.
+
+**Verificação** (1534 px de largura, a mesma do print): vermelha em x 79–144, âmbar em x 625–1101 e verde em x 1222–1365.

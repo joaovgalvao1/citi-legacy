@@ -46,8 +46,9 @@ html {
 }
 body {
   background: var(--color-fundo);
-  /* fundos decorativos grandes (órbitas, ramificações) podem passar da largura da tela sem criar rolagem lateral */
-  overflow-x: clip;
+  /* fundos decorativos grandes (órbitas, grafo) não criam rolagem: recortados na largura da tela e no fim da página
+     (clip não cria área de rolagem, então o cabeçalho fixo continua funcionando) */
+  overflow: clip;
   color: var(--color-gray-900);
   font-family: var(--font-sans);
 }

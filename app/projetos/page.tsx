@@ -17,7 +17,7 @@ import {
 } from "@/lib/status";
 import { corDoMembro } from "@/components/graficos/cores";
 import { ListaProjetos, type ResumoProjeto } from "@/components/projetos/lista";
-import { GrafoCommits } from "@/components/projetos/grafo";
+import { ConstelacaoCommits } from "@/components/projetos/constelacao";
 import { BotaoLink, TituloPagina } from "@/components/ui";
 
 const ddmm = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
@@ -191,23 +191,25 @@ export default async function Projetos() {
 
   return (
     <div className="relative space-y-6">
-      {/* grafo de commits das últimas 4 semanas, de ponta a ponta atrás do cabeçalho, esmaecendo para baixo */}
+      {/* constelação de commits da semana, espalhada pelo cabeçalho e pelas margens (some embaixo) */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -top-24 left-1/2 h-[560px] w-screen -translate-x-1/2"
         style={{
           zIndex: -1,
-          // some embaixo (antes dos cards) e à esquerda (atrás do título), para não competir com o texto
-          maskImage: "linear-gradient(to bottom, black 30%, transparent 85%), linear-gradient(to right, transparent 8%, black 55%)",
-          maskComposite: "intersect",
-          opacity: 0.6,
+          maskImage: "linear-gradient(to bottom, black 46%, transparent 64%)",
         }}
       >
-        <GrafoCommits
-          ramos={resumos
+        <ConstelacaoCommits
+          projetos={resumos
             .filter((r) => r.status !== "Concluído")
             .sort((a, b) => ORDEM_NIVEL[a.nivel] - ORDEM_NIVEL[b.nivel])
-            .map((r) => ({ id: r.id, cor: COR_NIVEL[r.nivel], pulso: r.pulso }))}
+            .map((r) => ({
+              id: r.id,
+              cor: COR_NIVEL[r.nivel],
+              commits: commits.filter((c) => c.projetoId === r.id && c.data.slice(0, 10) >= semana && c.data.slice(0, 10) <= fimSemana)
+                .length,
+            }))}
         />
       </div>
       <div className="flex flex-wrap items-end justify-between gap-3">

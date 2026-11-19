@@ -134,7 +134,7 @@ export function ListaMembros({ membros, projetos }: { membros: ResumoMembro[]; p
       {visiveis.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-gray-400 p-6 text-center text-sm text-gray-500">Nenhum membro encontrado.</p>
       ) : modo === "roda" ? (
-        <div className="relative pt-10 pb-[300px] sm:pt-24 sm:pb-[360px]">
+        <div className="relative pt-10 pb-[120px] sm:pt-[168px] sm:pb-[115px]">
           {/* espaço em cima e embaixo para o anel maior da órbita aparecer inteiro (o rodapé desce junto) */}
           <Roda
             fundo

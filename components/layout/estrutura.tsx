@@ -142,15 +142,15 @@ export function Estrutura({ children }: { children: ReactNode }) {
             ? "flex-1"
             : caminho === "/login"
               ? "flex flex-1 items-center justify-center px-4 py-10"
-              : // começa atrás do cabeçalho (-mt/pt) e recorta só na vertical: fundos grandes (órbitas, grafo)
-                // aparecem inteiros no topo e não passam do rodapé nem alongam a página
-                "mx-auto -mt-16 w-full max-w-6xl flex-1 px-4 pt-24 pb-8 [overflow-y:clip]"
+              : // começa atrás do cabeçalho (-mt/pt): fundos grandes (órbitas, grafo) aparecem inteiros no topo;
+                // o recorte embaixo fica no fim da página (body), então passam por trás do rodapé sem alongá-la
+                "mx-auto -mt-16 w-full max-w-6xl flex-1 px-4 pt-24 pb-8"
         }
       >
         {liberado ? children : <CaixaEsqueleto linhas={3} />}
       </main>
       <Avisos />
-      <footer className="relative border-t border-linha bg-fundo py-5 text-xs text-gray-500">
+      <footer className="border-t border-linha py-5 text-xs text-gray-500">
         <div className={`mx-auto flex flex-wrap items-center justify-center gap-2 px-4 max-w-6xl`}>
           <Lockup tamanho="pequeno" />
           <span aria-hidden="true">·</span>
