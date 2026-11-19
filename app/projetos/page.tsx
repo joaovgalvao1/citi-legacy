@@ -17,7 +17,7 @@ import {
 } from "@/lib/status";
 import { corDoMembro } from "@/components/graficos/cores";
 import { ListaProjetos, type ResumoProjeto } from "@/components/projetos/lista";
-import { Ramificacoes } from "@/components/entrada/fundo";
+import { GrafoCommits } from "@/components/projetos/grafo";
 import { BotaoLink, TituloPagina } from "@/components/ui";
 
 const ddmm = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
@@ -99,6 +99,8 @@ const iniciaisCliente = (nome: string) =>
     .toUpperCase();
 
 const DIAS_PULSO = 28;
+const COR_NIVEL = { verde: "#00DB58", ambar: "#FFA630", vermelho: "#FF3B3B" } as const;
+const ORDEM_NIVEL = { vermelho: 0, ambar: 1, verde: 2 } as const;
 const somarDias = (iso: string, n: number) => new Date(new Date(`${iso}T12:00:00Z`).getTime() + n * 86400000).toISOString().slice(0, 10);
 
 /** Ritmo recente: compara os últimos 7 dias com a média das 3 semanas anteriores. */
@@ -189,17 +191,24 @@ export default async function Projetos() {
 
   return (
     <div className="relative space-y-6">
-      {/* ramificações de commits atrás do cabeçalho: descem do canto direito e somem antes dos cards */}
+      {/* grafo de commits das últimas 4 semanas, de ponta a ponta atrás do cabeçalho, esmaecendo para baixo */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-10 right-0 h-[560px] w-[min(100%,680px)]"
+        className="pointer-events-none absolute -top-24 left-1/2 h-[560px] w-screen -translate-x-1/2"
         style={{
           zIndex: -1,
-          maskImage: "linear-gradient(to bottom, black 35%, transparent 95%), linear-gradient(to right, transparent, black 30%)",
+          // some embaixo (antes dos cards) e à esquerda (atrás do título), para não competir com o texto
+          maskImage: "linear-gradient(to bottom, black 30%, transparent 85%), linear-gradient(to right, transparent 8%, black 55%)",
           maskComposite: "intersect",
+          opacity: 0.6,
         }}
       >
-        <Ramificacoes className="top-0 right-[-60px] w-[680px] opacity-90" />
+        <GrafoCommits
+          ramos={resumos
+            .filter((r) => r.status !== "Concluído")
+            .sort((a, b) => ORDEM_NIVEL[a.nivel] - ORDEM_NIVEL[b.nivel])
+            .map((r) => ({ id: r.id, cor: COR_NIVEL[r.nivel], pulso: r.pulso }))}
+        />
       </div>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <TituloPagina rotulo={`Semana de ${ddmm(semana)} a ${ddmm(fimSemana)}`} fino="Projetos" destaque="em andamento." />

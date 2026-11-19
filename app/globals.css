@@ -41,8 +41,13 @@ html {
   color-scheme: dark;
 }
 
+html {
+  overflow-x: clip;
+}
 body {
   background: var(--color-fundo);
+  /* fundos decorativos grandes (órbitas, ramificações) podem passar da largura da tela sem criar rolagem lateral */
+  overflow-x: clip;
   color: var(--color-gray-900);
   font-family: var(--font-sans);
 }

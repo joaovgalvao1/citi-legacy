@@ -48,7 +48,12 @@ export function FormularioMembro({ hoje, inicial }: { hoje: string; inicial?: { 
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="block sm:col-span-2">
             <span className={rotulo}>Nome completo</span>
-            <input className={campo} value={m.nome} onChange={(e) => setM({ ...m, nome: e.target.value })} placeholder="Ex.: Ana Beatriz Souza" />
+            <input
+              className={campo}
+              value={m.nome}
+              onChange={(e) => setM({ ...m, nome: e.target.value })}
+              placeholder="Ex.: Ana Beatriz Souza"
+            />
           </label>
           <label className="block">
             <span className={rotulo}>Entrada no CITi</span>
@@ -77,15 +82,31 @@ export function FormularioMembro({ hoje, inicial }: { hoje: string; inicial?: { 
         <div className="grid gap-4 sm:grid-cols-3">
           <label className="block">
             <span className={rotulo}>E-mail</span>
-            <input type="email" className={campo} value={m.email} onChange={(e) => setM({ ...m, email: e.target.value })} placeholder="nome@exemplo.com" />
+            <input
+              type="email"
+              className={campo}
+              value={m.email}
+              onChange={(e) => setM({ ...m, email: e.target.value })}
+              placeholder="nome@exemplo.com"
+            />
           </label>
           <label className="block">
             <span className={rotulo}>LinkedIn</span>
-            <input className={campo} value={m.linkedin} onChange={(e) => setM({ ...m, linkedin: e.target.value })} placeholder="linkedin.com/in/seu-perfil" />
+            <input
+              className={campo}
+              value={m.linkedin}
+              onChange={(e) => setM({ ...m, linkedin: e.target.value })}
+              placeholder="linkedin.com/in/seu-perfil"
+            />
           </label>
           <label className="block">
             <span className={rotulo}>GitHub</span>
-            <input className={campo} value={m.github} onChange={(e) => setM({ ...m, github: e.target.value })} placeholder="usuário ou github.com/usuário" />
+            <input
+              className={campo}
+              value={m.github}
+              onChange={(e) => setM({ ...m, github: e.target.value })}
+              placeholder="usuário ou github.com/usuário"
+            />
           </label>
         </div>
         <p className="mt-3 text-xs text-gray-500">

@@ -36,7 +36,9 @@ export function CalendarioContribuicoes({ commits }: { commits: Commit[] }) {
               const primeiroDoMes = s.find((d) => d.endsWith("-01"));
               return (
                 <span key={i} className="dado relative w-[11px] text-[10px] text-gray-500">
-                  {primeiroDoMes && <span className="absolute left-0 whitespace-nowrap">{MESES[Number(primeiroDoMes.slice(5, 7)) - 1]}</span>}
+                  {primeiroDoMes && (
+                    <span className="absolute left-0 whitespace-nowrap">{MESES[Number(primeiroDoMes.slice(5, 7)) - 1]}</span>
+                  )}
                 </span>
               );
             })}

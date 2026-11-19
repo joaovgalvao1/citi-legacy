@@ -1580,3 +1580,32 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
 **Verificação:**
 - **Desktop (1280 px):** clicar no avatar de Otávio Neves abriu `/membros/otavio-neves`.
 - **Celular (375 px):** roda e fundos sem rolagem lateral.
+
+### Órbita integrada em Membros e grafo de commits em Projetos (19/11)
+
+**O que pedi:**
+- **Membros:**
+  - o topo da órbita aparecia cortado no modo Roda;
+  - trocar o nome "Roda" por "Órbita";
+  - tirar o card cinza e deixar a órbita como parte da tela, ampliada;
+  - depois, mais um ajuste: o topo continuava cortando e a parte de baixo passava do rodapé.
+- **Projetos:** evoluir a ramificação, que era só uma reta no canto direito.
+
+**O que a IA fez:**
+- **Membros:**
+  - **Nome:** o modo passou a se chamar "Órbita".
+  - **Sem card:** a roda fica direto no fundo da página, e as órbitas aumentaram (280% da roda no celular, 220% no desktop), concêntricas com ela.
+  - **Topo cortado:** a órbita ficava atrás da faixa verde do topo, que cobria a parte de cima. Agora fica na mesma camada da faixa e por cima dela.
+  - **Abaixo do rodapé:** a área de conteúdo das telas internas agora começa atrás do cabeçalho e recorta só na vertical (`overflow-y: clip`). O rodapé ganhou fundo sólido. A página termina no rodapé, sem sobra.
+  - **Rolagem lateral:** `overflow-x: clip` no `html` e no `body`, para os fundos grandes não criarem rolagem lateral.
+- **Projetos** (`components/projetos/grafo.tsx`):
+  - **Grafo de commits real:** cada projeto em andamento é um ramo que sai de um tronco à esquerda, na cor da situação.
+  - **Nós:** cada nó é um dia com commits nas últimas 4 semanas (maior = mais commits).
+  - **Merges:** quando dois projetos vizinhos tiveram commits no mesmo dia, um traço roxo liga os ramos.
+  - **Posição:** atravessa a tela de ponta a ponta atrás do cabeçalho, some à esquerda (atrás do título) e embaixo (antes dos cards).
+  - **Leveza:** é parado, sem animação.
+
+**Verificação:**
+- **Membros:** desktop e celular, sem rolagem lateral; a altura da página termina no rodapé.
+- **Projetos:** título legível sobre o grafo.
+- **Página de projeto:** sem mudança visual com o novo espaçamento.

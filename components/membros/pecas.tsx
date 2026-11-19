@@ -31,13 +31,21 @@ export function ContatosMembro({ nome, ...contatos }: { nome: string } & Contato
                 <Icone className="h-4 w-4" />
               </a>
             ) : (
-              <span role="link" aria-disabled="true" tabIndex={0} aria-label={`${rotulo} de ${nome} não cadastrado`} className={`${icone} cursor-help`}>
+              <span
+                role="link"
+                aria-disabled="true"
+                tabIndex={0}
+                aria-label={`${rotulo} de ${nome} não cadastrado`}
+                className={`${icone} cursor-help`}
+              >
                 <Icone className="h-4 w-4" />
               </span>
             )}
             <span role="tooltip" className={dica}>
               {valor ? (
-                <span className="dado break-all text-branco">{id === "github" ? `github.com/${valor}` : valor.replace(/^https?:\/\//, "")}</span>
+                <span className="dado break-all text-branco">
+                  {id === "github" ? `github.com/${valor}` : valor.replace(/^https?:\/\//, "")}
+                </span>
               ) : (
                 <>
                   <b className="text-ambar">Protótipo.</b> Sem {rotulo} cadastrado para {nome}. Cadastre em “Editar membro”.

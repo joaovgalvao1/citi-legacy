@@ -40,7 +40,10 @@ export function AvatarMembro({
     );
   }
   return (
-    <span aria-hidden="true" className={`dado flex shrink-0 items-center justify-center rounded-full bg-verde font-semibold text-fundo ${tamanho}`}>
+    <span
+      aria-hidden="true"
+      className={`dado flex shrink-0 items-center justify-center rounded-full bg-verde font-semibold text-fundo ${tamanho}`}
+    >
       {iniciais(nome)}
     </span>
   );

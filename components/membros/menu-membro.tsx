@@ -60,8 +60,15 @@ export function MenuMembro({ membroId, nome, temCommits }: { membroId: string; n
         ⋯
       </button>
       {aberto && (
-        <div role="menu" className="absolute left-0 top-full z-30 mt-2 w-64 overflow-hidden rounded-xl border border-branco/12 bg-[#1a1a1a] py-1 shadow-2xl">
-          <Link role="menuitem" href={`/membros/editar/${membroId}`} className="block px-4 py-2 text-sm text-gray-800 hover:bg-branco/5 hover:text-branco">
+        <div
+          role="menu"
+          className="absolute left-0 top-full z-30 mt-2 w-64 overflow-hidden rounded-xl border border-branco/12 bg-[#1a1a1a] py-1 shadow-2xl"
+        >
+          <Link
+            role="menuitem"
+            href={`/membros/editar/${membroId}`}
+            className="block px-4 py-2 text-sm text-gray-800 hover:bg-branco/5 hover:text-branco"
+          >
             Editar membro
           </Link>
           {temCommits ? (
@@ -98,9 +105,7 @@ export function MenuMembro({ membroId, nome, temCommits }: { membroId: string; n
           setErro("");
         }}
       >
-        <p>
-          Fica {DIAS_NA_LIXEIRA} dias na lixeira, onde dá para restaurar. Depois disso, é apagado de vez.
-        </p>
+        <p>Fica {DIAS_NA_LIXEIRA} dias na lixeira, onde dá para restaurar. Depois disso, é apagado de vez.</p>
       </Dialogo>
     </div>
   );

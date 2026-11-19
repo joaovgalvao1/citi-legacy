@@ -74,68 +74,66 @@ export function Estrutura({ children }: { children: ReactNode }) {
           className={`mx-auto flex items-center justify-between gap-3 rounded-full border border-branco/12 bg-fundo/60 py-2 pr-1.5 pl-3.5 backdrop-blur-md backdrop-saturate-150 sm:pr-2 sm:pl-5 max-w-6xl`}
         >
           <Marca href={usuario ? "/projetos" : "/"} />
-          {publica ? (
-            caminho === "/" && (
-              <Link
-                href={usuario ? "/projetos" : "/login"}
-                aria-label={usuario ? "Abrir o painel" : "Entrar"}
-                className="inline-flex items-center gap-2 rounded-full border border-gray-400 px-4 py-1.5 text-sm text-gray-800 transition-colors hover:border-verde hover:text-verde"
-              >
-                <IconeEntrar className="h-4 w-4" />
-                {usuario ? "Abrir painel" : "Entrar"}
-              </Link>
-            )
-          ) : (
-            usuario && (
-              <nav className="flex items-center gap-0.5 text-sm sm:gap-1">
-                {[
-                  ["/projetos", "Projetos"],
-                  ["/membros", "Membros"],
-                ].map(([href, rotulo]) => {
-                  const ativo = caminho.startsWith(href);
-                  return (
-                    <Link
-                      key={href}
-                      href={href}
-                      aria-current={ativo ? "page" : undefined}
-                      className={`rounded-full px-2 py-1.5 transition-colors sm:px-4 ${
-                        ativo ? "bg-verde font-semibold text-fundo" : "text-gray-700 hover:text-branco"
-                      }`}
-                    >
-                      {rotulo}
-                    </Link>
-                  );
-                })}
+          {publica
+            ? caminho === "/" && (
                 <Link
-                  href="/"
-                  aria-label="Página inicial"
-                  title="Página inicial"
-                  className="rounded-full p-1.5 text-gray-600 transition-colors hover:text-verde"
+                  href={usuario ? "/projetos" : "/login"}
+                  aria-label={usuario ? "Abrir o painel" : "Entrar"}
+                  className="inline-flex items-center gap-2 rounded-full border border-gray-400 px-4 py-1.5 text-sm text-gray-800 transition-colors hover:border-verde hover:text-verde"
                 >
-                  <IconeCasa className="h-4 w-4" />
+                  <IconeEntrar className="h-4 w-4" />
+                  {usuario ? "Abrir painel" : "Entrar"}
                 </Link>
-                <span className="mx-2 hidden h-5 w-px bg-gray-400 sm:block" aria-hidden="true" />
-                {/* no celular, só "Sair": o usuário fica escondido para caber numa linha */}
-                <span className="hidden items-center gap-1.5 text-gray-600 sm:flex">
-                  <IconeUsuario className="h-4 w-4" />
-                  {usuario}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    saindo.current = true;
-                    sair();
-                    router.replace("/");
-                  }}
-                  aria-label="Sair"
-                  title="Sair"
-                  className="cursor-pointer rounded-full p-1.5 text-gray-600 transition-colors hover:text-verde sm:ml-1"
-                >
-                  <IconeSair className="h-4 w-4" />
-                </button>
-              </nav>
-            )
-          )}
+              )
+            : usuario && (
+                <nav className="flex items-center gap-0.5 text-sm sm:gap-1">
+                  {[
+                    ["/projetos", "Projetos"],
+                    ["/membros", "Membros"],
+                  ].map(([href, rotulo]) => {
+                    const ativo = caminho.startsWith(href);
+                    return (
+                      <Link
+                        key={href}
+                        href={href}
+                        aria-current={ativo ? "page" : undefined}
+                        className={`rounded-full px-2 py-1.5 transition-colors sm:px-4 ${
+                          ativo ? "bg-verde font-semibold text-fundo" : "text-gray-700 hover:text-branco"
+                        }`}
+                      >
+                        {rotulo}
+                      </Link>
+                    );
+                  })}
+                  <Link
+                    href="/"
+                    aria-label="Página inicial"
+                    title="Página inicial"
+                    className="rounded-full p-1.5 text-gray-600 transition-colors hover:text-verde"
+                  >
+                    <IconeCasa className="h-4 w-4" />
+                  </Link>
+                  <span className="mx-2 hidden h-5 w-px bg-gray-400 sm:block" aria-hidden="true" />
+                  {/* no celular, só "Sair": o usuário fica escondido para caber numa linha */}
+                  <span className="hidden items-center gap-1.5 text-gray-600 sm:flex">
+                    <IconeUsuario className="h-4 w-4" />
+                    {usuario}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      saindo.current = true;
+                      sair();
+                      router.replace("/");
+                    }}
+                    aria-label="Sair"
+                    title="Sair"
+                    className="cursor-pointer rounded-full p-1.5 text-gray-600 transition-colors hover:text-verde sm:ml-1"
+                  >
+                    <IconeSair className="h-4 w-4" />
+                  </button>
+                </nav>
+              )}
         </div>
       </header>
       <main
@@ -144,13 +142,15 @@ export function Estrutura({ children }: { children: ReactNode }) {
             ? "flex-1"
             : caminho === "/login"
               ? "flex flex-1 items-center justify-center px-4 py-10"
-              : "mx-auto w-full max-w-6xl flex-1 px-4 py-8"
+              : // começa atrás do cabeçalho (-mt/pt) e recorta só na vertical: fundos grandes (órbitas, grafo)
+                // aparecem inteiros no topo e não passam do rodapé nem alongam a página
+                "mx-auto -mt-16 w-full max-w-6xl flex-1 px-4 pt-24 pb-8 [overflow-y:clip]"
         }
       >
         {liberado ? children : <CaixaEsqueleto linhas={3} />}
       </main>
       <Avisos />
-      <footer className="border-t border-linha py-5 text-xs text-gray-500">
+      <footer className="relative border-t border-linha bg-fundo py-5 text-xs text-gray-500">
         <div className={`mx-auto flex flex-wrap items-center justify-center gap-2 px-4 max-w-6xl`}>
           <Lockup tamanho="pequeno" />
           <span aria-hidden="true">·</span>

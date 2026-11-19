@@ -1,6 +1,6 @@
 "use client";
 
-// Membros em dois modos de visualização: a "Roda do CITi" (avatares em volta de um círculo que gira,
+// Membros em dois modos de visualização: a "Órbita" (antes "Roda do CITi") (avatares em volta de um círculo que gira,
 // com quem está no topo em destaque) e a lista de cards. Abas (na empresa / já saíram), filtro por
 // projeto e busca por nome valem para os dois modos.
 
@@ -90,7 +90,7 @@ export function ListaMembros({ membros, projetos }: { membros: ResumoMembro[]; p
           >
             {(
               [
-                ["roda", "Roda"],
+                ["roda", "Órbita"],
                 ["lista", "Lista"],
               ] as const
             ).map(([id, rotulo]) => (
@@ -134,12 +134,12 @@ export function ListaMembros({ membros, projetos }: { membros: ResumoMembro[]; p
       {visiveis.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-gray-400 p-6 text-center text-sm text-gray-500">Nenhum membro encontrado.</p>
       ) : modo === "roda" ? (
-        <div className="relative overflow-hidden rounded-2xl border border-linha bg-white px-3 py-6 sm:px-6">
+        <div className="relative py-6">
           <Roda
             fundo
             key={`${aba}-${projetoId}-${termo}`}
             itens={visiveis.map((m) => ({ ...m, apagado: !!m.saiuEm }))}
-            rotulo={aba === "empresa" ? "Roda dos membros na empresa" : "Roda de quem já saiu"}
+            rotulo={aba === "empresa" ? "Órbita dos membros na empresa" : "Órbita de quem já saiu"}
             aoAbrir={(m) => router.push(`/membros/${m.id}`)}
             centro={(m) => <CentroMembro membro={m} {...contexto(m, projetoId, nomeProjeto)} />}
           />

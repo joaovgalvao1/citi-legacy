@@ -14,7 +14,8 @@ import { Dialogo } from "@/components/ui/dialogo";
 import { AvatarMembro } from "./pecas";
 
 const DIA = 86400000;
-const diasEntre = (de: string, ate: string) => Math.round((new Date(`${ate}T12:00:00Z`).getTime() - new Date(`${de}T12:00:00Z`).getTime()) / DIA);
+const diasEntre = (de: string, ate: string) =>
+  Math.round((new Date(`${ate}T12:00:00Z`).getTime() - new Date(`${de}T12:00:00Z`).getTime()) / DIA);
 
 export function ListaLixeiraMembros({ membros, hoje }: { membros: MembroNaLixeira[]; hoje: string }) {
   const router = useRouter();
