@@ -1,0 +1,22 @@
+{
+  "name": "citi-legacy-pitch",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Vídeo do pitch do CITi Legacy, feito em código com Remotion",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "render": "remotion render src/index.ts Pitch out/pitch-citi-legacy.mp4",
+    "capturar": "node scripts/capturar.mjs"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.545",
+    "@remotion/google-fonts": "^4.0.545",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.545"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.2",
+    "typescript": "5.9.3"
+  }
+}

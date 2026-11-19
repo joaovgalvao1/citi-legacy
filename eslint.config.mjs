@@ -7,6 +7,8 @@ const eslintConfig = defineConfig([
   ...nextTs,
   // Override default ignores of eslint-config-next.
   globalIgnores([
+    // vídeo do pitch (projeto Remotion separado)
+    "video/**",
     // Default ignores of eslint-config-next:
     ".next/**",
     "out/**",

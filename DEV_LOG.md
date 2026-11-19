@@ -201,7 +201,15 @@ O **prompt inicial de 17/11** reuniu tudo isso:
   - **Ajustes no PDF:** fundo até o fim da página e projetos em sequência no boletim, sem vãos.
 - **Ícone e app no celular:** ícone feito a partir do logo do CITi em vetor, com "LEGACY", e o app instalável (PWA).
 
-### Entrega
+### Vídeo do pitch
+- **Pedi:** algo diferente, um vídeo com animação feita e editada pela IA. A IA opinou: a animação deve emoldurar o produto real, a voz pesa mais que legendas e o escopo precisa caber no prazo.
+- **Decidi:** o roteiro de 7 cenas (cerca de 3:50), sem aparecer na câmera e com o push simulado. A voz ficou para depois (a minha ou uma voz sintética).
+- **A IA fez:**
+  - o vídeo em código com **Remotion**, na pasta `video/`, separada do app;
+  - animações no visual do app (pulso, constelações, órbitas, terminal, resumo da IA sendo escrito);
+  - capturas reais das telas, com zoom e destaques;
+  - legenda da narração.
+
 - **A IA fez:**
   - a [`DOCUMENTACAO.md`](DOCUMENTACAO.md) a partir deste registro;
   - a revisão da seção de uso de IA para refletir as hipóteses e decisões que foram minhas;
