@@ -29,12 +29,14 @@ const iniciais = (nome: string) =>
     .join("")
     .toUpperCase();
 
-/** Indicador compacto da faixa da semana: número e legenda numa linha. */
-function Indicador({ valor, rotulo, cor = "text-branco" }: { valor: number; rotulo: string; cor?: string }) {
+/** Indicador no estilo do site do CITi ("+30 anos de mercado"): número grande e legenda com a palavra-chave em negrito. */
+function Indicador({ valor, destaque, resto, cor = "text-branco" }: { valor: number; destaque: string; resto: string; cor?: string }) {
   return (
-    <div className="flex items-baseline gap-2">
-      <span className={`text-2xl leading-none font-bold tracking-[-0.03em] tabular-nums ${cor}`}>{valor}</span>
-      <span className="text-sm text-gray-600">{rotulo}</span>
+    <div className="rounded-xl border border-linha bg-white px-5 py-4">
+      <p className={`text-[44px] leading-[0.9] font-bold tracking-[-0.04em] tabular-nums sm:text-[52px] ${cor}`}>{valor}</p>
+      <p className="mt-2.5 text-sm">
+        <span className="font-semibold text-branco">{destaque}</span> <span className="text-gray-600">{resto}</span>
+      </p>
     </div>
   );
 }
@@ -119,18 +121,16 @@ export default async function Projetos() {
         </div>
       </div>
 
-      <section
-        aria-label="Indicadores da semana"
-        className="flex flex-wrap items-baseline gap-x-8 gap-y-3 rounded-xl border border-linha bg-white/60 px-5 py-3.5"
-      >
-        <Indicador valor={numeros.andamento} rotulo="em andamento" />
+      <section aria-label="Indicadores da semana" className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <Indicador valor={numeros.andamento} destaque="projetos" resto="em andamento" />
         <Indicador
           valor={numeros.atrasados}
-          rotulo={numeros.atrasados === 1 ? "atrasado" : "atrasados"}
+          destaque={numeros.atrasados === 1 ? "atrasado" : "atrasados"}
+          resto="no momento"
           cor={numeros.atrasados ? "text-vermelho" : "text-branco"}
         />
-        <Indicador valor={numeros.tasksSemana} rotulo="tasks na semana" />
-        <Indicador valor={numeros.commitsSemana} rotulo="commits na semana" cor="text-verde" />
+        <Indicador valor={numeros.tasksSemana} destaque="tasks" resto="entregues na semana" />
+        <Indicador valor={numeros.commitsSemana} destaque="commits" resto="na semana" cor="text-verde" />
       </section>
 
       <ListaProjetos projetos={resumos} naLixeira={lixeira.length} dias={dias} />
