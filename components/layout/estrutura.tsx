@@ -4,11 +4,11 @@
 // Páginas públicas: a entrada ("/") e o login ("/login"). As demais exigem login;
 // quem não está logado volta ao login.
 
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { sair, useUsuario } from "@/lib/sessao";
+import { destinoDepoisDoLogin, sair, useUsuario } from "@/lib/sessao";
 import { IconeEntrar, IconeSair, IconeUsuario } from "@/components/ui/icones";
 import { Marca } from "./marca";
 
@@ -18,13 +18,20 @@ export function Estrutura({ children }: { children: ReactNode }) {
   const usuario = useUsuario();
   const caminho = usePathname();
   const router = useRouter();
+  // ao clicar em "Sair", vai para a entrada (e não para o login)
+  const saindo = useRef(false);
   const publica = PUBLICAS.includes(caminho);
   // versão de impressão (PDF): sem cabeçalho nem rodapé do site
   const impressao = caminho.startsWith("/exportar/");
 
   useEffect(() => {
-    if (usuario === null && !publica) router.replace("/login");
-    if (usuario && caminho === "/login") router.replace("/projetos");
+    // sem login: vai ao login guardando o destino (ex.: link do e-mail), para voltar depois de entrar
+    if (saindo.current) {
+      if (caminho === "/") saindo.current = false;
+      return;
+    }
+    if (usuario === null && !publica) router.replace(`/login?voltar=${encodeURIComponent(caminho + window.location.search)}`);
+    if (usuario && caminho === "/login") router.replace(destinoDepoisDoLogin());
   }, [usuario, publica, caminho, router]);
 
   // undefined = ainda no servidor/hidratação: a página é renderizada normalmente
@@ -78,6 +85,7 @@ export function Estrutura({ children }: { children: ReactNode }) {
                 <button
                   type="button"
                   onClick={() => {
+                    saindo.current = true;
                     sair();
                     router.replace("/");
                   }}

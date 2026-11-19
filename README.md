@@ -36,7 +36,7 @@ O login é de demonstração e tem um único usuário administrador, definido em
 - **Usuário:** `admin`
 - **Senha:** `admin`
 
-As credenciais ficam no código do front-end e a sessão fica no navegador, então não há segurança real. O login só serve para simular a entrada na ferramenta interna. Sem login, qualquer página leva de volta à tela de login.
+As credenciais ficam no código do front-end e a sessão fica no navegador, então não há segurança real. O login só serve para simular a entrada na ferramenta interna. Sem login, qualquer página leva à tela de login, que guarda o destino (`/login?voltar=...`): depois de entrar, a pessoa volta para onde queria ir, por exemplo um link do e-mail do boletim. Só destinos do próprio site são aceitos.
 
 ## Banco de dados
 

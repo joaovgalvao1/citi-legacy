@@ -4,7 +4,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { entrar } from "@/lib/sessao";
+import { destinoDepoisDoLogin, entrar } from "@/lib/sessao";
 import { Botao } from "@/components/ui";
 
 export function FormularioLogin() {
@@ -23,7 +23,7 @@ export function FormularioLogin() {
       setErro("Usuário ou senha incorretos.");
       return;
     }
-    router.replace("/projetos");
+    router.replace(destinoDepoisDoLogin());
   }
 
   return (

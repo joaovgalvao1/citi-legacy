@@ -721,3 +721,22 @@ Ficaram de fora o boletim da empresa inteira e a imagem para WhatsApp/Slack.
   - manter como está.
 - **Escolha:** manter, porque na demonstração o boletim chega no e-mail da conta, e isso basta para mostrar o envio automático.
 - **Em produção:** o CITi verificaria o próprio domínio no Resend e definiria `BOLETIM_DE` e `BOLETIM_PARA`, sem mudar o código.
+
+### Links do e-mail e volta depois do login (18/11)
+
+**O que relatei:** o botão "Ver o boletim em PDF" do e-mail levava a uma página que não existia.
+
+**Causa:** o link estava certo, mas a página `/exportar/boletim` ainda não estava publicada, porque os commits não tinham sido enviados ao GitHub. A IA conferiu: no site, `/exportar/boletim` e `/projetos/novo` davam 404.
+
+**Problema que a IA encontrou junto:** quem abria um link do e-mail sem estar logado caía no login e, depois de entrar, ia para a lista de projetos, e não para o link.
+
+**O que a IA fez:**
+- **Destino guardado:** o redirecionamento para o login leva o destino (`/login?voltar=/exportar/boletim`), e depois de entrar a pessoa volta para ele.
+- **Só destinos internos:** só caminhos do próprio site são aceitos. Um `?voltar=//outro-site` vai para `/projetos`, para o link não virar redirecionamento para fora.
+- **Sair:** levava ao login em vez da página inicial, por uma disputa entre a proteção das páginas e o redirecionamento. Agora vai para a entrada.
+
+**Verificação no navegador:**
+- abrir `/exportar/boletim?origem=email` sem login → login com o destino guardado → depois de entrar, de volta ao boletim;
+- `?voltar=//exemplo.com/x` → `/projetos`;
+- login sem destino → `/projetos`;
+- Sair → página inicial.

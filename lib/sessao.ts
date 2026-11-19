@@ -53,3 +53,12 @@ export function sair() {
   }
   window.dispatchEvent(new Event(EVENTO));
 }
+
+/**
+ * Para onde ir depois do login: o "?voltar=" da URL (ex.: um link do e-mail do boletim).
+ * Só aceita caminhos do próprio site ("/..."), nunca outro domínio ("//site", "https://...").
+ */
+export function destinoDepoisDoLogin(): string {
+  const voltar = new URLSearchParams(window.location.search).get("voltar");
+  return voltar && voltar.startsWith("/") && !voltar.startsWith("//") && !voltar.startsWith("/login") ? voltar : "/projetos";
+}
