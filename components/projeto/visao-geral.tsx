@@ -14,6 +14,7 @@ import { Alerta, Caixa } from "@/components/ui";
 import type { ReactNode } from "react";
 import { BarraProgresso } from "@/components/ui/progresso";
 import { SeloStatusEtapa } from "./status";
+import { Gantt } from "./gantt";
 import { Dialogo } from "@/components/ui/dialogo";
 import { avisar } from "@/lib/avisos";
 
@@ -49,8 +50,18 @@ export function VisaoGeral({ projeto: original, resumo }: { projeto: Projeto; re
     else executar(etapaId, ordem, feita);
   }
 
+  /** Clique numa etapa do Gantt: abre as tasks dela na lista abaixo e rola até lá. */
+  function abrirEtapa(etapaId: string) {
+    const item = document.getElementById(`etapa-${etapaId}`);
+    if (!item) return;
+    item.querySelector("details")?.setAttribute("open", "");
+    item.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   return (
     <div className="space-y-6">
+      <Gantt projeto={projeto} aoSelecionar={abrirEtapa} />
+
       {concluido ? (
         projeto.resultados && (
           <Caixa titulo="Resultados">
@@ -83,7 +94,7 @@ export function VisaoGeral({ projeto: original, resumo }: { projeto: Projeto; re
             const feitas = e.tasks.filter((t) => t.feita).length;
             const prazo = textoPrazoEtapa(projeto, e);
             return (
-              <li key={e.id} className="space-y-2 py-4">
+              <li key={e.id} id={`etapa-${e.id}`} className="scroll-mt-24 space-y-2 py-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className="font-semibold">{e.nome}</span>
                   <SeloStatusEtapa projeto={projeto} etapaId={e.id} />

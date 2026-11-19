@@ -973,3 +973,34 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 **Incidentes:**
 - **Servidor em loop:** o servidor de desenvolvimento entrou em loop de recompilação (a página recarregava sem parar), por causa de arquivos velhos em `.next`. Resolvido apagando `.next` com o servidor parado.
 - **Resumos apagados no teste:** apagar a Folhagem de vez também apagou os resumos dela no banco **local**. A IA recarregou os dados e copiou os 4 resumos do Neon (só leitura), sem gastar chamadas à IA.
+
+### Bloco 3B: Gantt com previsão na Visão geral (19/11)
+
+**O que pedi:** a linha do tempo da seção 5 do meu documento, no topo da Visão geral.
+
+**O que a IA fez (`components/projeto/gantt.tsx`):**
+- **Cabeçalho:**
+  - "Entrega prevista para DD/MM" (vermelho ou verde);
+  - selo "X dias de atraso" ou "no prazo";
+  - "prazo era DD/MM · ritmo das últimas 4 semanas";
+  - **gargalo principal** à direita e brilho no canto do card (vermelho, verde ou âmbar).
+  - Projetos concluídos mostram "Entregue em DD/MM" e a comparação com o prazo.
+- **Uma linha por etapa:** nome e "quem mais sabe: Nome · XX%"; eixo de meses; linha de **hoje** com selo; traço branco no prazo de cada etapa.
+- **Estados da barra:**
+  - concluída: verde;
+  - em execução: trilho até hoje, com o % em verde;
+  - atrasada: faixa vermelha do prazo até hoje, contorno e selo "+X dias";
+  - previsão: tracejado até a data prevista, vermelho ou verde;
+  - parada: "sem previsão · parada há X semanas", em âmbar;
+  - não iniciada: contorno tracejado.
+- **Interação:** dica ao passar o mouse (início, prazo, %, tasks, previsão); o clique abre as tasks da etapa e rola até elas; as barras crescem na entrada.
+- **Celular:** o gráfico rola dentro do card e já abre mostrando "hoje".
+- **Reatividade:** como fica dentro da Visão geral, marcar uma task atualiza as barras e a previsão na hora.
+
+**Verificação no navegador:**
+- **Plataforma** (atrasada): "Entrega prevista para 14/01", "69 dias de atraso", gargalo principal Painel da ONG, faixas vermelhas com "+X dias".
+- **Folhagem** (no prazo): 17/12, "no prazo" em verde.
+- **Clínica:** 31/12, "20 dias de atraso", gargalo principal Financeiro.
+- **GALT** (concluído): "Entregue em 20/03 · 7 dias depois do previsto".
+- **Interação:** dica e clique conferidos; no celular, sem rolagem lateral na página.
+- **Ajuste feito durante o teste:** os rótulos "prev. DD/MM" cortavam no fim do eixo, então a IA aumentou a folga.
