@@ -1478,3 +1478,43 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 | Quadros por segundo | ~70 | ~75, sem quadros lentos |
 
 A melhora deve ser bem maior em computadores e celulares mais fracos.
+
+### Tela de projetos mais limpa e o modo Sinais vitais (19/11)
+
+**O que pedi:** a tela de projetos parecia poluída, como se tivesse muita informação. Pedi para melhorar a experiência sem perder conteúdo e para criar outro modo de visualização fora do óbvio, como fizemos em Membros.
+
+**Diagnóstico da IA:**
+- **O mesmo sinal repetido:** o atraso aparecia até 5 vezes por card (etiqueta, borda vermelha, fatias vermelhas da barra, "+69 dias" e "atrasado há 13 dias").
+- **Cor demais:** a barra de 6 fatias coloridas virava um arco-íris em cada card.
+- **Indicadores grandes:** 4 cards de números ocupavam quase uma tela antes do primeiro projeto.
+- **Fonte monoespaçada** em várias linhas do card, o que cansava a leitura.
+
+**Proposta, mostrada antes de aplicar, e meus ajustes:**
+- **Barra:** pedi que ela seguisse a cor da situação (vermelho, âmbar ou verde), em vez de ficar só verde.
+- **Botões do topo:** mantidos como estavam.
+- **Modo novo:**
+  - a IA mostrou primeiro Linha do tempo e Mapa; pedi algo menos óbvio;
+  - depois vieram Anéis da semana, Sinais vitais e Constelação;
+  - escolhi **Sinais vitais**.
+
+**O que mudou:**
+- **Indicadores:** viraram uma faixa compacta, com os mesmos números.
+- **Cards:**
+  - um sinal só, a cor da situação no ponto, na barra única de progresso e na data prevista;
+  - uma linha de resumo ("70% · entrega prevista 14/01");
+  - no máximo 3 avatares e "+N";
+  - sem borda vermelha;
+  - etapas, prazo, previsão completa, gargalo principal e alerta aparecem ao passar o mouse ou focar com o teclado, e ficam sempre visíveis em telas de toque.
+- **Agrupamento:** "Precisam de atenção" primeiro e "No prazo" depois.
+- **Sinais vitais** (botão "Cards | Sinais vitais", só em Em andamento):
+  - cada projeto vira um monitor cardíaco, em que cada batimento é um dia com commits nas últimas 4 semanas;
+  - a altura do batimento acompanha a quantidade, em escala de raiz quadrada, para um dia com muitos commits não achatar os outros;
+  - a linha reta mostra dias parados, e a cor é a da situação do projeto;
+  - um ponto pulsa no fim da linha enquanto o projeto está ativo e fica cinza quando está parado;
+  - à direita aparece a leitura do ritmo (ritmo firme, acelerando, ritmo caindo ou parado há N dias) e o total de commits;
+  - passar o mouse em cada dia mostra a data e a quantidade de commits.
+- **Dados:** os commits por dia são calculados no servidor, sem nada novo no banco.
+
+**Verificação:**
+- **Desktop** (1280 px): os dois modos, conferidos visualmente.
+- **Celular** (375 px): sem rolagem lateral, e os detalhes dos cards ficam visíveis no toque.
