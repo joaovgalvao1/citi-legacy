@@ -24,6 +24,7 @@ export default async function Membros() {
         saiuEm: p.saiuEm ? formatarMesAno(p.saiuEm.slice(0, 7)) : null,
         projetos: participacoes.length,
         maiorIc: maior ? { valor: maior.membro.icProjeto, projeto: maior.projeto.nome } : null,
+        participacoes: participacoes.map(({ projeto, membro }) => ({ projetoId: projeto.id, papel: membro.papel, ic: membro.icProjeto })),
       };
     })
     .sort((a, b) => a.nome.localeCompare(b.nome));
@@ -45,7 +46,7 @@ export default async function Membros() {
           <BotaoLink href="/membros/novo">+ Adicionar membro</BotaoLink>
         </div>
       </div>
-      <ListaMembros membros={resumos} />
+      <ListaMembros membros={resumos} projetos={projetos.map((p) => ({ id: p.id, nome: p.nome }))} />
     </div>
   );
 }

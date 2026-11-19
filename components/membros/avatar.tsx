@@ -14,9 +14,20 @@ export const iniciais = (nome: string) =>
     .join("")
     .toUpperCase();
 
-export function AvatarMembro({ nome, github, grande = false }: { nome: string; github?: string; grande?: boolean }) {
+export function AvatarMembro({
+  nome,
+  github,
+  grande = false,
+  tamanho: classeTamanho,
+}: {
+  nome: string;
+  github?: string;
+  grande?: boolean;
+  /** Classes de tamanho no lugar do padrão (ex.: na roda de membros). */
+  tamanho?: string;
+}) {
   const [falhou, setFalhou] = useState(false);
-  const tamanho = grande ? "h-16 w-16 text-xl" : "h-10 w-10 text-sm";
+  const tamanho = classeTamanho ?? (grande ? "h-16 w-16 text-xl" : "h-10 w-10 text-sm");
   if (github && !falhou) {
     return (
       // eslint-disable-next-line @next/next/no-img-element -- foto externa (GitHub), sem otimização do Next

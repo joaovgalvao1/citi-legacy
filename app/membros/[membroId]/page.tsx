@@ -11,6 +11,7 @@ import { Caixa, Selo, Voltar } from "@/components/ui";
 import { AvatarMembro, ContatosMembro } from "@/components/membros/pecas";
 import { CalendarioContribuicoes } from "@/components/membros/calendario";
 import { MenuMembro } from "@/components/membros/menu-membro";
+import { OrbitaColaboracao, type Colega } from "@/components/membros/orbita";
 import { SeloStatusProjeto } from "@/components/projeto/status";
 import { EsqueletoMembro } from "@/components/ui/esqueletos";
 
@@ -35,6 +36,22 @@ async function MembroConteudo({ params }: { params: PageProps<"/membros/[membroI
       .filter((x) => x.top?.membro.id === pessoa.id)
       .map((x) => ({ etapa: x.etapa.nome, projeto: x.projeto, ic: x.top!.ic })),
   );
+  // órbita: colegas dos projetos em comum, com os commits deles nas etapas em que a pessoa trabalhou
+  const colegasPorId = new Map<string, Colega>();
+  for (const { projeto } of participacoes) {
+    const minhasEtapas = new Set(todos.filter((c) => c.projetoId === projeto.id).flatMap((c) => c.etapas));
+    const doProjeto = await obterCommits({ projetoId: projeto.id });
+    for (const m of projeto.membros) {
+      if (m.id === pessoa.id) continue;
+      const juntos = doProjeto.filter((c) => c.autor === m.id && c.etapas.some((e) => minhasEtapas.has(e))).length;
+      const colega = colegasPorId.get(m.id) ?? { id: m.id, nome: m.nome, github: m.github, saiu: !!m.saiuEm, projetos: [], commitsJuntos: 0 };
+      colega.projetos.push(projeto.nome);
+      colega.commitsJuntos += juntos;
+      colegasPorId.set(m.id, colega);
+    }
+  }
+  const colegas = [...colegasPorId.values()].sort((a, b) => b.commitsJuntos - a.commitsJuntos || a.nome.localeCompare(b.nome));
+
   const atrasados = participacoes.filter(({ projeto }) => statusProjeto(projeto) === "Atrasado").length;
 
   return (
@@ -74,28 +91,33 @@ async function MembroConteudo({ params }: { params: PageProps<"/membros/[membroI
         <CalendarioContribuicoes commits={todos} />
       </Caixa>
 
-      <Caixa titulo={`Referência em · ${referencia.length}`}>
-        {referencia.length ? (
-          <ul className="space-y-3">
-            {referencia.map((r) => (
-              <li key={`${r.projeto.id}-${r.etapa}`} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)_3rem] items-center gap-3 text-sm">
-                <span className="min-w-0">
-                  <span className="block truncate font-medium">{r.etapa}</span>
-                  <Link href={`/projetos/${r.projeto.id}`} className="block truncate text-xs text-gray-500 hover:text-verde">
-                    {r.projeto.nome}
-                  </Link>
-                </span>
-                <span className="h-2 overflow-hidden rounded-full bg-branco/10">
-                  <span className="anima-barra block h-full rounded-full bg-verde" style={{ width: `${r.ic}%` }} />
-                </span>
-                <span className="dado text-right">{emPct(r.ic)}</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-sm text-gray-600">Ainda não é quem mais sabe em nenhuma etapa.</p>
-        )}
-      </Caixa>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Caixa titulo={`Órbita de colaboração · ${colegas.length} ${colegas.length === 1 ? "colega" : "colegas"}`}>
+          <OrbitaColaboracao pessoa={{ nome: pessoa.nome, github: pessoa.github }} colegas={colegas} />
+        </Caixa>
+        <Caixa titulo={`Referência em · ${referencia.length}`}>
+          {referencia.length ? (
+            <ul className="space-y-3">
+              {referencia.map((r) => (
+                <li key={`${r.projeto.id}-${r.etapa}`} className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)_3rem] items-center gap-3 text-sm">
+                  <span className="min-w-0">
+                    <span className="block truncate font-medium">{r.etapa}</span>
+                    <Link href={`/projetos/${r.projeto.id}`} className="block truncate text-xs text-gray-500 hover:text-verde">
+                      {r.projeto.nome}
+                    </Link>
+                  </span>
+                  <span className="h-2 overflow-hidden rounded-full bg-branco/10">
+                    <span className="anima-barra block h-full rounded-full bg-verde" style={{ width: `${r.ic}%` }} />
+                  </span>
+                  <span className="dado text-right">{emPct(r.ic)}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-gray-600">Ainda não é quem mais sabe em nenhuma etapa.</p>
+          )}
+        </Caixa>
+      </div>
 
       <h2 className="rotulo">Projetos · {participacoes.length}</h2>
       <ul className="grid gap-4 md:grid-cols-2">

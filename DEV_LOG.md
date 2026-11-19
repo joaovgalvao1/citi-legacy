@@ -1300,3 +1300,34 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - **Pular resumos prontos:** com os resumos da semana 16/11 já gerados, todos os 7 projetos foram pulados; uma semana sem resumo aparece como pendente.
 - **`maxDuration`:** conferido na documentação do Next desta versão (compatível com Cache Components).
 - **Não testado:** a rota do cron, porque o `CRON_SECRET` só existe na Vercel.
+
+### Roda do CITi e Órbita de colaboração (19/11)
+
+**O que pedi:**
+- Uma visualização em círculo na página de membros, com as pessoas ao redor e uma interação que gira os membros. Pedi à IA para idealizar e mostrar visualmente antes.
+- Depois do protótipo: fazer as duas ideias (roda na lista e órbita no perfil), manter o formato antigo como modo de visualização, ter a roda também para quem já saiu e um filtro por projeto.
+
+**O que a IA propôs:**
+- Um protótipo interativo com os dois conceitos.
+- **A, Roda do CITi:** os membros em volta de um círculo, com quem está no topo em destaque no centro.
+- **B, Órbita de colaboração:** a pessoa no centro e os colegas mais perto quanto mais trabalharam juntos.
+
+**O que a IA fez:**
+- **`components/membros/roda.tsx`** (componente reutilizável):
+  - **Giro:** arrastando (mouse ou toque), com a roda do mouse, com as setas ← →, pelos botões ou clicando num avatar, que gira até o topo. Enter, ou clicar no avatar em foco, abre o perfil.
+  - **Profundidade:** quem está longe do topo fica menor e mais apagado.
+  - **Animação:** só com transições de CSS, sem depender de `requestAnimationFrame`.
+- **`/membros`:**
+  - modos **Roda | Lista** (a lista é o formato antigo, com os cards);
+  - **filtro por projeto**: no filtro, o centro e os cards mostram o papel e o IC naquele projeto;
+  - as abas **Na empresa / Já saíram** e a busca valem para os dois modos; ex-membros aparecem em cinza na roda.
+- **Perfil** (`components/membros/orbita.tsx`): "Órbita de colaboração", ao lado de "Referência em".
+  - **Colaboração:** conta os commits de cada colega nas mesmas etapas em que a pessoa trabalhou, nos projetos em comum.
+  - **Distância e linha:** quanto mais commits, mais perto do centro e mais grossa a linha.
+  - **Navegação:** clicar no colega em foco abre a órbita dele.
+
+**Verificação no navegador** (desktop 1280 px e celular 375 px):
+- giro por botão, teclado, clique e arraste;
+- filtro por projeto (GALT mostra 2 ex-membros na aba "Já saíram");
+- alternância Roda/Lista;
+- órbita da Helena (Davi mais perto, com 53 commits nas mesmas etapas).
