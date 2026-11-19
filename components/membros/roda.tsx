@@ -92,7 +92,9 @@ export function Roda<T extends ItemRoda>({
   }
   function aoMover(e: PointerEvent<HTMLDivElement>) {
     const d = arrasto.current;
-    if (!d) return;
+    if (!d || e.pointerId !== d.id) return;
+    // o "soltar" se perdeu (ex.: soltou fora da janela): encerra o arraste em vez de seguir o mouse
+    if (e.pointerType === "mouse" && e.buttons === 0) return aoSoltar();
     if (!d.moveu) {
       if (Math.hypot(e.clientX - d.x, e.clientY - d.y) < 5) return;
       d.moveu = true;
@@ -110,6 +112,8 @@ export function Roda<T extends ItemRoda>({
     const d = arrasto.current;
     arrasto.current = null;
     if (!d?.moveu) return;
+    // o clique que vem logo depois de soltar não conta como clique no avatar
+    setTimeout(() => (moveuAgora.current = false), 0);
     setArrastando(false);
     setAngulo((a) => Math.round(a / passo) * passo);
   }
@@ -143,6 +147,8 @@ export function Roda<T extends ItemRoda>({
         onPointerMove={aoMover}
         onPointerUp={aoSoltar}
         onPointerCancel={aoSoltar}
+        onLostPointerCapture={aoSoltar}
+        onDragStart={(e) => e.preventDefault()}
         className={`relative mx-auto aspect-square w-full max-w-[520px] touch-none rounded-full outline-none select-none focus-visible:ring-2 focus-visible:ring-verde/50 ${
           arrastando ? "cursor-grabbing" : "cursor-grab"
         }`}

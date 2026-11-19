@@ -1331,3 +1331,6 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - filtro por projeto (GALT mostra 2 ex-membros na aba "Já saíram");
 - alternância Roda/Lista;
 - órbita da Helena (Davi mais perto, com 53 commits nas mesmas etapas).
+- **Correção (botões × arraste):**
+  - **Bug:** quando o "soltar" do mouse se perdia (por exemplo, ao soltar fora da área ou da janela), a roda continuava em modo arraste. Ela seguia o mouse sem botão apertado, ficava sem animação e brigava com os botões ← →.
+  - **Correção:** o arraste agora termina também quando o mouse se move sem botão apertado, quando a captura do ponteiro se perde ou quando o navegador inicia um arraste nativo de link. O bloqueio de clique depois de arrastar vale só para o clique imediato.
