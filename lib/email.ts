@@ -43,8 +43,8 @@ export function htmlBoletim(b: Boletim, site = siteUrl()) {
           .map(
             (s) => `
         <p style="margin:12px 0 4px;font:700 10px/1.2 Arial,sans-serif;letter-spacing:1.2px;text-transform:uppercase;color:${/andou/i.test(s.titulo) ? VERDE_ESCURO : /travou/i.test(s.titulo) ? VERMELHO : "#161616"};">${esc(s.titulo)}</p>
-        <ul style="margin:0;padding-left:18px;font:13px/1.45 Arial,sans-serif;color:#2a2a2a;">
-          ${s.itens.map((i) => `<li style="margin:2px 0;">${esc(i)}</li>`).join("")}
+        <ul style="margin:0;padding-left:18px;font:13px/1.45 Arial,sans-serif;color:${/andou/i.test(s.titulo) ? VERDE : /travou/i.test(s.titulo) ? "#FF3B3B" : "#161616"};">
+          ${s.itens.map((i) => `<li style="margin:2px 0;"><span style="color:#2a2a2a;">${esc(i)}</span></li>`).join("")}
         </ul>`,
           )
           .join("")

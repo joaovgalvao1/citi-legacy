@@ -14,8 +14,9 @@ export function Dado({ rotulo, valor, destaque }: { rotulo: string; valor: strin
   );
 }
 
-/** Títulos das partes do resumo: o que andou (verde), o que travou (vermelho), o resto em preto. */
+/** Cor de cada parte do resumo (título e marcadores): o que andou (verde), o que travou (vermelho), o resto em preto. */
 const corDoTitulo = (t: string) => (/andou/i.test(t) ? "text-[#00873a]" : /travou/i.test(t) ? "text-[#d42020]" : "text-[#161616]");
+const corDoMarcador = (t: string) => (/andou/i.test(t) ? "bg-[#00DB58]" : /travou/i.test(t) ? "bg-[#FF3B3B]" : "bg-[#161616]");
 
 /** Rótulo "✦ GERADO POR IA" em gradiente (assinatura de conteúdo gerado por IA). */
 export function SeloIAFolha() {
@@ -35,7 +36,7 @@ export function Secoes({ resumo, compacto = false }: { resumo: Resumo; compacto?
           <ul className={compacto ? "space-y-1" : "space-y-1.5"}>
             {s.itens.map((item, i) => (
               <li key={i} className={`flex gap-2 leading-snug text-[#2a2a2a] ${compacto ? "text-[9.5px]" : "text-[11.5px]"}`}>
-                <span aria-hidden="true" className="mt-[0.45em] h-1 w-1 shrink-0 rounded-full bg-[#00DB58]" />
+                <span aria-hidden="true" className={`mt-[0.45em] h-1 w-1 shrink-0 rounded-full ${corDoMarcador(s.titulo)}`} />
                 <span>{item}</span>
               </li>
             ))}

@@ -16,12 +16,12 @@ export const ROTULO_FONTE: Record<Resumo["fonte"], string> = {
 export const ddmm = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
 export const fimDaSemana = (iso: string) => new Date(new Date(`${iso}T12:00:00Z`).getTime() + 6 * 86400000).toISOString().slice(0, 10);
 
-/** Cor do título de cada parte: o que andou (verde), o que travou (vermelho), o resto em branco. */
-function corDoTitulo(titulo: string) {
+/** Cor de cada parte (título e marcadores): o que andou (verde), o que travou (vermelho), o resto em branco. */
+function corDaParte(titulo: string) {
   const t = titulo.toLowerCase();
-  if (t.includes("andou")) return "text-verde";
-  if (t.includes("travou")) return "text-vermelho";
-  return "text-branco";
+  if (t.includes("andou")) return { texto: "text-verde", marcador: "bg-verde" };
+  if (t.includes("travou")) return { texto: "text-vermelho", marcador: "bg-vermelho" };
+  return { texto: "text-branco", marcador: "bg-branco" };
 }
 
 function Secoes({ resumo, compacto = false }: { resumo: Resumo; compacto?: boolean }) {
@@ -29,11 +29,11 @@ function Secoes({ resumo, compacto = false }: { resumo: Resumo; compacto?: boole
     <div className="grid gap-5 sm:grid-cols-3">
       {resumo.secoes.map((s) => (
         <div key={s.titulo} className="space-y-2">
-          <h3 className={`font-semibold ${corDoTitulo(s.titulo)} ${compacto ? "text-xs" : "text-sm"}`}>{s.titulo}</h3>
+          <h3 className={`font-semibold ${corDaParte(s.titulo).texto} ${compacto ? "text-xs" : "text-sm"}`}>{s.titulo}</h3>
           <ul className="space-y-1.5">
             {s.itens.map((item, i) => (
               <li key={i} className={`flex gap-2 text-gray-700 ${compacto ? "text-xs" : "text-sm"}`}>
-                <span aria-hidden="true" className="mt-2 h-1 w-1 shrink-0 rounded-full bg-verde" />
+                <span aria-hidden="true" className={`mt-2 h-1 w-1 shrink-0 rounded-full ${corDaParte(s.titulo).marcador}`} />
                 <span>{item}</span>
               </li>
             ))}

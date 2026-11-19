@@ -8,7 +8,7 @@ import { notFound } from "next/navigation";
 import { obterProjeto, obterProjetos, obterResumos, type Projeto, type Resumo } from "@/data";
 import { formatarData } from "@/data/formatos";
 import { emPct } from "@/lib/indice";
-import { progressoProjeto, statusEtapa, statusProjeto, textoEntrega, textoPrazo } from "@/lib/status";
+import { nivelEtapa, progressoProjeto, statusEtapa, statusProjeto, textoEntrega, textoPrazo } from "@/lib/status";
 import { ddmm, fimDaSemana, ROTULO_FONTE } from "@/components/projeto/resumos";
 import { BarraDeImpressao } from "@/components/exportar/imprimir";
 import { CabecalhoFolha, SeloIAFolha, Dado, Secoes, Titulo } from "@/components/exportar/folha";
@@ -27,6 +27,8 @@ export async function generateMetadata({ params }: PageProps<"/exportar/[projeto
 
 const semana = (r: Resumo) => `${ddmm(r.semana)} a ${ddmm(fimDaSemana(r.semana))}`;
 
+const COR_NIVEL = { verde: "bg-[#00DB58]", ambar: "bg-[#FFA630]", vermelho: "bg-[#FF3B3B]", neutro: "bg-[#c4c4c4]" };
+
 function Etapas({ projeto }: { projeto: Projeto }) {
   return (
     <table className="w-full border-collapse text-[10.5px]">
@@ -38,7 +40,7 @@ function Etapas({ projeto }: { projeto: Projeto }) {
               <td className="py-1.5 pr-3 font-medium text-[#161616]">{e.nome}</td>
               <td className="w-[45%] py-1.5 pr-3">
                 <div className="h-1.5 overflow-hidden rounded-full bg-[#ececec]">
-                  <div className="h-full rounded-full bg-[#00DB58]" style={{ width: `${e.progresso}%` }} />
+                  <div className={`h-full rounded-full ${COR_NIVEL[nivelEtapa(projeto, e)]}`} style={{ width: `${e.progresso}%` }} />
                 </div>
               </td>
               <td className="dado w-12 py-1.5 pr-3 text-right text-[#444]">{emPct(e.progresso)}</td>

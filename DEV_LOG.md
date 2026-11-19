@@ -793,3 +793,5 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - **No navegador:** conferi lista de projetos, Visão geral, Participação, boletim e PDF do projeto.
 - **E-mail:** gerei o HTML sem enviar (`npm run boletim:enviar -- --html`).
 - **Código:** `tsc`, `eslint` e `next build` sem erros.
+
+**Ajuste que pedi depois:** os marcadores (bolinhas) antes dos tópicos do resumo têm a cor do título da parte: verde em "O que andou", vermelho em "O que travou", branco (preto no PDF) em "O que fazer primeiro". Vale no app, nos PDFs e no e-mail. A IA também deixou as barras das etapas no PDF do projeto na cor do semáforo, que tinham ficado todas verdes.
