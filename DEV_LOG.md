@@ -1260,3 +1260,14 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - **Limpeza:** o projeto e o membro temporários foram apagados do banco local.
 
 **Não testado:** o webhook chamado pelo GitHub de verdade, que só alcança o site publicado. Fica para depois do push.
+
+**Problemas que encontrei ao criar o projeto "CITi Legacy" no app (vinculado ao próprio repositório):**
+1. **Etapas sem commits:** todas as etapas apareciam como "ainda sem commits". Os caminhos tinham sido salvos com `src/` (`src/app/**`), mas este repositório não tem pasta `src`. Mesmo corrigindo os caminhos, os commits já sincronizados não seriam reclassificados.
+2. **Previsão absurda:** "Entrega prevista para 14/01 (+56 dias)". A etapa "Entrega do desafio" tinha 2 dias e 1 task feita, e o ritmo dividia por 4 semanas fixas (0,25 task por semana → 8 semanas).
+
+**Correções (a IA propôs e eu aprovei):**
+- **Ritmo:** etapa com menos de 4 semanas divide as tasks feitas pelo tempo desde o início dela (mínimo 1 dia). Nos projetos de exemplo nada mudou, porque as etapas abertas têm mais de 4 semanas. A do CITi Legacy foi para **23/11 (+4 dias)**.
+- **Reclassificação:** ao editar o projeto, se os caminhos de alguma etapa mudam (ou etapas entram ou saem), os commits já gravados são reclassificados pelos arquivos que alteraram (`reclassificarCommits`).
+- **Sugestão de caminho:** sem o `src/` fixo (`telas/**`). A dica do campo explica que são as pastas do repositório como estão no GitHub (ex.: `app/**`).
+
+**Verificação:** previsões recalculadas para 19/11; os 6 projetos de exemplo ficaram iguais, e o CITi Legacy deu 23/11.

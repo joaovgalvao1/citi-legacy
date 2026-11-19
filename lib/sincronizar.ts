@@ -128,3 +128,22 @@ export async function projetosComRepositorio() {
     .where(and(isNull(projetos.apagadoEm), sql`${projetos.repositorio} is not null`));
   return linhas.map((l) => l.id);
 }
+
+/**
+ * Recalcula a etapa de cada commit do projeto pelos caminhos atuais das etapas
+ * (usado quando os caminhos mudam na edição do projeto). Devolve quantos commits mudaram.
+ */
+export async function reclassificarCommits(projetoId: string) {
+  const [etapasDoProjeto, lista] = await Promise.all([
+    db.select().from(etapas).where(eq(etapas.projetoId, projetoId)),
+    db.select({ hash: commits.hash, arquivos: commits.arquivos, etapas: commits.etapas }).from(commits).where(eq(commits.projetoId, projetoId)),
+  ]);
+  let mudaram = 0;
+  for (const c of lista) {
+    const novas = etapasDoProjeto.filter((e) => c.arquivos.some((a) => e.caminhos.some((g) => casaCaminho(a, g)))).map((e) => e.id);
+    if (novas.join() === c.etapas.join()) continue;
+    await db.update(commits).set({ etapas: novas }).where(and(eq(commits.projetoId, projetoId), eq(commits.hash, c.hash)));
+    mudaram++;
+  }
+  return mudaram;
+}

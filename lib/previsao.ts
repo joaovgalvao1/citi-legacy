@@ -1,6 +1,7 @@
 // Previsão de entrega pelo ritmo recente. Funções puras.
 //
-// 1. Ritmo da etapa: tasks concluídas nas últimas 4 semanas ÷ 4 (tasks por semana).
+// 1. Ritmo da etapa: tasks concluídas nas últimas 4 semanas ÷ 4 (tasks por semana). Etapa com menos
+//    de 4 semanas: ÷ o tempo desde o início dela (em semanas), para não subestimar etapas novas.
 // 2. Previsão da etapa: hoje + (tasks restantes ÷ ritmo) semanas.
 // 3. Etapa aberta sem nenhuma task concluída nas últimas 4 semanas: sem previsão ("parada há X semanas").
 // 4. Previsão do projeto: a maior data prevista entre as etapas abertas; essa etapa é o gargalo.
@@ -14,6 +15,8 @@ import { somarDias } from "./hoje";
 
 export const SEMANAS_RITMO = 4;
 export const BASE_DO_CALCULO = "ritmo das últimas 4 semanas";
+/** Explicação completa (dicas e documentação). */
+export const BASE_DO_CALCULO_DETALHE = "ritmo das últimas 4 semanas (ou desde o início da etapa, se ela for mais nova)";
 
 const DIA = 86400000;
 const tempo = (iso: string) => new Date(`${iso.slice(0, 10)}T12:00:00Z`).getTime();
@@ -52,7 +55,11 @@ export function ritmoMedioDasEtapas(projeto: Projeto) {
 export function ritmoEtapa(projeto: Projeto, etapa: Etapa) {
   const corte = somarDias(projeto.hoje, -7 * SEMANAS_RITMO);
   const recentes = etapa.tasks.filter((t) => t.feita && t.feitaEm && t.feitaEm > corte && t.feitaEm <= projeto.hoje).length;
-  return recentes / SEMANAS_RITMO;
+  // etapa com menos de 4 semanas de vida: divide pelo tempo que ela realmente existe (mínimo 1 dia),
+  // senão uma etapa de 2 dias com 1 task feita teria "0,25 task por semana" e previsão de meses
+  const datas = [etapa.inicioPrevisto, etapa.primeiroCommit, ...etapa.tasks.map((t) => t.feitaEm)].filter((d): d is string => !!d).sort();
+  const vida = Math.max(1, dias(datas[0], projeto.hoje) + 1);
+  return recentes / (Math.min(vida, 7 * SEMANAS_RITMO) / 7);
 }
 
 /** Dia da última task concluída na etapa (null se nenhuma tem data). */

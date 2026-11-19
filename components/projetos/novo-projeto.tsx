@@ -300,12 +300,15 @@ export function FormularioNovoProjeto({
                     onChange={(ev) => mudarEtapa(i, "fimPrevisto", ev.target.value)}
                   />
                 </Campo>
-                <Campo titulo="Caminhos do repositório" dica="Um por linha. Commits que alteram esses arquivos contam nesta etapa.">
+                <Campo
+                  titulo="Caminhos do repositório"
+                  dica="Pastas ou arquivos do repositório, como estão no GitHub (ex.: app/**, components/**, README.md). Um por linha. Commits que alteram esses arquivos contam nesta etapa."
+                >
                   <textarea
                     className={`${campo} dado min-h-20 text-xs`}
                     value={e.caminhos}
                     onChange={(ev) => mudarEtapa(i, "caminhos", ev.target.value)}
-                    placeholder="src/agenda/**"
+                    placeholder="agenda/**"
                   />
                 </Campo>
                 <Campo titulo={`Tasks · ${linhas(e.tasks).length}`} dica="Uma por linha. O progresso da etapa vem das tasks concluídas.">

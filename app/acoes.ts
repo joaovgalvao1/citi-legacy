@@ -11,7 +11,7 @@ import { enderecoLinkedin, usuarioGithub, validarMembro, type MembroForm } from 
 import { carregarCommits, carregarResumos, carregarTudo } from "@/data/carregar";
 import { montarBoletim } from "@/lib/boletim";
 import { ErroGithub, normalizarRepositorio, verificarRepositorio } from "@/lib/github";
-import { sincronizarProjeto } from "@/lib/sincronizar";
+import { reclassificarCommits, sincronizarProjeto } from "@/lib/sincronizar";
 import { destinatarios, enviarBoletim, enviarReuniao, eventoReuniao, listaDestinatarios } from "@/lib/email";
 import { linkGoogleAgenda, textoQuando, validarConvite, type Convite } from "@/lib/convite";
 
@@ -285,6 +285,12 @@ export async function editarProjeto(projetoId: string, p: ProjetoNovo): Promise<
       await tx.insert(tasks).values(novas);
     }
   });
+
+  // caminhos das etapas mudaram (ou etapas entraram/saíram): reclassifica os commits já gravados
+  const caminhosAntes = new Map(existentes.map((e) => [e.id, e.caminhos.join("\n")]));
+  const mudouCaminhos =
+    removidas.length > 0 || p.etapas.some((e, i) => !e.id || caminhosAntes.get(idDe[i]) !== linhas(e.caminhos).join("\n"));
+  if (mudouCaminhos) await reclassificarCommits(projetoId);
 
   // repositório novo ou trocado: sincroniza na hora
   const github = repo.nome && repo.nome !== atual.repositorio ? await sincronizarParaTela(projetoId) : undefined;

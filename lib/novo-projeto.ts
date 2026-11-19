@@ -54,8 +54,8 @@ export function confereConfirmacao(digitado: string, esperado: string) {
   return n(digitado) !== "" && n(digitado) === n(esperado);
 }
 
-/** Caminho sugerido para uma etapa, a partir do nome. */
-export const caminhoSugerido = (nomeEtapa: string) => (slug(nomeEtapa) ? `src/${slug(nomeEtapa)}/**` : "");
+/** Caminho sugerido para uma etapa, a partir do nome (uma pasta na raiz do repositório; ajuste para a pasta real). */
+export const caminhoSugerido = (nomeEtapa: string) => (slug(nomeEtapa) ? `${slug(nomeEtapa)}/**` : "");
 
 export const linhas = (texto: string) =>
   texto
