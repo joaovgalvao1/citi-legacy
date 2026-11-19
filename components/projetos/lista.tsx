@@ -12,6 +12,9 @@ import Link from "next/link";
 
 type Tom = "verde" | "ambar" | "vermelho";
 
+/** Projeto em destaque no topo: o atrasado mais grave, com o resumo da IA da semana. */
+export type Destaque = { id: string; travou: string | null; primeiro: string | null; ia: boolean } | null;
+
 export type ResumoProjeto = {
   id: string;
   nome: string;
@@ -35,6 +38,8 @@ export type ResumoProjeto = {
   pulso: number[];
   /** Leitura do ritmo recente ("ritmo firme", "acelerando", "parado há 9 dias"...). */
   ritmo: string;
+  /** Iniciais do cliente, para o monograma do card. */
+  monograma: string;
   /** Etapa que leva a previsão para depois do prazo (null se está no prazo). */
   gargalo: string | null;
   membros: { id: string; nome: string; iniciais: string; cor: string }[];
@@ -98,47 +103,170 @@ function Avatares({ membros }: { membros: ResumoProjeto["membros"] }) {
   );
 }
 
+const COR_SUAVE: Record<Tom, string> = {
+  verde: "bg-verde/12 text-verde",
+  ambar: "bg-ambar/12 text-ambar",
+  vermelho: "bg-vermelho/12 text-vermelho",
+};
+const BORDA_HOVER: Record<Tom, string> = {
+  verde: "hover:border-verde/60 focus-visible:border-verde/60",
+  ambar: "hover:border-ambar/60 focus-visible:border-ambar/60",
+  vermelho: "hover:border-vermelho/60 focus-visible:border-vermelho/60",
+};
+
+/** Monograma com as iniciais do cliente, na cor da situação. */
+function Monograma({ texto, nivel, grande = false }: { texto: string; nivel: Tom; grande?: boolean }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`flex shrink-0 items-center justify-center rounded-xl font-bold tracking-tight ${COR_SUAVE[nivel]} ${grande ? "h-12 w-12 text-base" : "h-11 w-11 text-sm"}`}
+    >
+      {texto}
+    </span>
+  );
+}
+
+/** Anel de progresso na cor da situação, com o percentual no meio. */
+function Anel({ progresso, nivel }: { progresso: number; nivel: Tom }) {
+  const r = 19;
+  const volta = 2 * Math.PI * r;
+  return (
+    <svg viewBox="0 0 48 48" className="h-12 w-12 shrink-0" role="img" aria-label={`${Math.round(progresso)}% concluído`}>
+      <circle cx="24" cy="24" r={r} fill="none" stroke="rgb(255 255 255 / 0.08)" strokeWidth="5" />
+      <circle
+        cx="24"
+        cy="24"
+        r={r}
+        fill="none"
+        stroke={COR_HEX[nivel]}
+        strokeWidth="5"
+        strokeLinecap="round"
+        strokeDasharray={`${((volta * Math.min(progresso, 100)) / 100).toFixed(1)} ${volta.toFixed(1)}`}
+        transform="rotate(-90 24 24)"
+      />
+      <text x="24" y="28" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="600">
+        {Math.round(progresso)}%
+      </text>
+    </svg>
+  );
+}
+
+/** Pulso em miniatura: as últimas 2 semanas de commits (o mesmo traçado dos Sinais vitais). */
+function MiniPulso({ pulso, nivel }: { pulso: number[]; nivel: Tom }) {
+  const ultimos = pulso.slice(-14);
+  return (
+    <svg viewBox={`0 0 ${LARGURA} ${ALTURA}`} preserveAspectRatio="none" className="block h-4 w-full" aria-hidden="true">
+      <path
+        d={tracado(ultimos, Math.max(3, ...ultimos))}
+        fill="none"
+        stroke={COR_HEX[nivel]}
+        strokeOpacity="0.85"
+        strokeWidth="1.4"
+        vectorEffect="non-scaling-stroke"
+      />
+    </svg>
+  );
+}
+
 function CardAndamento({ p }: { p: ResumoProjeto }) {
   return (
     <Link
       href={`/projetos/${p.id}`}
-      className="group flex h-full flex-col gap-3 rounded-xl border border-linha bg-white p-5 transition-colors hover:border-verde/50 focus-visible:border-verde/50"
+      className={`group flex h-full flex-col gap-3 rounded-xl border border-linha bg-white p-4 transition-[transform,border-color] duration-200 hover:-translate-y-0.5 sm:p-5 ${BORDA_HOVER[p.nivel]}`}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <div className="truncate text-lg font-bold tracking-tight">{p.nome}</div>
-          <div className="truncate text-sm text-gray-600">{p.cliente === p.nome ? p.subtitulo : p.cliente}</div>
+      <div className="flex items-center gap-3.5">
+        <Monograma texto={p.monograma} nivel={p.nivel} />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between gap-2">
+            <span className="truncate text-base font-bold tracking-tight sm:text-lg">{p.nome}</span>
+            {/* no celular, a situação fica no monograma e no anel, para o nome caber */}
+            <span className="hidden sm:inline-flex">
+              <Situacao nivel={p.nivel} rotulo={p.rotulo} />
+            </span>
+          </div>
+          <p className="truncate text-sm text-gray-600">
+            {p.entregaPrevista ? (
+              <>
+                entrega prevista <span className={`font-semibold tabular-nums ${COR_TEXTO[p.previsao.tom]}`}>{p.entregaPrevista}</span>
+              </>
+            ) : (
+              <span className={COR_TEXTO[p.previsao.tom]}>{p.previsao.texto}</span>
+            )}
+            {p.gargalo && <span className="text-gray-500"> · {p.gargalo}</span>}
+          </p>
+          <div className="mt-1.5">
+            <MiniPulso pulso={p.pulso} nivel={p.nivel} />
+          </div>
         </div>
-        <Situacao nivel={p.nivel} rotulo={p.rotulo} />
-      </div>
-      <Barra progresso={p.progresso} nivel={p.nivel} />
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-sm text-gray-600">
-          <span className="font-semibold text-branco tabular-nums">{Math.round(p.progresso)}%</span>
-          {" · "}
-          {p.entregaPrevista ? (
-            <>
-              entrega prevista <span className={`font-semibold tabular-nums ${COR_TEXTO[p.previsao.tom]}`}>{p.entregaPrevista}</span>
-            </>
-          ) : (
-            <span className={COR_TEXTO[p.previsao.tom]}>{p.previsao.texto}</span>
-          )}
-        </p>
-        <Avatares membros={p.membros} />
+        <Anel progresso={p.progresso} nivel={p.nivel} />
       </div>
       {/* detalhes: ao passar o mouse ou focar (sempre visíveis em telas de toque) */}
-      <div className="hidden space-y-0.5 border-t border-linha pt-2.5 text-xs text-gray-500 group-hover:block group-focus-visible:block [@media(hover:none)]:block">
-        <p>
-          {p.etapasConcluidas} de {p.etapas.length} etapas · {p.prazo} · {p.previsao.texto}
-        </p>
-        {p.gargalo && (
+      <div className="hidden items-end justify-between gap-3 border-t border-linha pt-2.5 text-xs text-gray-500 group-hover:flex group-focus-visible:flex [@media(hover:none)]:flex">
+        <div className="min-w-0 space-y-0.5">
           <p>
-            gargalo principal: <span className="text-gray-700">{p.gargalo}</span>
+            {p.etapasConcluidas} de {p.etapas.length} etapas · {p.prazo} · {p.previsao.texto}
           </p>
-        )}
-        {p.alerta && <p>{p.alerta}</p>}
+          {p.alerta && <p>{p.alerta}</p>}
+        </div>
+        <Avatares membros={p.membros} />
       </div>
     </Link>
+  );
+}
+
+/** Card largo no topo: o projeto que mais precisa de ação, com o resumo da IA ao lado. */
+function CardDestaque({ p, d }: { p: ResumoProjeto; d: NonNullable<Destaque> }) {
+  return (
+    <section className="space-y-3">
+      <h2 className="rotulo text-vermelho!">Precisa de você agora</h2>
+      <Link
+        href={`/projetos/${p.id}`}
+        className="grid gap-5 rounded-2xl border border-vermelho/40 bg-white p-5 transition-[transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-vermelho/70 md:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] sm:p-6"
+      >
+        <div className="min-w-0 space-y-3">
+          <div className="flex items-center gap-3.5">
+            <Monograma texto={p.monograma} nivel={p.nivel} grande />
+            <div className="min-w-0">
+              <div className="truncate text-xl font-bold tracking-tight">{p.nome}</div>
+              <div className="truncate text-sm text-gray-600">
+                {p.cliente === p.nome ? p.subtitulo : p.cliente} · <span className="text-vermelho">{p.prazo}</span>
+              </div>
+            </div>
+          </div>
+          <Barra progresso={p.progresso} nivel={p.nivel} />
+          <p className="text-sm text-gray-600">
+            <span className="font-semibold text-branco tabular-nums">{Math.round(p.progresso)}%</span>
+            {p.entregaPrevista && (
+              <>
+                {" · entrega prevista "}
+                <span className="font-semibold text-vermelho tabular-nums">{p.entregaPrevista}</span>
+              </>
+            )}
+            {p.gargalo && (
+              <>
+                {" "}
+                · gargalo principal: <span className="text-gray-800">{p.gargalo}</span>
+              </>
+            )}
+          </p>
+        </div>
+        {(d.travou || d.primeiro) && (
+          <div className="min-w-0 space-y-2 border-linha md:border-l md:pl-5">
+            <p className={`rotulo ${d.ia ? "texto-ia" : ""}`}>Resumo da semana{d.ia ? " · IA" : ""}</p>
+            {d.travou && (
+              <p className="text-sm leading-snug text-gray-700">
+                <span className="font-semibold text-branco">O que travou.</span> {d.travou}
+              </p>
+            )}
+            {d.primeiro && (
+              <p className="text-sm leading-snug text-gray-700">
+                <span className="font-semibold text-branco">Fazer primeiro.</span> {d.primeiro}
+              </p>
+            )}
+          </div>
+        )}
+      </Link>
+    </section>
   );
 }
 
@@ -306,7 +434,17 @@ function SinaisVitais({ projetos, dias }: { projetos: ResumoProjeto[]; dias: str
 
 type Modo = "cards" | "vitais";
 
-export function ListaProjetos({ projetos, naLixeira, dias }: { projetos: ResumoProjeto[]; naLixeira: number; dias: string[] }) {
+export function ListaProjetos({
+  projetos,
+  naLixeira,
+  dias,
+  destaque,
+}: {
+  projetos: ResumoProjeto[];
+  naLixeira: number;
+  dias: string[];
+  destaque: Destaque;
+}) {
   const [aba, setAba] = useState<"andamento" | "concluidos">("andamento");
   const [modo, setModo] = useState<Modo>("cards");
   const [busca, setBusca] = useState("");
@@ -320,6 +458,9 @@ export function ListaProjetos({ projetos, naLixeira, dias }: { projetos: ResumoP
     .filter((p) => !termo || normalizar(`${p.nome} ${p.cliente} ${p.subtitulo}`).includes(termo))
     .sort((a, b) => ORDEM[a.nivel] - ORDEM[b.nivel] || Number(!!b.alerta) - Number(!!a.alerta));
   const modoAtual: Modo = aba === "andamento" ? modo : "cards";
+  // o destaque só aparece sem busca, nos cards de Em andamento (e sai do grupo para não repetir)
+  const projetoDestaque = destaque && aba === "andamento" && !termo ? visiveis.find((p) => p.id === destaque.id) : undefined;
+  const nosGrupos = projetoDestaque ? visiveis.filter((p) => p.id !== projetoDestaque.id) : visiveis;
 
   return (
     <div className="space-y-5">
@@ -397,9 +538,10 @@ export function ListaProjetos({ projetos, naLixeira, dias }: { projetos: ResumoP
       ) : modoAtual === "vitais" ? (
         <SinaisVitais projetos={visiveis} dias={dias} />
       ) : aba === "andamento" ? (
-        <div className="space-y-6">
-          <Grupo titulo="Precisam de atenção" projetos={visiveis.filter((p) => p.nivel !== "verde")} Card={CardAndamento} />
-          <Grupo titulo="No prazo" projetos={visiveis.filter((p) => p.nivel === "verde")} Card={CardAndamento} />
+        <div className="space-y-7">
+          {projetoDestaque && destaque && <CardDestaque p={projetoDestaque} d={destaque} />}
+          <Grupo titulo="Precisam de atenção" projetos={nosGrupos.filter((p) => p.nivel !== "verde")} Card={CardAndamento} />
+          <Grupo titulo="No prazo" projetos={nosGrupos.filter((p) => p.nivel === "verde")} Card={CardAndamento} />
         </div>
       ) : (
         <ul className="grid grid-cols-1 gap-4 md:grid-cols-2">

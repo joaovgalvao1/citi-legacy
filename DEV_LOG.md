@@ -1518,3 +1518,30 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
 **Verificação:**
 - **Desktop** (1280 px): os dois modos, conferidos visualmente.
 - **Celular** (375 px): sem rolagem lateral, e os detalhes dos cards ficam visíveis no toque.
+
+### Tela de projetos: evolução visual (19/11)
+
+**O que pedi:** voltar os 4 cards de indicadores como estavam (andamento, atrasados, tasks, commits), porque a faixa compacta não me agradou, e evoluir o visual da página, que estava fraco.
+
+**Diagnóstico da IA:** era tudo retângulo cinza igual sobre o preto, sem profundidade e com pouca marca do CITi. O que o produto tem de mais valioso (o resumo da IA e o ritmo de cada projeto) ficava escondido dentro de cada projeto. A IA mostrou uma proposta visual antes de aplicar, e eu aprovei.
+
+**O que mudou:**
+- **Indicadores** (os mesmos 4 cards grandes), cada um com um mini gráfico:
+  - **Em andamento:** proporção de projetos atrasados, em atenção e no prazo.
+  - **Atrasados:** card em tom vermelho, com o nome do projeto e há quantos dias está atrasado.
+  - **Tasks:** barrinhas de tasks entregues por dia da semana.
+  - **Commits:** uma linha com o ritmo de commits da semana.
+- **"Precisa de você agora":**
+  - o projeto atrasado mais grave ganha um card largo no topo, com progresso, entrega prevista e gargalo;
+  - ao lado vem o resumo da semana feito pela IA ("O que travou" e "Fazer primeiro");
+  - o card só aparece quando há um projeto atrasado, e sai do grupo para não repetir.
+- **Cards:**
+  - monograma com as iniciais do cliente, na cor da situação;
+  - anel de progresso no lugar da barra;
+  - um pulso em miniatura com as 2 últimas semanas de commits, o mesmo traçado dos Sinais vitais;
+  - entrega prevista e gargalo numa linha;
+  - ao passar o mouse, o card sobe levemente, a borda acende na cor da situação e aparecem os detalhes e a equipe.
+  - **No celular:** a etiqueta da situação fica escondida, porque a cor do monograma e do anel já mostra a situação e assim o nome cabe.
+- **Órbitas** da página inicial, discretas, atrás do cabeçalho.
+
+**Verificação:** desktop (1280 px) e celular (375 px), sem rolagem lateral.
