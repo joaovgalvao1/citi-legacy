@@ -1798,3 +1798,7 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
   - **O que pedi:** no Firefox, o PDF pela impressão continuava com problema. Pedi para usar o PDF do servidor também no computador.
   - **O que mudou:** todos os navegadores passaram a usar o PDF gerado no servidor, que abre numa aba nova. A detecção de Safari foi removida e a dica da barra virou "O PDF é gerado e abre numa aba nova."
   - **Verificação (Firefox):** os três botões abriram uma aba nova pedindo `/api/pdf`, e a página original continuou aberta.
+- **Espaço vazio entre os projetos no boletim:**
+  - **Causa:** cada card de projeto não podia ser dividido entre páginas. Quando o próximo não cabia inteiro, pulava para a página seguinte e deixava um vão.
+  - **Correção:** o card pode continuar na página seguinte, com a borda repetida (`box-decoration-break: clone`), e só o bloco do resumo da IA nunca é dividido.
+  - **Verificação:** PDF gerado pela rota do servidor, com os projetos em sequência e sem vãos grandes.

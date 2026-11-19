@@ -56,7 +56,7 @@ async function Documento() {
           <Titulo>Projetos · {b.projetos.length}</Titulo>
           <ol className="space-y-5">
             {b.projetos.map((p) => (
-              <li key={p.id} className="break-inside-avoid rounded-xl border border-(--f-borda) p-4">
+              <li key={p.id} className="rounded-xl border border-(--f-borda) p-4 [box-decoration-break:clone]">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <h2 className="text-[15px] font-bold tracking-tight">{p.nome}</h2>
@@ -93,7 +93,7 @@ async function Documento() {
                     ))}
                   </ul>
                 )}
-                <div className={`mt-3 rounded-lg p-3 ${p.resumo && p.resumo.fonte !== "regras" ? "borda-ia-folha" : "bg-(--f-caixa)"}`}>
+                <div className={`mt-3 break-inside-avoid rounded-lg p-3 ${p.resumo && p.resumo.fonte !== "regras" ? "borda-ia-folha" : "bg-(--f-caixa)"}`}>
                   {p.resumo ? (
                     <>
                       {p.resumo.fonte !== "regras" && (
