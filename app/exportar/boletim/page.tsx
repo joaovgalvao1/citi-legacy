@@ -9,6 +9,7 @@ import { emPct } from "@/lib/indice";
 import { montarBoletim } from "@/lib/boletim";
 import { ddmm } from "@/components/projeto/resumos";
 import { BarraDeImpressao } from "@/components/exportar/imprimir";
+import { BotaoEnviarBoletim } from "@/components/exportar/enviar-email";
 import { CabecalhoFolha, Secoes, Titulo } from "@/components/exportar/folha";
 
 export const metadata: Metadata = { title: "Boletim semanal · CITi Legacy" };
@@ -29,7 +30,7 @@ async function Documento() {
 
   return (
     <>
-      <BarraDeImpressao voltar="/projetos" rotuloVoltar="Voltar aos projetos" />
+      <BarraDeImpressao voltar="/projetos" rotuloVoltar="Voltar aos projetos" acoes={<BotaoEnviarBoletim />} />
 
       <article className="folha mx-auto w-full max-w-[210mm] rounded-sm bg-[#ffffff] px-[16mm] py-[14mm] text-[#161616] shadow-2xl">
         <CabecalhoFolha rotulo="Boletim semanal da empresa" data={b.hoje} />

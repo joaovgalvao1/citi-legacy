@@ -7,6 +7,9 @@ import { updateTag } from "next/cache";
 import { db, esquema } from "@/db/conexao";
 import { hoje } from "@/lib/hoje";
 import { linhas, slug, validarProjeto, type ProjetoNovo } from "@/lib/novo-projeto";
+import { carregarCommits, carregarResumos, carregarTudo } from "@/data/carregar";
+import { montarBoletim } from "@/lib/boletim";
+import { destinatariosMascarados, enviarBoletim } from "@/lib/email";
 
 const { clientes, etapas, membrosProjeto, projetos, resumos, tasks } = esquema;
 
@@ -95,4 +98,19 @@ export async function criarProjeto(p: ProjetoNovo): Promise<{ id: string } | { e
 
   updateTag("dados");
   return { id };
+}
+
+/**
+ * Envia agora o boletim semanal por e-mail (o mesmo do cron de sexta), para BOLETIM_PARA.
+ * Os destinatários vêm só da configuração do servidor; a tela não escolhe para quem enviar.
+ */
+export async function enviarBoletimAgora(): Promise<{ enviado: boolean; mensagem: string }> {
+  const { projetos } = await carregarTudo();
+  const resumos = Object.fromEntries(await Promise.all(projetos.map(async (p) => [p.id, await carregarResumos(p.id)] as const)));
+  const r = await enviarBoletim(montarBoletim(projetos, resumos, await carregarCommits({}))).catch((e: Error) => ({
+    enviado: false,
+    detalhe: e.message,
+  }));
+  if (!r.enviado) return { enviado: false, mensagem: `Não foi possível enviar: ${r.detalhe}.` };
+  return { enviado: true, mensagem: `Boletim enviado para ${destinatariosMascarados()}.` };
 }

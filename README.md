@@ -107,6 +107,7 @@ Toda sexta-feira, depois de gerar os resumos, o cron envia o boletim por e-mail 
 
 - **Variáveis:** `RESEND_API_KEY` e `BOLETIM_PARA` (destinatários, separados por vírgula). Sem elas, o envio é pulado e o cron só registra o motivo.
 - **Sem domínio próprio:** o remetente é `onboarding@resend.dev`, que só envia para o e-mail da conta Resend. Em produção, basta verificar o domínio da empresa no Resend e definir `BOLETIM_DE` (ex.: `CITi Legacy <legacy@dominio>`) e `BOLETIM_PARA`, sem mudar o código.
+- **Enviar na hora pela tela:** no boletim (`/exportar/boletim`), o botão **Enviar por e-mail**, ao lado de "Salvar como PDF", envia o mesmo e-mail para `BOLETIM_PARA` e mostra o resultado, com o destinatário parcialmente oculto. A tela não escolhe o destinatário: ele vem só da configuração do servidor.
 - **Testar na hora:** `npm run boletim:enviar`.
 - **Só gerar o HTML, sem enviar:** `npm run boletim:enviar -- --html boletim.html`.
 

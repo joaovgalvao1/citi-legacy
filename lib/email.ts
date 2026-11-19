@@ -135,3 +135,13 @@ export async function enviarBoletim(b: Boletim): Promise<{ enviado: boolean; det
   const corpo = (await r.json().catch(() => ({}))) as { id?: string; message?: string };
   return r.ok ? { enviado: true, detalhe: `id ${corpo.id}` } : { enviado: false, detalhe: `Resend ${r.status}: ${corpo.message ?? "erro"}` };
 }
+
+/** Destinatários com o e-mail parcialmente oculto, para mostrar na tela ("jv***@cin.ufpe.br"). */
+export function destinatariosMascarados() {
+  return (process.env.BOLETIM_PARA ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .map((e) => e.replace(/^(.{2})[^@]*/, "$1***"))
+    .join(", ");
+}

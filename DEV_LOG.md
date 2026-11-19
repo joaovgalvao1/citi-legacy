@@ -740,3 +740,15 @@ Ficaram de fora o boletim da empresa inteira e a imagem para WhatsApp/Slack.
 - `?voltar=//exemplo.com/x` → `/projetos`;
 - login sem destino → `/projetos`;
 - Sair → página inicial.
+
+### Botão "Enviar por e-mail" no boletim (18/11)
+
+**O que pedi:** um botão para enviar o relatório semanal por e-mail, ao lado de "Salvar como PDF".
+
+**O que a IA fez:**
+- ação do servidor `enviarBoletimAgora`, que monta o boletim com os dados do banco e usa o mesmo envio do cron;
+- botão com os estados "Enviando…", "Boletim enviado para jv***@cin.ufpe.br" e mensagem de erro, se houver;
+- **destinatários:** saem só da configuração do servidor (`BOLETIM_PARA`), para o botão não virar uma forma de mandar e-mail para qualquer endereço;
+- a barra da versão de impressão (`BarraDeImpressao`) ganhou um espaço para ações extras, usado só no boletim.
+
+**Verificação:** cliquei pela tela. O botão mostrou "Enviando…" e depois "Boletim enviado para jv***@cin.ufpe.br", e o Resend aceitou o envio.
