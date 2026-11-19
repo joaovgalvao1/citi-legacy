@@ -158,7 +158,7 @@ export default async function Projetos() {
       monograma: iniciaisCliente(p.cliente.split(" · ")[0]) || iniciaisCliente(p.nome),
       // a etapa que empurra a entrega para depois do prazo
       gargalo: previsao.tipo === "prevista" && !previsao.noPrazo ? previsao.gargalo.nome : null,
-      membros: p.membros.map((m) => ({ id: m.id, nome: m.nome, iniciais: iniciais(m.nome), cor: corDoMembro(p, m.id) })),
+      membros: p.membros.map((m) => ({ id: m.id, nome: m.nome, iniciais: iniciais(m.nome), cor: corDoMembro(p, m.id), github: m.github })),
       entrega: p.entrega ? `Entregue em ${formatarData(p.entrega)} · ${meses} ${meses === 1 ? "mês" : "meses"}` : null,
       resultado: p.resumoResultado ?? null,
     };
@@ -245,7 +245,7 @@ export default async function Projetos() {
         </Indicador>
       </section>
 
-      <ListaProjetos projetos={resumos} naLixeira={lixeira.length} dias={dias} destaque={destaque} />
+      <ListaProjetos projetos={resumos} naLixeira={lixeira.length} destaque={destaque} />
     </div>
   );
 }

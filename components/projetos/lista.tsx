@@ -1,11 +1,9 @@
 "use client";
 
-// Projetos em dois modos de visualização, com abas (em andamento / concluídos) e busca:
-//   · Cards: um sinal por card (a cor da situação no ponto, na barra e na data prevista); etapas,
-//     prazo e gargalo aparecem ao passar o mouse (sempre visíveis em telas de toque). Agrupados
-//     em "Precisam de atenção" e "No prazo".
-//   · Sinais vitais: cada projeto como um monitor cardíaco — a linha é o ritmo de commits por dia
-//     nas últimas 4 semanas (reta = parado; batimento forte = semana ativa).
+// Projetos com abas (em andamento / concluídos) e busca. Cada card tem um sinal só (a cor da
+// situação no monograma, no anel e na data prevista) e um pulso em miniatura com o ritmo de commits;
+// etapas, prazo e equipe aparecem ao passar o mouse (sempre visíveis em telas de toque).
+// No topo, o projeto atrasado mais grave ganha o destaque "Precisa de você agora", com o resumo da IA.
 
 import { useState } from "react";
 import Link from "next/link";
@@ -42,7 +40,7 @@ export type ResumoProjeto = {
   monograma: string;
   /** Etapa que leva a previsão para depois do prazo (null se está no prazo). */
   gargalo: string | null;
-  membros: { id: string; nome: string; iniciais: string; cor: string }[];
+  membros: { id: string; nome: string; iniciais: string; cor: string; github?: string }[];
   entrega: string | null;
   resultado: string | null;
 };
@@ -58,7 +56,6 @@ const normalizar = (s: string) =>
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "");
 
-const ddmm = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
 
 /** Ponto + rótulo da situação (a única etiqueta colorida do card). */
 function Situacao({ nivel, rotulo }: { nivel: Tom; rotulo: string }) {
@@ -79,23 +76,47 @@ function Barra({ progresso, nivel }: { progresso: number; nivel: Tom }) {
   );
 }
 
-/** Até 3 iniciais da equipe; o resto vira "+N". */
+/** Foto do GitHub por cima das iniciais, revelada ao passar o mouse (some se não carregar). */
+function FotoNoHover({ github, nome }: { github: string; nome: string }) {
+  const [falhou, setFalhou] = useState(false);
+  if (falhou) return null;
+  return (
+    // eslint-disable-next-line @next/next/no-img-element -- foto externa (GitHub), sem otimização do Next
+    <img
+      src={`https://github.com/${encodeURIComponent(github)}.png?size=48`}
+      alt={`Foto de ${nome}`}
+      loading="lazy"
+      onError={() => setFalhou(true)}
+      className="absolute inset-0 h-full w-full rounded-full object-cover opacity-0 transition-opacity duration-200 group-hover/av:opacity-100"
+    />
+  );
+}
+
+/** Até 3 iniciais da equipe; o resto vira "+N". Ao passar o mouse, quem tem GitHub mostra a foto. */
 function Avatares({ membros }: { membros: ResumoProjeto["membros"] }) {
   const visiveis = membros.slice(0, 3);
   const resto = membros.length - visiveis.length;
   return (
-    <div className="flex shrink-0 -space-x-2" title={membros.map((m) => m.nome).join(", ")}>
+    <div className="flex shrink-0 -space-x-2">
       {visiveis.map((m) => (
         <span
           key={m.id}
-          className="dado flex h-6 w-6 items-center justify-center rounded-full border-2 border-white text-[9px] font-semibold text-fundo"
+          title={m.nome}
+          className="group/av dado relative flex h-6 w-6 items-center justify-center rounded-full border-2 border-white text-[9px] font-semibold text-fundo transition-transform duration-200 hover:z-10 hover:scale-150"
           style={{ backgroundColor: m.cor }}
         >
           {m.iniciais}
+          {m.github && <FotoNoHover github={m.github} nome={m.nome} />}
         </span>
       ))}
       {resto > 0 && (
-        <span className="dado flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-gray-300 text-[9px] font-semibold text-gray-800">
+        <span
+          title={membros
+            .slice(3)
+            .map((m) => m.nome)
+            .join(", ")}
+          className="dado flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-gray-300 text-[9px] font-semibold text-gray-800"
+        >
           +{resto}
         </span>
       )}
@@ -151,7 +172,7 @@ function Anel({ progresso, nivel }: { progresso: number; nivel: Tom }) {
   );
 }
 
-/** Pulso em miniatura: as últimas 2 semanas de commits (o mesmo traçado dos Sinais vitais). */
+/** Pulso em miniatura: as últimas 2 semanas de commits, um batimento por dia com commits. */
 function MiniPulso({ pulso, nivel }: { pulso: number[]; nivel: Tom }) {
   const ultimos = pulso.slice(-14);
   return (
@@ -226,14 +247,17 @@ function CardDestaque({ p, d }: { p: ResumoProjeto; d: NonNullable<Destaque> }) 
         <div className="min-w-0 space-y-3">
           <div className="flex items-center gap-3.5">
             <Monograma texto={p.monograma} nivel={p.nivel} grande />
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <div className="truncate text-xl font-bold tracking-tight">{p.nome}</div>
               <div className="truncate text-sm text-gray-600">
                 {p.cliente === p.nome ? p.subtitulo : p.cliente} · <span className="text-vermelho">{p.prazo}</span>
               </div>
             </div>
+            <span className="ml-auto">
+              <Anel progresso={p.progresso} nivel={p.nivel} />
+            </span>
           </div>
-          <Barra progresso={p.progresso} nivel={p.nivel} />
+          <MiniPulso pulso={p.pulso} nivel={p.nivel} />
           <p className="text-sm text-gray-600">
             <span className="font-semibold text-branco tabular-nums">{Math.round(p.progresso)}%</span>
             {p.entregaPrevista && (
@@ -311,7 +335,7 @@ function Grupo({ titulo, projetos, Card }: { titulo: string; projetos: ResumoPro
   );
 }
 
-// ---------- sinais vitais ----------
+// ---------- pulso (traçado de monitor cardíaco) ----------
 
 const LARGURA = 560;
 const ALTURA = 44;
@@ -330,123 +354,8 @@ function tracado(pulso: number[], maximo: number) {
   return d;
 }
 
-function SinaisVitais({ projetos, dias }: { projetos: ResumoProjeto[]; dias: string[] }) {
-  const maximo = Math.max(3, ...projetos.flatMap((p) => p.pulso));
-  const semanas = [0, 7, 14, 21].map((i) => dias[i]);
-  return (
-    <div className="rounded-xl border border-linha bg-white p-5">
-      <div className="mb-2 hidden grid-cols-[13rem_minmax(0,1fr)_9.5rem] gap-4 md:grid">
-        <span />
-        <div className="dado flex justify-between text-[10px] text-gray-500">
-          {semanas.map((d) => (
-            <span key={d}>{ddmm(d)}</span>
-          ))}
-          <span>hoje</span>
-        </div>
-        <span />
-      </div>
-      <ul className="divide-y divide-linha">
-        {projetos.map((p) => {
-          const cor = COR_HEX[p.nivel];
-          const parado = p.ritmo.startsWith("parado");
-          const total = p.pulso.reduce((s, v) => s + v, 0);
-          return (
-            <li key={p.id}>
-              <Link
-                href={`/projetos/${p.id}`}
-                className="group grid grid-cols-1 items-center gap-x-4 gap-y-1.5 py-3 md:grid-cols-[13rem_minmax(0,1fr)_9.5rem]"
-              >
-                <span className="flex min-w-0 items-center justify-between gap-2 md:justify-start">
-                  <span className="truncate font-semibold transition-colors group-hover:text-verde">{p.nome}</span>
-                  <span className="md:hidden">
-                    <Situacao nivel={p.nivel} rotulo={p.ritmo} />
-                  </span>
-                </span>
-                <span className="relative block">
-                  <svg
-                    viewBox={`0 0 ${LARGURA} ${ALTURA}`}
-                    preserveAspectRatio="none"
-                    className="block h-11 w-full"
-                    role="img"
-                    aria-label={`${p.nome}: ${total} commits em 4 semanas, ${p.ritmo}`}
-                  >
-                    {[7, 14, 21].map((i) => (
-                      <line
-                        key={i}
-                        x1={(i * LARGURA) / dias.length}
-                        x2={(i * LARGURA) / dias.length}
-                        y1="0"
-                        y2={ALTURA}
-                        stroke="rgb(255 255 255 / 0.06)"
-                        vectorEffect="non-scaling-stroke"
-                      />
-                    ))}
-                    <line
-                      x1="0"
-                      x2={LARGURA}
-                      y1={ALTURA / 2}
-                      y2={ALTURA / 2}
-                      stroke="rgb(255 255 255 / 0.05)"
-                      vectorEffect="non-scaling-stroke"
-                    />
-                    <path
-                      d={tracado(p.pulso, maximo)}
-                      fill="none"
-                      stroke={cor}
-                      strokeWidth="1.75"
-                      strokeLinejoin="round"
-                      vectorEffect="non-scaling-stroke"
-                    />
-                    {p.pulso.map((v, i) => (
-                      <rect
-                        key={dias[i]}
-                        x={(i * LARGURA) / dias.length}
-                        y="0"
-                        width={LARGURA / dias.length}
-                        height={ALTURA}
-                        fill="transparent"
-                      >
-                        <title>{`${ddmm(dias[i])} · ${v} ${v === 1 ? "commit" : "commits"}`}</title>
-                      </rect>
-                    ))}
-                  </svg>
-                  {/* ponto no fim da linha: pulsa enquanto o projeto está ativo */}
-                  <span
-                    aria-hidden="true"
-                    className={`absolute top-1/2 -right-1 h-2 w-2 -translate-y-1/2 rounded-full ${parado ? "bg-gray-400" : `${COR_FUNDO[p.nivel]} anima-pulso`}`}
-                  />
-                </span>
-                <span className="hidden flex-col items-end text-right md:flex">
-                  <span className={`text-xs font-medium ${COR_TEXTO[p.nivel]}`}>{p.ritmo}</span>
-                  <span className="dado text-[11px] text-gray-500">{total} commits · 4 sem.</span>
-                </span>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-      <p className="mt-3 text-xs text-gray-500">
-        Cada batimento é um dia com commits; a altura acompanha a quantidade. Linha reta = dias sem commits. A cor é a situação do projeto.
-      </p>
-    </div>
-  );
-}
-
-type Modo = "cards" | "vitais";
-
-export function ListaProjetos({
-  projetos,
-  naLixeira,
-  dias,
-  destaque,
-}: {
-  projetos: ResumoProjeto[];
-  naLixeira: number;
-  dias: string[];
-  destaque: Destaque;
-}) {
+export function ListaProjetos({ projetos, naLixeira, destaque }: { projetos: ResumoProjeto[]; naLixeira: number; destaque: Destaque }) {
   const [aba, setAba] = useState<"andamento" | "concluidos">("andamento");
-  const [modo, setModo] = useState<Modo>("cards");
   const [busca, setBusca] = useState("");
 
   const andamento = projetos.filter((p) => p.status !== "Concluído");
@@ -457,7 +366,6 @@ export function ListaProjetos({
   const visiveis = daAba
     .filter((p) => !termo || normalizar(`${p.nome} ${p.cliente} ${p.subtitulo}`).includes(termo))
     .sort((a, b) => ORDEM[a.nivel] - ORDEM[b.nivel] || Number(!!b.alerta) - Number(!!a.alerta));
-  const modoAtual: Modo = aba === "andamento" ? modo : "cards";
   // o destaque só aparece sem busca, nos cards de Em andamento (e sai do grupo para não repetir)
   const projetoDestaque = destaque && aba === "andamento" && !termo ? visiveis.find((p) => p.id === destaque.id) : undefined;
   const nosGrupos = projetoDestaque ? visiveis.filter((p) => p.id !== projetoDestaque.id) : visiveis;
@@ -504,39 +412,11 @@ export function ListaProjetos({
             aria-label="Buscar projeto ou cliente"
             className="min-w-0 flex-1 rounded-full border border-branco/25 bg-branco/5 px-4 py-1.5 text-sm outline-none transition-colors focus:border-verde sm:w-64 sm:flex-none"
           />
-          {aba === "andamento" && (
-            <div
-              className="flex shrink-0 rounded-full border border-branco/25 bg-branco/5 p-0.5 text-sm"
-              role="group"
-              aria-label="Modo de visualização"
-            >
-              {(
-                [
-                  ["cards", "Cards"],
-                  ["vitais", "Sinais vitais"],
-                ] as const
-              ).map(([id, rotulo]) => (
-                <button
-                  key={id}
-                  type="button"
-                  aria-pressed={modo === id}
-                  onClick={() => setModo(id)}
-                  className={`cursor-pointer rounded-full px-3 py-1 whitespace-nowrap transition-colors ${
-                    modo === id ? "bg-verde font-medium text-fundo" : "text-gray-700 hover:text-branco"
-                  }`}
-                >
-                  {rotulo}
-                </button>
-              ))}
-            </div>
-          )}
         </div>
       </div>
 
       {visiveis.length === 0 ? (
         <p className="rounded-xl border border-dashed border-branco/25 p-6 text-center text-sm text-gray-500">Nenhum projeto encontrado.</p>
-      ) : modoAtual === "vitais" ? (
-        <SinaisVitais projetos={visiveis} dias={dias} />
       ) : aba === "andamento" ? (
         <div className="space-y-7">
           {projetoDestaque && destaque && <CardDestaque p={projetoDestaque} d={destaque} />}

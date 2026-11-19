@@ -1545,3 +1545,16 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
 - **Órbitas** da página inicial, discretas, atrás do cabeçalho.
 
 **Verificação:** desktop (1280 px) e celular (375 px), sem rolagem lateral.
+
+### Projetos: sem Sinais vitais, pulso no destaque e foto no avatar (19/11)
+
+**O que pedi:** tirar a opção Sinais vitais, colocar no card "Precisa de você agora" o pulso no lugar da barra, como nos outros cards, e mostrar a foto do membro ao passar o mouse no círculo dele, quando houver.
+
+**O que a IA fez:**
+- **Sinais vitais:** saíram o modo e o botão de alternância. O traçado do pulso continua nos cards.
+- **Destaque:** a barra deu lugar ao pulso das 2 últimas semanas, e entrou o anel de progresso, igual aos outros cards.
+- **Avatares:**
+  - ao passar o mouse, o círculo cresce e, se o membro tiver GitHub cadastrado, mostra a foto dele;
+  - a foto só carrega quando o card aparece na tela (lazy) e some se não carregar;
+  - quem passa de 3 membros ("+N") aparece listado na dica do "+N".
+- **Verificação:** a foto do João Vitor (joaovgalvao1) aparece ao passar o mouse no card do CITi Legacy.
