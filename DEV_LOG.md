@@ -1371,3 +1371,19 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 **Verificação:**
 - **Desktop (1280 px) e celular (375 px):** sem rolagem lateral, e a vitrine cabe no celular.
 - **Ajuste:** o rótulo "hoje" do mini Gantt encostava no título e foi afastado.
+
+### Projeto CITi Legacy no banco hospedado (19/11)
+
+**O que pedi:** criar no banco hospedado (Neon) o projeto CITi Legacy, que até então só existia no banco local.
+
+**O que a IA fez:**
+- **Conferência (só leitura):** o Neon já tinha as colunas novas (repositório, GitHub do membro, lixeira, `feita_em`), mas não tinha o projeto nem o membro.
+- **Cópia do banco local para o Neon:** um script provisório, que só insere e não sobrescreve nada, rodou primeiro como simulação e depois gravou:
+  - o cliente CITi;
+  - o membro João Vitor Godoy (GitHub joaovgalvao1);
+  - o projeto, com 5 etapas e 16 tasks;
+  - a equipe;
+  - 49 commits;
+  - o resumo da IA da semana 16/11.
+- **Sincronização:** com o novo `npm run banco:sincronizar -- [projetoId]` (`scripts/sincronizar.ts`), mais 10 commits novos vieram do GitHub, totalizando 59.
+- **Cache do site:** o próximo push dispara o webhook, que atualiza o cache dos dados no site (antes do projeto existir no Neon, o webhook não tinha a que se ligar).

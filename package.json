@@ -11,7 +11,8 @@
     "banco:carregar": "tsx --env-file-if-exists=.env.local scripts/carregar-banco.ts",
     "banco:preparar": "npm run banco:migrar && npm run banco:carregar",
     "banco:resumos": "tsx --env-file-if-exists=.env.local scripts/gerar-resumos.ts",
-    "boletim:enviar": "tsx --env-file-if-exists=.env.local scripts/enviar-boletim.ts"
+    "boletim:enviar": "tsx --env-file-if-exists=.env.local scripts/enviar-boletim.ts",
+    "banco:sincronizar": "tsx --env-file-if-exists=.env.local scripts/sincronizar.ts"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.4",
