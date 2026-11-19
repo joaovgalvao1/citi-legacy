@@ -912,3 +912,27 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 4. **Indicadores grandes** (44 a 52 px, Inter Tight), com a palavra-chave em negrito ("**commits** na semana").
 
 **Verificação:** conferi a tela de Projetos (1440 px e celular de 375 px, sem rolagem lateral), a Visão geral de um projeto e a entrada. No celular, o botão Sair estourava a pílula por 16 px; a IA ajustou os espaçamentos.
+
+### Semana do painel e dados até o dia da entrega (18/11)
+
+**O que perguntei:** se as datas do painel estavam certas e se batiam com os dados.
+
+**O que a IA encontrou:**
+- **Rótulo errado:** dizia "11/11 a 18/11" (8 dias), mas os números contavam de 12 a 18/11.
+- **Duas semanas na tela:** o painel usava os últimos 7 dias; o resumo da IA e o boletim, a semana de 09 a 15/11. Por isso o boletim dizia 32 commits e o painel, 17.
+- **Dados acabavam antes:** os commits fictícios terminavam em 16/11, então os "últimos 7 dias" já tinham 2 dias vazios, e os números mudariam no dia da entrega.
+
+**Decisões (aprovei a recomendação):**
+- **Mesma semana em todo lugar:** o painel usa a mesma semana do resumo e do boletim, a semana fechada mais recente. Os números vêm de `montarBoletim`, que ganhou a contagem de tasks entregues na semana.
+- **Commits até 19/11, o dia da entrega.**
+
+**Como a IA estendeu os dados sem estragar o que já estava calibrado:**
+- **Primeira tentativa:** mudar a data de referência redistribuiu todos os commits e desfez as previsões ajustadas (a Mezzalira voltou a "+27 dias"). Descartada.
+- **Solução:** o gerador acrescenta commits de ajuste em 17, 18 e 19/11 (`commitsAte` em `cenarios.mjs`) depois de gerar todo o resto. Assim, nada do que veio antes muda.
+- **Só etapas ativas:** as que já estavam paradas continuam paradas.
+- **Mensagens de ajuste:** os commits novos não citam tasks, então não mudam as datas de conclusão.
+
+**Verificação:**
+- **Previsões:** simulei com "hoje" em 18/11 e em 19/11 e a história se mantém. Plataforma atrasada (+68/+69 dias), Clínica em atenção (gargalo Financeiro, +19/+20), Mezzalira em atenção com etapa parada e previsão no prazo, Folhagem no prazo.
+- **Commits:** de 09 a 16/11, os números por dia são os mesmos de antes.
+- **Painel:** mostra "Semana de 09/11 a 15/11", 9 tasks e 32 commits, igual ao boletim.

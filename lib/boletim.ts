@@ -27,7 +27,7 @@ export type Boletim = {
   semana: string;
   fimSemana: string;
   hoje: string;
-  numeros: { andamento: number; atrasados: number; etapasParadas: number; commitsSemana: number };
+  numeros: { andamento: number; atrasados: number; etapasParadas: number; commitsSemana: number; tasksSemana: number };
   projetos: ItemBoletim[];
   concluidos: { id: string; nome: string; cliente: string; entrega: string }[];
 };
@@ -69,6 +69,10 @@ export function montarBoletim(projetos: Projeto[], resumos: Record<string, Resum
       atrasados: itens.filter((i) => i.status === "Atrasado").length,
       etapasParadas: andamento.reduce((s, p) => s + p.etapas.filter((e) => diasParada(p, e) !== null).length, 0),
       commitsSemana: commits.filter((c) => ids.has(c.projetoId) && c.data.slice(0, 10) >= semana && c.data.slice(0, 10) <= fimSemana).length,
+      tasksSemana: andamento.reduce(
+        (s, p) => s + p.etapas.reduce((n, e) => n + e.tasks.filter((t) => t.feitaEm && t.feitaEm >= semana && t.feitaEm <= fimSemana).length, 0),
+        0,
+      ),
     },
     projetos: itens,
     concluidos: projetos

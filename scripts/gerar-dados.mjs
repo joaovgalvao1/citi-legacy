@@ -22,7 +22,7 @@
 //
 // O gerador é determinístico (semente fixa): rodar de novo produz os mesmos dados.
 
-import { cenarios, dataReferencia, pessoas } from "./cenarios.mjs";
+import { cenarios, commitsAte, dataReferencia, pessoas } from "./cenarios.mjs";
 
 
 /* ---------- aleatoriedade determinística ---------- */
@@ -287,6 +287,49 @@ for (const c of cenarios) {
     }),
     membros: c.membros.map(({ id, papel }) => ({ id, papel })),
   });
+}
+
+/* ---------- dias extras de commits (até commitsAte, em cenarios.mjs) ---------- */
+// Os dados acima vão até a véspera de dataReferencia (e foram calibrados assim: ritmo, previsões, resumos).
+// Para o app chegar ao dia da entrega com atividade recente, acrescentamos commits nos dias seguintes,
+// DEPOIS de tudo gerado, para não mexer em nada do que veio antes (mesma semente, sequência continua).
+// Só etapas ainda ativas no fim da janela recebem commits; as mensagens são ajustes, não entregas novas,
+// e por isso não mudam a data de conclusão das tasks.
+if (commitsAte >= dataReferencia) {
+  for (const c of cenarios.filter((c) => c.status === "andamento")) {
+    const ativas = c.etapas.filter((e) => e.janela[1] >= 0.98 && c.membros.some((m) => m.plano[e.id]));
+    for (let dia = paraData(dataReferencia); dia <= paraData(commitsAte); dia = new Date(dia.getTime() + DIA)) {
+      const ymd = new Date(dia.getTime()).toISOString().slice(0, 10);
+      for (let i = inteiro(1, 3); i > 0; i--) {
+        const etapa = escolher(ativas);
+        const membro = escolher(c.membros.filter((m) => m.plano[etapa.id]));
+        const [, media, sobrevivencia] = membro.plano[etapa.id];
+        const [tipo, texto] = escolher(c.mensagens[etapa.id] ?? [["fix", "ajustes"]]);
+        const mensagemTexto = rand() < 0.5 && genericas[tipo] ? escolher(genericas[tipo]).replace("{pr}", String(inteiro(12, 140))) : texto + escolher(sufixos);
+        const adicionadas = Math.max(1, Math.round(media * multiplicadorTipo[tipo] * entre(0.3, 1.2)));
+        const efetivas = Math.round(adicionadas * limitar(sobrevivencia + normal() * 0.08, 0.05, 1));
+        const removidas = Math.round((adicionadas - efetivas) * entre(0.6, 1.4));
+        const arquivos = arquivosDoCommit(etapa, tipo, mensagemTexto);
+        const noite = rand() < 0.7;
+        const hora = String(noite ? inteiro(18, 23) : inteiro(9, 17)).padStart(2, "0");
+        const minuto = String(inteiro(0, 59)).padStart(2, "0");
+        commitsSaida.push({
+          hash: hash(),
+          projetoId: c.id,
+          autor: membro.id,
+          data: `${ymd}T${hora}:${minuto}:00-03:00`,
+          mensagem: `${tipo}(${etapa.id}): ${mensagemTexto}`,
+          arquivos,
+          etapas: c.etapas.filter((e) => arquivos.some((a) => caminhosDa(e).some((g) => casa(a, g)))).map((e) => e.id),
+          adicionadas,
+          removidas,
+          brutas: adicionadas + removidas,
+          efetivas,
+        });
+      }
+    }
+  }
+  commitsSaida.sort((a, b) => a.data.localeCompare(b.data));
 }
 
 const pessoasSaida = pessoas;

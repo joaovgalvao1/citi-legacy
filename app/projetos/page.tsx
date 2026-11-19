@@ -1,8 +1,8 @@
 // Lista de todos os projetos da empresa: indicadores da semana no topo e os cards dos projetos.
 
-import { obterCommits, obterProjetos, type Etapa, type Projeto } from "@/data";
+import { obterCommits, obterProjetos, obterResumos, type Etapa, type Projeto } from "@/data";
+import { montarBoletim } from "@/lib/boletim";
 import { formatarData } from "@/data/formatos";
-import { somarDias } from "@/lib/hoje";
 import { previsaoProjeto, textoPrevisao } from "@/lib/previsao";
 import { alertaDoCard, duracaoEmMeses, nivelEtapa, nivelProjeto, progressoProjeto, rotuloNivelProjeto, statusEtapa, statusProjeto, textoPrazo } from "@/lib/status";
 import { corDoMembro } from "@/components/graficos/cores";
@@ -41,17 +41,10 @@ function Indicador({ valor, destaque, resto, cor = "text-branco" }: { valor: num
 
 export default async function Projetos() {
   const [projetos, commits] = await Promise.all([obterProjetos(), obterCommits({})]);
-  const hoje = projetos[0]?.hoje ?? "";
-  const semanaPassada = somarDias(hoje, -7);
-  const andamento = projetos.filter((p) => p.status !== "concluido");
-
-  // indicadores: últimos 7 dias
-  const atrasados = andamento.filter((p) => statusProjeto(p) === "Atrasado").length;
-  const entregasSemana = andamento.reduce(
-    (s, p) => s + p.etapas.reduce((n, e) => n + e.tasks.filter((t) => t.feitaEm && t.feitaEm > semanaPassada && t.feitaEm <= hoje).length, 0),
-    0,
-  );
-  const commitsSemana = commits.filter((c) => c.data.slice(0, 10) > semanaPassada && c.data.slice(0, 10) <= hoje).length;
+  // indicadores da mesma semana do resumo da IA e do boletim (a semana fechada mais recente),
+  // para o painel, os resumos e o boletim contarem a mesma história
+  const listas = await Promise.all(projetos.map((p) => obterResumos(p.id)));
+  const { semana, fimSemana, numeros } = montarBoletim(projetos, Object.fromEntries(projetos.map((p, i) => [p.id, listas[i]])), commits);
 
   // resumo calculado no servidor: o navegador recebe só o necessário para os cards
   const resumos: ResumoProjeto[] = projetos.map((p) => {
@@ -82,7 +75,7 @@ export default async function Projetos() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
-        <TituloPagina rotulo={`Painel da semana · ${ddmm(semanaPassada)} a ${ddmm(hoje)}`} fino="Projetos" destaque="em andamento." />
+        <TituloPagina rotulo={`Semana de ${ddmm(semana)} a ${ddmm(fimSemana)}`} fino="Projetos" destaque="em andamento." />
         <div className="flex flex-wrap gap-2">
           <BotaoLink href="/exportar/boletim" variante="secundario">
             Boletim da semana (PDF)
@@ -92,10 +85,15 @@ export default async function Projetos() {
       </div>
 
       <section aria-label="Indicadores da semana" className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <Indicador valor={andamento.length} destaque="projetos" resto="em andamento" />
-        <Indicador valor={atrasados} destaque={atrasados === 1 ? "atrasado" : "atrasados"} resto="no momento" cor={atrasados ? "text-vermelho" : "text-branco"} />
-        <Indicador valor={entregasSemana} destaque="tasks" resto="entregues na semana" />
-        <Indicador valor={commitsSemana} destaque="commits" resto="na semana" cor="text-verde" />
+        <Indicador valor={numeros.andamento} destaque="projetos" resto="em andamento" />
+        <Indicador
+          valor={numeros.atrasados}
+          destaque={numeros.atrasados === 1 ? "atrasado" : "atrasados"}
+          resto="no momento"
+          cor={numeros.atrasados ? "text-vermelho" : "text-branco"}
+        />
+        <Indicador valor={numeros.tasksSemana} destaque="tasks" resto="entregues na semana" />
+        <Indicador valor={numeros.commitsSemana} destaque="commits" resto="na semana" cor="text-verde" />
       </section>
 
       <ListaProjetos projetos={resumos} />

@@ -15,6 +15,9 @@
 //   sobrevivência = fração das linhas adicionadas que continua no código hoje (vira "linhas efetivas")
 
 export const dataReferencia = "2026-11-17";
+// Último dia com commits nos projetos em andamento: o dia da entrega do desafio. Os dias depois da
+// véspera de dataReferencia ganham commits de ajuste (ver gerar-dados.mjs), sem mudar o resto dos dados.
+export const commitsAte = "2026-11-19";
 
 // Pessoas (fictícias). "saiuEm" = já saiu da empresa.
 export const pessoas = [
