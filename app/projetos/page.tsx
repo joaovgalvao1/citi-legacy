@@ -51,6 +51,7 @@ export default async function Projetos() {
   // resumo calculado no servidor: o navegador recebe só o necessário para os cards
   const resumos: ResumoProjeto[] = projetos.map((p) => {
     const meses = duracaoEmMeses(p);
+    const previsao = previsaoProjeto(p);
     return {
       id: p.id,
       nome: p.nome,
@@ -64,7 +65,9 @@ export default async function Projetos() {
       alerta: alertaDoCard(p),
       etapas: p.etapas.map((e) => ({ nome: e.nome, progresso: e.progresso, tom: tomDoSegmento(p, e) })),
       etapasConcluidas: p.etapas.filter((e) => e.progresso >= 100).length,
-      previsao: textoPrevisao(previsaoProjeto(p)),
+      previsao: textoPrevisao(previsao),
+      // a etapa que empurra a entrega para depois do prazo
+      gargalo: previsao.tipo === "prevista" && !previsao.noPrazo ? previsao.gargalo.nome : null,
       membros: p.membros.map((m) => ({ id: m.id, nome: m.nome, iniciais: iniciais(m.nome), cor: corDoMembro(p, m.id) })),
       entrega: p.entrega ? `Entregue em ${formatarData(p.entrega)} · ${meses} ${meses === 1 ? "mês" : "meses"}` : null,
       resultado: p.resumoResultado ?? null,

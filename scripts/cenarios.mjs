@@ -54,8 +54,8 @@ export const cenarios = [
     etapas: [
       { id: "autenticacao", nome: "Autenticação", descricao: "Login de funcionários e permissões", janela: [0, 0.35], previsto: ["2026-08-03", "2026-09-11"], progresso: 100 },
       { id: "catalogo", nome: "Catálogo de plantas", descricao: "CRUD de plantas, categorias e fotos", janela: [0.05, 0.7], previsto: ["2026-08-10", "2026-10-16"], progresso: 100 },
-      { id: "estoque", nome: "Estoque", descricao: "Entradas, saídas, alertas de reposição", janela: [0.25, 1], previsto: ["2026-09-01", "2026-11-27"], progresso: 75 },
-      { id: "pedidos", nome: "Pedidos e checkout", descricao: "Carrinho, pedidos e status de entrega", janela: [0.45, 1], previsto: ["2026-09-28", "2026-12-11"], progresso: 55, recentes: 3 },
+      { id: "estoque", nome: "Estoque", descricao: "Entradas, saídas, alertas de reposição", janela: [0.25, 1], previsto: ["2026-09-01", "2026-12-04"], progresso: 75 },
+      { id: "pedidos", nome: "Pedidos e checkout", descricao: "Carrinho, pedidos e status de entrega", janela: [0.45, 1], previsto: ["2026-09-28", "2026-12-18"], progresso: 55, recentes: 3 },
       { id: "infra", nome: "Infra/Deploy", descricao: "CI, banco e deploy", janela: [0, 1], previsto: ["2026-08-03", "2026-12-18"], progresso: 60, recentes: 2 },
       { id: "relatorios", nome: "Relatórios de vendas", descricao: "Vendas por planta, categoria e período, e plantas mais vendidas", janela: [0, 0], previsto: ["2026-11-30", "2026-12-18"], progresso: 0, tasks: ["Relatório de vendas por planta", "Filtro por período e categoria", "Ranking das plantas mais vendidas", "Exportação em PDF"] },
     ],
@@ -268,7 +268,7 @@ export const cenarios = [
       { id: "agente-dados", nome: "Agente de leitura de dados", descricao: "Agente que consulta os dados limpos e responde perguntas", janela: [0.35, 0.78], previsto: ["2026-09-14", "2026-11-27"], progresso: 65, caminhos: ["agentes/dados/**"] },
       { id: "agente-manual", nome: "Agente do manual", descricao: "Agente (RAG) que responde sobre o manual de instrução", janela: [0.3, 1], previsto: ["2026-09-07", "2026-12-11"], progresso: 70, caminhos: ["agentes/manual/**"] },
       { id: "interface", nome: "Interface de chat", descricao: "Tela de conversa com os dois agentes", janela: [0.45, 1], previsto: ["2026-10-05", "2026-12-18"], progresso: 50, caminhos: ["web/chat/**"] },
-      { id: "infra", nome: "Infra/Deploy", descricao: "CI, chaves de API e deploy", janela: [0, 1], previsto: ["2026-08-10", "2026-12-18"], progresso: 55 },
+      { id: "infra", nome: "Infra/Deploy", descricao: "CI, chaves de API e deploy", janela: [0, 1], previsto: ["2026-08-10", "2026-12-18"], progresso: 55, recentes: 2 },
       { id: "avaliacao", nome: "Avaliação com operadores", descricao: "Testes dos agentes com operadores do chão de fábrica e ajustes finais", janela: [0, 0], previsto: ["2026-12-01", "2026-12-18"], progresso: 0, tasks: ["Roteiro de testes com operadores", "Sessões de teste no chão de fábrica", "Consolidar feedback dos operadores", "Ajustes finais nos agentes"] },
     ],
     membros: [

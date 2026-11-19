@@ -863,3 +863,24 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 | Folhagem & Cia | No prazo | 16/12 |
 
 **Verificação:** conferi as previsões direto do banco local, a tela no navegador (desktop e celular, 375 px sem rolagem lateral), `tsc` e `eslint`.
+
+**Ajuste que pedi depois:** a Mezzalira aparecia com "+26 dias" em vermelho, mas nenhuma etapa vermelha ou âmbar explicava o atraso.
+
+**Causa (a IA explicou):**
+- **Gargalo artificial:** a Infra/Deploy dura o projeto inteiro e conclui tasks devagar. O ritmo das últimas 4 semanas (0,25 task por semana) projetava 8 semanas. Era um efeito da etapa longa, e não um problema real do projeto.
+- **Barra e previsão desencontradas:** a barra mostrava o status de hoje, e a previsão, o futuro, sem ligar uma ao outro.
+
+**O que mudou:**
+- **Mezzalira:** a Infra/Deploy passou a ter 2 tasks recentes, como a da Folhagem. A previsão ficou em 16/12, no prazo. O projeto segue em "Atenção" pelo motivo real: etapas paradas, em âmbar na barra.
+- **Barra:** uma etapa cuja previsão passa do prazo dela fica em âmbar (`nivelEtapa`). Vale para a barra dos cards e da Visão geral.
+- **Card:** mostra o gargalo ("gargalo: Financeiro") quando a previsão passa do prazo.
+- **Folhagem:** para continuar no prazo com a regra nova, os prazos fictícios de Estoque e de Pedidos foram adiados em uma semana (04/12 e 18/12).
+
+**Resultado:**
+
+| Projeto | Status | Previsão |
+|---|---|---|
+| Plataforma | Atrasado | +68 dias, gargalo Painel da ONG |
+| Clínica | Atenção | +19 dias, gargalo Financeiro |
+| Mezzalira | Atenção | no prazo; etapas paradas |
+| Folhagem | No prazo | no prazo |

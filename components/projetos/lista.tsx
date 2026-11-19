@@ -27,6 +27,8 @@ export type ResumoProjeto = {
   etapasConcluidas: number;
   /** Previsão de entrega pelo ritmo recente ("prev. 16/12 · no prazo"). */
   previsao: { texto: string; tom: Tom };
+  /** Etapa que leva a previsão para depois do prazo (null se está no prazo). */
+  gargalo: string | null;
   membros: { id: string; nome: string; iniciais: string; cor: string }[];
   entrega: string | null;
   resultado: string | null;
@@ -76,7 +78,7 @@ function Avatares({ membros }: { membros: ResumoProjeto["membros"] }) {
 function Legenda() {
   const itens: [string, string][] = [
     ["bg-verde", "concluída ou em dia"],
-    ["bg-ambar", "atenção (parada)"],
+    ["bg-ambar", "atenção (parada ou previsão fora do prazo)"],
     ["bg-vermelho", "atrasada"],
     ["bg-branco/12", "não iniciada"],
   ];
@@ -116,7 +118,10 @@ function CardAndamento({ p }: { p: ResumoProjeto }) {
         <span className="dado text-xs text-gray-500">{p.prazo}</span>
       </div>
       <div className="mt-auto flex items-center justify-between gap-3 pt-1">
-        <span className={`dado text-sm font-semibold ${COR_TEXTO[p.previsao.tom]}`}>{p.previsao.texto}</span>
+        <div className="min-w-0">
+          <p className={`dado text-sm font-semibold ${COR_TEXTO[p.previsao.tom]}`}>{p.previsao.texto}</p>
+          {p.gargalo && <p className="truncate text-xs text-gray-500">gargalo: {p.gargalo}</p>}
+        </div>
         <Avatares membros={p.membros} />
       </div>
     </Link>
