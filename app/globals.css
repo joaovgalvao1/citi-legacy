@@ -298,47 +298,23 @@ h3 {
   .pagina-slide:last-child {
     break-after: auto;
   }
-  /* Safari (iPad/iPhone) ignora o tamanho de página 16:9 e imprime em A4/Carta retrato: o slide de
-     1280 px é reduzido para caber na largura da página (escala pelo limite de baixo de cada faixa)
-     e saem 2 slides por página. No Chrome a página já tem 1280 px e nada disso vale. */
-  @media (max-width: 1279px) {
+  /* Safari (iPad/iPhone/Mac) ignora o tamanho de página 16:9 e imprime em A4/Carta retrato: cada
+     slide de 1280 px sai pela metade (640 px), que cabe em A4 e Carta mesmo com as margens do Safari,
+     e saem 2 slides por página. Detecta o Safari por um recurso só dele (font: -apple-system-body);
+     media queries de largura/orientação não servem, porque o Chrome as avalia pelo papel padrão
+     e reduzia o slide também na página 16:9. No Chrome e no Firefox nada disso vale. */
+  @supports (font: -apple-system-body) {
     .pagina-slide {
-      zoom: 0.86;
+      zoom: 0.5;
       break-after: auto;
-      margin-bottom: 18px;
+      margin: 0 auto 24px;
     }
     .pagina-slide:nth-child(2n) {
       break-after: page;
     }
-  }
-  @media (max-width: 1100px) {
-    .pagina-slide {
-      zoom: 0.78;
-    }
-  }
-  @media (max-width: 1000px) {
-    .pagina-slide {
-      zoom: 0.7;
-    }
-  }
-  @media (max-width: 900px) {
-    .pagina-slide {
-      zoom: 0.62;
-    }
-  }
-  @media (max-width: 800px) {
-    .pagina-slide {
-      zoom: 0.54;
-    }
-  }
-  @media (max-width: 700px) {
-    .pagina-slide {
-      zoom: 0.46;
-    }
-  }
-  @media (max-width: 600px) {
-    .pagina-slide {
-      zoom: 0.38;
+    /* o brilho verde do canto vira um círculo sólido na impressão do Safari (perde a transparência) */
+    .brilho-slide {
+      display: none;
     }
   }
   /* na impressão as animações não rodam: tudo já no estado final */

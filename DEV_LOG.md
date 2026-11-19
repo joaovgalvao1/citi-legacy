@@ -1761,3 +1761,10 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
   - **Problema:** os PDFs do boletim e do projeto que gerei no Firefox saíram sem margem em cima, e o título "Legado · projetos concluídos" cortava no topo. A margem dependia do `@page`, que algumas opções de impressão ignoram.
   - **Correção:** a margem de 12 mm em cima e embaixo agora é desenhada pela própria folha e repetida em cada página (`box-decoration-break: clone`, com `@page` sem margem). No Safari, que não tem esse recurso, continua valendo a margem do `@page`.
   - **Verificação:** PDFs gerados no Chromium, com todas as páginas com margem.
+- **PDFs do iPad (a partir dos PDFs gerados no iPad, iOS 26.5):**
+  - **Boletim e projeto:** saíram inteiros. As faixas brancas com o endereço e "Página x de y" são o cabeçalho e o rodapé do próprio Safari, que dá para desligar nas opções de impressão.
+  - **Reunião:** os slides ainda cortavam à direita. A redução por largura de página não funcionava porque o Safari avalia as media queries de outro jeito, e no Chrome as mesmas regras reduziam o slide também na página 16:9 (o Chrome as avalia pelo papel padrão).
+    - **Correção:** a redução vale só no Safari, detectado por um recurso só dele (`@supports (font: -apple-system-body)`). Lá cada slide sai pela metade (640 px), 2 por página, cabendo em A4 e Carta.
+  - **Brilho verde do canto do slide:** no Safari virava um círculo verde sólido (a impressão perde a transparência do degradê). Agora fica escondido na impressão do Safari.
+  - **Chrome e Firefox:** continuam em 16:9, com 1 slide por página e o brilho. Conferido com um PDF gerado no Chromium.
+  - **Falta:** testar de novo no iPad depois do push.

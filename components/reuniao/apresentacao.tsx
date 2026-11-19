@@ -18,7 +18,7 @@ function Slide({ children, indice, total, data, fade = false }: { children: Reac
     <div className="@container relative h-[720px] w-[1280px] overflow-hidden bg-[#0a0a0a] text-branco">
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-[30%] -right-[15%] h-[80%] w-[55%]"
+        className="brilho-slide pointer-events-none absolute -top-[30%] -right-[15%] h-[80%] w-[55%]"
         style={{ background: "radial-gradient(closest-side, rgb(0 219 88 / 0.16), transparent)" }}
       />
       {/* topo: data da reunião e posição */}
