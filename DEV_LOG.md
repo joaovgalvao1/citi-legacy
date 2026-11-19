@@ -1663,3 +1663,19 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
 - **"Conectado ao repositório":** cada membro aparece com a foto do GitHub.
 - **Como funciona, passo 3:** "Todo domingo à noite: resumo da IA, boletim por e-mail e slides da reunião prontos." (antes "todo fim de semana").
 - **Sem mudança:** os outros textos já refletiam o domingo, a reunião de segunda e o foco no acompanhamento.
+
+### Página inicial: vitrine com o card atual, números flutuantes e pulso no semáforo (19/11)
+
+**O que pedi:**
+- ajustar o card de projeto da vitrine do topo, que mostrava um card que não existe mais no protótipo;
+- deixar a faixa de números flutuante, na mesma estética do botão "Ver o que faz";
+- trocar a barra pelo pulso no card do semáforo.
+
+**O que a IA fez:**
+- **Card da vitrine:** agora igual aos cards da tela de projetos:
+  - monograma na cor da situação e nome oculto (•••);
+  - "Atenção" com o ponto pulsando e "entrega prevista 12/12 · Relatórios";
+  - pulso de commits, avatares e anel de progresso (62%).
+  - Saíram a barra de etapas e o "previsão · prazo · gargalo" do formato antigo.
+- **Faixa de números:** virou uma cápsula flutuante, com a borda clara e o fundo translúcido do botão "Ver o que faz". Ela é arredondada por inteiro no desktop e tem cantos grandes no celular, e não usa desfoque, para não pesar.
+- **Semáforo** ("Semáforo, pulso e previsão de entrega"): cada linha mostra o pulso de commits na cor da situação no lugar da barra. Os novos componentes `Pulso` e `AnelMini` estão em `components/entrada/vitrine.tsx`.

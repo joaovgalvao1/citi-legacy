@@ -33,6 +33,61 @@ export function BarraEtapas({ etapas }: { etapas: { tom: Tom; feito: number }[] 
   );
 }
 
+const COR_HEX: Record<Tom, string> = { verde: "#00DB58", ambar: "#FFA630", vermelho: "#FF3B3B", neutro: "rgb(255 255 255 / 0.3)" };
+
+/** Pulso (traçado de monitor cardíaco, como nos cards de projeto): um batimento por dia com commits. */
+export function Pulso({ valores, tom, className = "h-4" }: { valores: number[]; tom: Tom; className?: string }) {
+  const L = 280;
+  const A = 32;
+  const passo = L / valores.length;
+  const meio = A / 2;
+  const max = Math.max(1, ...valores);
+  let d = `M0 ${meio}`;
+  valores.forEach((v, i) => {
+    const x = i * passo;
+    const a = v ? (0.4 + 0.6 * Math.sqrt(v / max)) * (meio - 2) : 0;
+    d += ` L${(x + passo * 0.3).toFixed(1)} ${meio} L${(x + passo * 0.42).toFixed(1)} ${(meio + a * 0.25).toFixed(1)} L${(x + passo * 0.52).toFixed(1)} ${(meio - a).toFixed(1)} L${(x + passo * 0.64).toFixed(1)} ${(meio + a * 0.55).toFixed(1)} L${(x + passo * 0.74).toFixed(1)} ${meio} L${(x + passo).toFixed(1)} ${meio}`;
+  });
+  return (
+    <svg viewBox={`0 0 ${L} ${A}`} preserveAspectRatio="none" className={`block w-full ${className}`} aria-hidden="true">
+      <path
+        d={d}
+        fill="none"
+        stroke={COR_HEX[tom]}
+        strokeOpacity="0.9"
+        strokeWidth="1.4"
+        strokeLinejoin="round"
+        vectorEffect="non-scaling-stroke"
+      />
+    </svg>
+  );
+}
+
+/** Anel de progresso na cor da situação (como nos cards de projeto). */
+function AnelMini({ progresso, tom }: { progresso: number; tom: Tom }) {
+  const r = 19;
+  const volta = 2 * Math.PI * r;
+  return (
+    <svg viewBox="0 0 48 48" className="h-10 w-10 shrink-0 sm:h-12 sm:w-12" aria-hidden="true">
+      <circle cx="24" cy="24" r={r} fill="none" stroke="rgb(255 255 255 / 0.08)" strokeWidth="5" />
+      <circle
+        cx="24"
+        cy="24"
+        r={r}
+        fill="none"
+        stroke={COR_HEX[tom]}
+        strokeWidth="5"
+        strokeLinecap="round"
+        strokeDasharray={`${((volta * progresso) / 100).toFixed(1)} ${volta.toFixed(1)}`}
+        transform="rotate(-90 24 24)"
+      />
+      <text x="24" y="28" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="600">
+        {progresso}%
+      </text>
+    </svg>
+  );
+}
+
 // ---------- destaque: órbita + cards flutuando ----------
 
 const ORBITA = [
@@ -95,36 +150,35 @@ export function VitrineDestaque() {
         </p>
       </div>
 
-      {/* card do projeto: semáforo, progresso e previsão */}
-      <div className="absolute top-1/2 left-1/2 w-[74%] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-branco/12 bg-white p-4 shadow-2xl shadow-black/70">
-        <div className="flex items-start justify-between gap-2">
-          <div className="space-y-1">
-            <Oculto n={12} className="block text-sm" />
-            <Oculto n={8} className="block text-[10px]" />
+      {/* card do projeto, igual aos cards da tela de projetos: monograma, situação, entrega prevista, pulso e anel */}
+      <div className="absolute top-1/2 left-1/2 w-[78%] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-branco/12 bg-white p-3.5 shadow-2xl shadow-black/70 sm:p-4">
+        <div className="flex items-center gap-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-ambar/12 text-xs font-bold text-ambar sm:h-11 sm:w-11">
+            ••
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center justify-between gap-2">
+              <Oculto n={11} className="block truncate text-sm" />
+              <span className="inline-flex shrink-0 items-center gap-1.5 text-[10px] font-medium text-ambar sm:text-[11px]">
+                <Ponto tom="ambar" pulsa /> Atenção
+              </span>
+            </div>
+            <p className="truncate text-[10px] text-gray-600 sm:text-[11px]">
+              entrega prevista <b className="text-ambar tabular-nums">12/12</b> · Relatórios
+            </p>
+            <div className="mt-1 flex items-center gap-2">
+              <div className="min-w-0 flex-1">
+                <Pulso tom="ambar" valores={[0, 2, 0, 1, 0, 3, 1, 0, 0, 2, 4, 0, 1, 2]} className="h-3.5" />
+              </div>
+              <span className="flex -space-x-1.5" aria-hidden="true">
+                {["bg-verde", "bg-roxo", "bg-verde/70"].map((c) => (
+                  <span key={c} className={`h-4 w-4 rounded-full border-2 border-white ${c}`} />
+                ))}
+              </span>
+            </div>
           </div>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-ambar/50 bg-ambar/10 px-2 py-0.5 text-[10px] text-ambar">
-            <Ponto tom="ambar" pulsa /> Atenção
-          </span>
+          <AnelMini progresso={62} tom="ambar" />
         </div>
-        <div className="mt-3">
-          <BarraEtapas
-            etapas={[
-              { tom: "verde", feito: 100 },
-              { tom: "verde", feito: 80 },
-              { tom: "ambar", feito: 45 },
-              { tom: "neutro", feito: 10 },
-            ]}
-          />
-        </div>
-        <div className="mt-2 flex items-center justify-between text-[10px] sm:text-[11px]">
-          <span className="text-gray-600">
-            previsão <b className="dado text-ambar">12/12</b> · prazo 05/12
-          </span>
-          <span className="dado text-branco">62%</span>
-        </div>
-        <p className="mt-1 text-[10px] text-gray-500 sm:text-[11px]">
-          gargalo principal: <span className="text-gray-700">Relatórios</span>
-        </p>
       </div>
 
       {/* Gantt */}
@@ -158,10 +212,10 @@ export function VitrineDestaque() {
 // ---------- mini ilustrações dos recursos ----------
 
 export function MiniSemaforo() {
-  const linhas: { tom: Tom; feito: number; texto: string; cor: string }[] = [
-    { tom: "verde", feito: 78, texto: "no prazo · 28/11", cor: "text-verde" },
-    { tom: "ambar", feito: 52, texto: "previsão 12/12 · 7 dias depois", cor: "text-ambar" },
-    { tom: "vermelho", feito: 31, texto: "atrasado · gargalo: Pagamentos", cor: "text-vermelho" },
+  const linhas: { tom: Tom; pulso: number[]; texto: string; cor: string }[] = [
+    { tom: "verde", pulso: [2, 0, 3, 1, 2, 0, 4, 2, 1, 3, 0, 2, 3, 2], texto: "no prazo · 28/11", cor: "text-verde" },
+    { tom: "ambar", pulso: [0, 2, 0, 1, 0, 3, 1, 0, 0, 2, 4, 0, 1, 0], texto: "previsão 12/12 · 7 dias depois", cor: "text-ambar" },
+    { tom: "vermelho", pulso: [1, 0, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], texto: "atrasado · gargalo: Pagamentos", cor: "text-vermelho" },
   ];
   return (
     <ul className="space-y-2.5">
@@ -173,9 +227,7 @@ export function MiniSemaforo() {
           <Ponto tom={l.tom} pulsa={l.tom === "vermelho"} />
           <Oculto n={9} className="truncate text-xs" />
           <div className="space-y-1">
-            <div className="h-1.5 overflow-hidden rounded-full bg-branco/10">
-              <div className={`anima-barra h-full rounded-full ${ponto[l.tom]}`} style={{ width: `${l.feito}%` }} />
-            </div>
+            <Pulso valores={l.pulso} tom={l.tom} className="h-4" />
             <p className={`dado truncate text-[10px] ${l.cor}`}>{l.texto}</p>
           </div>
         </li>

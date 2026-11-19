@@ -150,8 +150,9 @@ export default async function Entrada() {
       </section>
 
       {/* ---------- números reais (agregados) ---------- */}
-      <section className="border-y border-linha bg-white/70">
-        <dl className="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-8 px-4 py-10 sm:grid-cols-3 lg:grid-cols-5">
+      {/* flutuante, na mesma estética do botão "Ver o que faz" (borda clara e fundo translúcido) */}
+      <section className="px-4">
+        <dl className="mx-auto grid max-w-6xl grid-cols-2 gap-x-6 gap-y-8 rounded-[2rem] border border-branco/25 bg-branco/5 px-6 py-8 shadow-2xl shadow-black/40 sm:grid-cols-3 sm:px-10 lg:grid-cols-5 lg:rounded-full lg:px-14">
           {[
             { valor: andamento.length, rotulo: "projetos em andamento", extra: niveis },
             { valor: projetos.length - andamento.length, rotulo: "projetos entregues" },
