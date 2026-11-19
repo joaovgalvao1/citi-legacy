@@ -182,6 +182,34 @@ h3 {
   }
 }
 
+/* ---------- Modo Reunião em PDF: um slide por página de 1280 × 720 ---------- */
+.slides-impressao {
+  display: none;
+}
+@page slide {
+  size: 1280px 720px;
+  margin: 0;
+}
+@media print {
+  .slides-impressao {
+    display: block;
+  }
+  .pagina-slide {
+    page: slide;
+    break-after: page;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .pagina-slide:last-child {
+    break-after: auto;
+  }
+  /* na impressão as animações não rodam: tudo já no estado final */
+  .slides-impressao * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 /* ---------- versão de impressão (exportar resumo em PDF) ---------- */
 /* Paleta da folha em variáveis: tema claro (padrão) e escuro (botão na barra da página,
    que marca <html data-tema-folha="claro|escuro">). O escuro é o padrão: vale sempre que

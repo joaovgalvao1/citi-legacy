@@ -1075,3 +1075,14 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - **Ajuste durante o teste:** a lista de prioridades encostava no logo do rodapé; a IA diminuiu os espaços.
 
 **Não testado:** a tela cheia (tecla F). O navegador só a permite quando a pessoa clica ou aperta a tecla de verdade, o que o teste automático não faz.
+
+### Modo Reunião em PDF (19/11)
+
+**O que pedi:** exportar a reunião como PDF.
+
+**O que a IA fez:**
+- **Botão e tecla:** "Exportar PDF (P)" nos controles da apresentação, mais a tecla **P**. Os dois abrem a impressão do navegador ("Salvar como PDF").
+- **Formato:** na impressão aparecem **todos os slides, um por página de 1280 × 720 (16:9)**, com o mesmo visual da tela (fundo escuro, brilho, topo com data e "slide X / N", marca e barra de progresso). Isso usa uma página nomeada no CSS (`@page slide`), sem afetar o PDF A4 dos resumos e do boletim.
+- **Animações:** ficam desligadas na impressão. Sem isso, as barras do Gantt sairiam vazias, porque a impressão capturaria o começo da animação.
+
+**Verificação:** gerei o PDF com um Chromium sem janela: 7 páginas de 960 × 540 pt (16:9), com a capa, o panorama, os 4 projetos (Gantt completo) e as prioridades.
