@@ -1769,3 +1769,28 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
   - **Chrome e Firefox:** continuam em 16:9, com 1 slide por página e o brilho. Conferido com um PDF gerado no Chromium.
   - **Falta:** testar de novo no iPad depois do push.
 - **Faixa branca no fim do boletim e do projeto (computador):** a última página ficava branca depois do conteúdo, porque a raiz da página não pedia as cores exatas na impressão e o navegador não pintava o fundo ali. O `html` e o `body` passaram a usar `print-color-adjust: exact`, então o fundo escuro vai até o fim da página.
+
+### PDF gerado no servidor para o iPad (19/11)
+
+**O que pedi:**
+- no computador, o boletim e o projeto ainda tinham uma faixa branca no fim (corrigida com o fundo até o fim da página, acima);
+- no iPad ainda havia margens brancas, e os slides saíam juntos na mesma página;
+- desconfiei que fosse porque o iPad gera o PDF pela impressão.
+
+**O que a IA confirmou:** o Safari do iOS só gera PDF pela impressão, que força A4, margens brancas e cabeçalho e rodapé próprios, e ignora o 16:9. Ofereceu um ajuste rápido (1 slide por página A4) ou gerar o PDF no servidor. **Escolhi o servidor.**
+
+**O que a IA fez:**
+- **`app/api/pdf/route.ts`:**
+  - um Chromium sem tela (`puppeteer-core` com `@sparticuz/chromium`) abre a própria página de exportação do app e gera o PDF do jeito do Chrome do computador: slides em 16:9 (1 por página) e folhas A4 com o fundo até a borda;
+  - aceita só as páginas de exportação conhecidas (`pagina=reuniao | boletim | projeto&id=…`, `tema=claro|escuro`);
+  - entra com o login de demonstração e devolve o PDF com o nome da página.
+- **`next.config.ts`:** `serverExternalPackages` e `outputFileTracingIncludes`, para os binários do Chromium irem junto com a função na Vercel. Tempo máximo da função: 60 s.
+- **Botões** ("Exportar PDF" da reunião, tecla P, e "Salvar como PDF" do boletim e do projeto), via `lib/exportar-pdf.ts`:
+  - no Safari (iPad, iPhone e Mac), abrem o PDF gerado no servidor, que o iPad mostra com o botão de compartilhar;
+  - nos outros navegadores, continuam usando a impressão, que é instantânea e já sai igual.
+
+**Verificação:**
+- **Local:** os três PDFs pela rota, em cerca de 2 s cada (reunião com 8 páginas em 16:9; boletim e projeto em A4 com fundo até o fim); o tema claro sai claro.
+- **Safari simulado (identificação de iPad):** os três botões pediram o PDF ao servidor.
+- **Build de produção:** passou, com os binários do Chromium rastreados para a função.
+- **Falta:** testar na Vercel e no iPad depois do push.

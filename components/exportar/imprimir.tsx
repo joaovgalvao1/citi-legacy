@@ -5,6 +5,7 @@
 import { useEffect, useSyncExternalStore, type ReactNode } from "react";
 import Link from "next/link";
 import { IconeExportar } from "@/components/ui/icones";
+import { exportarPdf } from "@/lib/exportar-pdf";
 
 type Tema = "claro" | "escuro";
 const CHAVE_TEMA = "citi-legacy:tema-folha";
@@ -96,7 +97,10 @@ export function BarraDeImpressao({ voltar, rotuloVoltar, acoes }: { voltar: stri
         {acoes}
         <button
           type="button"
-          onClick={() => window.print()}
+          onClick={() => {
+            const id = window.location.pathname.split("/").filter(Boolean)[1] ?? "";
+            exportarPdf(id === "boletim" ? { pagina: "boletim", tema } : { pagina: "projeto", id, tema });
+          }}
           className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-verde px-5 py-2 text-sm font-semibold text-[#0a0a0a] transition-opacity hover:opacity-90"
         >
           <IconeExportar className="h-4 w-4" />

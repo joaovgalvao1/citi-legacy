@@ -7,13 +7,26 @@
 // Exportar PDF: a impressão mostra todos os slides, um por página de 1280 × 720 (ver globals.css).
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { exportarPdf } from "@/lib/exportar-pdf";
 import { useRouter } from "next/navigation";
 import { Lockup } from "@/components/layout/marca";
 import { IconeEmail, IconeExportar } from "@/components/ui/icones";
 import { MarcarReuniao, type Marcada } from "./marcar";
 
 /** Um slide na tela fixa de 1280 × 720: brilho, topo (data e posição), conteúdo, marca e progresso. */
-function Slide({ children, indice, total, data, fade = false }: { children: ReactNode; indice: number; total: number; data: string; fade?: boolean }) {
+function Slide({
+  children,
+  indice,
+  total,
+  data,
+  fade = false,
+}: {
+  children: ReactNode;
+  indice: number;
+  total: number;
+  data: string;
+  fade?: boolean;
+}) {
   return (
     <div className="@container relative h-[720px] w-[1280px] overflow-hidden bg-[#0a0a0a] text-branco">
       <div
@@ -92,7 +105,7 @@ export function Apresentacao({
       } else if (e.key === "Home") ir(0);
       else if (e.key === "End") ir(total - 1);
       else if (e.key === "f" || e.key === "F") telaCheia();
-      else if (e.key === "p" || e.key === "P") window.print();
+      else if (e.key === "p" || e.key === "P") exportarPdf({ pagina: "reuniao" });
       // em tela cheia, o Esc do navegador só sai da tela cheia; fora dela, sai da apresentação
       else if (e.key === "Escape" && !document.fullscreenElement) router.push("/projetos");
     }
@@ -154,7 +167,11 @@ export function Apresentacao({
           <button type="button" onClick={telaCheia} className={secundario}>
             Tela cheia (F)
           </button>
-          <button type="button" onClick={() => window.print()} className={`${secundario} inline-flex items-center gap-1.5`}>
+          <button
+            type="button"
+            onClick={() => exportarPdf({ pagina: "reuniao" })}
+            className={`${secundario} inline-flex items-center gap-1.5`}
+          >
             <IconeExportar className="h-4 w-4" />
             Exportar PDF (P)
           </button>
@@ -163,7 +180,12 @@ export function Apresentacao({
           <p role="status" className="-mt-1 flex flex-wrap items-center justify-center gap-x-3 text-xs text-verde">
             {marcada.mensagem}
             {marcada.agenda && (
-              <a href={marcada.agenda} target="_blank" rel="noreferrer" className="font-semibold underline underline-offset-2 hover:text-branco">
+              <a
+                href={marcada.agenda}
+                target="_blank"
+                rel="noreferrer"
+                className="font-semibold underline underline-offset-2 hover:text-branco"
+              >
                 Adicionar ao Google Agenda ↗
               </a>
             )}

@@ -15,9 +15,11 @@
     "banco:sincronizar": "tsx --env-file-if-exists=.env.local scripts/sincronizar.ts"
   },
   "dependencies": {
+    "@sparticuz/chromium": "^153.0.0",
     "drizzle-orm": "^0.45.4",
     "next": "16.4.6",
     "postgres": "^4.1.1",
+    "puppeteer-core": "^25.18.1",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
