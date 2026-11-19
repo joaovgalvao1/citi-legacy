@@ -10,6 +10,7 @@ import { ProgressoDoProjeto } from "@/components/projeto/progresso";
 import { SeloStatusProjeto } from "@/components/projeto/status";
 import { AbasDoProjeto } from "@/components/projeto/abas";
 import { MenuProjeto } from "@/components/projeto/menu-projeto";
+import { RepositorioDoProjeto } from "@/components/projeto/repositorio";
 import { EsqueletoCabecalhoProjeto } from "@/components/ui/esqueletos";
 
 export async function generateStaticParams() {
@@ -31,6 +32,7 @@ async function Cabecalho({ params }: { params: LayoutProps<"/projetos/[projetoId
         <MenuProjeto projetoId={projeto.id} nome={projeto.nome} cliente={projeto.clienteNome} />
       </div>
       <p className="text-sm text-gray-600">{projeto.cliente}</p>
+      <RepositorioDoProjeto projetoId={projeto.id} repositorio={projeto.repositorio} sincronizadoEm={projeto.sincronizadoEm} />
       {concluido ? (
         <p className="text-sm text-gray-700">
           Entregue · {formatarData(projeto.inicio)} a {formatarData(projeto.entrega!)} · {textoEntrega(projeto)}

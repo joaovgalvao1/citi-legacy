@@ -42,6 +42,10 @@ export const projetos = pgTable("projetos", {
   concluidoPelasTasks: boolean("concluido_pelas_tasks").notNull().default(false),
   /** Na lixeira desde ("aaaa-mm-dd"); null = ativo. Some de vez depois de 30 dias. */
   apagadoEm: text("apagado_em"),
+  /** Repositório no GitHub ("dono/nome"), de onde vêm os commits do projeto. */
+  repositorio: text("repositorio"),
+  /** Última sincronização com o GitHub (ISO). */
+  sincronizadoEm: text("sincronizado_em"),
   ordem: integer("ordem").notNull().default(0),
 });
 

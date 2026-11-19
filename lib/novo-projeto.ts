@@ -28,6 +28,8 @@ export type ProjetoNovo = {
   fimPrevisto: string;
   membros: { pessoaId: string; papel: string }[];
   etapas: EtapaNova[];
+  /** Repositório no GitHub (opcional): "github.com/dono/nome" ou "dono/nome". */
+  repositorio?: string;
 };
 
 /** "Agendamento e Pacientes" → "agendamento-e-pacientes". */

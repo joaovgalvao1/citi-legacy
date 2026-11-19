@@ -27,6 +27,7 @@ async function Conteudo({ params }: { params: PageProps<"/projetos/editar/[proje
       contexto: projeto.contexto ?? "",
       inicio: projeto.inicio,
       fimPrevisto: projeto.fimPrevisto,
+      repositorio: projeto.repositorio ? `github.com/${projeto.repositorio}` : "",
     },
     membros: Object.fromEntries(projeto.membros.map((m) => [m.id, m.papel])),
     etapas: projeto.etapas.map((e) => ({

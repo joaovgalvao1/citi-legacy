@@ -10,6 +10,8 @@ import { confereConfirmacao, DIAS_NA_LIXEIRA, linhas, slug, validarProjeto, type
 import { enderecoLinkedin, usuarioGithub, validarMembro, type MembroForm } from "@/lib/membros";
 import { carregarCommits, carregarResumos, carregarTudo } from "@/data/carregar";
 import { montarBoletim } from "@/lib/boletim";
+import { ErroGithub, normalizarRepositorio, verificarRepositorio } from "@/lib/github";
+import { sincronizarProjeto } from "@/lib/sincronizar";
 import { destinatarios, enviarBoletim, enviarReuniao, eventoReuniao, listaDestinatarios } from "@/lib/email";
 import { linkGoogleAgenda, textoQuando, validarConvite, type Convite } from "@/lib/convite";
 
@@ -49,9 +51,11 @@ export async function alternarTask(projetoId: string, etapaId: string, ordem: nu
  * Cadastra um projeto novo (em andamento, sem commits ainda) com equipe, etapas e tasks.
  * Devolve o id criado ou a lista de problemas encontrados.
  */
-export async function criarProjeto(p: ProjetoNovo): Promise<{ id: string } | { erros: string[] }> {
+export async function criarProjeto(p: ProjetoNovo): Promise<{ id: string; github?: string } | { erros: string[] }> {
   const erros = validarProjeto(p);
   if (erros.length) return { erros };
+  const repo = await conferirRepositorio(p.repositorio);
+  if ("erro" in repo) return { erros: [repo.erro] };
 
   // id do projeto: slug do nome, com sufixo se já existir
   const base = slug(p.nome) || "projeto";
@@ -78,6 +82,7 @@ export async function criarProjeto(p: ProjetoNovo): Promise<{ id: string } | { e
       status: "andamento",
       inicio: p.inicio,
       fimPrevisto: p.fimPrevisto,
+      repositorio: repo.nome,
       ordem,
     });
     await tx.insert(membrosProjeto).values(p.membros.map((m, i) => ({ projetoId: id, pessoaId: m.pessoaId, papel: m.papel.trim(), ordem: i })));
@@ -98,8 +103,45 @@ export async function criarProjeto(p: ProjetoNovo): Promise<{ id: string } | { e
     );
   });
 
+  const github = repo.nome ? await sincronizarParaTela(id) : undefined;
   updateTag("dados");
-  return { id };
+  return { id, github };
+}
+
+/** Repositório digitado no formulário → "dono/nome" conferido no GitHub (ou null se vazio). */
+async function conferirRepositorio(texto: string | undefined): Promise<{ nome: string | null } | { erro: string }> {
+  if (!texto?.trim()) return { nome: null };
+  const repo = normalizarRepositorio(texto);
+  if (!repo) return { erro: "O repositório deve ser o endereço no GitHub (ex.: github.com/dono/projeto)." };
+  try {
+    return { nome: (await verificarRepositorio(repo)).nome };
+  } catch (e) {
+    return { erro: e instanceof ErroGithub ? e.message : "Não foi possível consultar o GitHub agora." };
+  }
+}
+
+/** Sincroniza e devolve uma frase para a tela ("12 commits novos do GitHub · 3 sem cadastro"). */
+async function sincronizarParaTela(projetoId: string) {
+  try {
+    const r = await sincronizarProjeto(projetoId);
+    const fora = r.semCadastro.reduce((s, a) => s + a.commits, 0);
+    return [
+      `${r.novos} ${r.novos === 1 ? "commit novo" : "commits novos"} de ${r.repositorio}`,
+      fora ? `${fora} de autores sem cadastro (${r.semCadastro.map((a) => a.autor).join(", ")}): vincule o GitHub no perfil do membro` : "",
+      r.adicionadosNaEquipe.length ? `entraram na equipe: ${r.adicionadosNaEquipe.join(", ")}` : "",
+    ]
+      .filter(Boolean)
+      .join(" · ");
+  } catch (e) {
+    return `Não foi possível sincronizar: ${e instanceof Error ? e.message : "erro"}`;
+  }
+}
+
+/** Botão "Sincronizar com o GitHub" do projeto. */
+export async function sincronizarRepositorio(projetoId: string): Promise<{ mensagem: string }> {
+  const mensagem = await sincronizarParaTela(projetoId);
+  updateTag("dados");
+  return { mensagem };
 }
 
 /**
@@ -155,9 +197,11 @@ const IDS_RESERVADOS = new Set(["novo", "lixeira", "editar"]);
  * Etapas existentes mantêm o id (os commits continuam ligados a elas); etapas com commits não podem
  * ser removidas. Tasks com o mesmo título mantêm se estavam feitas e quando foram concluídas.
  */
-export async function editarProjeto(projetoId: string, p: ProjetoNovo): Promise<{ id: string } | { erros: string[] }> {
+export async function editarProjeto(projetoId: string, p: ProjetoNovo): Promise<{ id: string; github?: string } | { erros: string[] }> {
   const erros = validarProjeto(p);
   if (erros.length) return { erros };
+  const repo = await conferirRepositorio(p.repositorio);
+  if ("erro" in repo) return { erros: [repo.erro] };
   const [atual] = await db.select().from(projetos).where(eq(projetos.id, projetoId));
   if (!atual || atual.apagadoEm) return { erros: ["Este projeto não existe mais (ou está na lixeira)."] };
 
@@ -202,6 +246,7 @@ export async function editarProjeto(projetoId: string, p: ProjetoNovo): Promise<
         contexto: p.contexto.trim() || null,
         inicio: p.inicio,
         fimPrevisto: p.fimPrevisto,
+        repositorio: repo.nome,
       })
       .where(eq(projetos.id, projetoId));
 
@@ -241,8 +286,10 @@ export async function editarProjeto(projetoId: string, p: ProjetoNovo): Promise<
     }
   });
 
+  // repositório novo ou trocado: sincroniza na hora
+  const github = repo.nome && repo.nome !== atual.repositorio ? await sincronizarParaTela(projetoId) : undefined;
   updateTag("dados");
-  return { id: projetoId };
+  return { id: projetoId, github };
 }
 
 /* ---------- lixeira (30 dias) ---------- */
@@ -334,9 +381,22 @@ function dadosDoMembro(m: MembroForm) {
   };
 }
 
+/** O mesmo usuário do GitHub não pode estar em dois membros (os commits seriam de quem?). */
+async function githubEmUso(github: string, exceto?: string) {
+  const usuario = usuarioGithub(github);
+  if (!usuario) return null;
+  const [dono] = await db
+    .select({ id: pessoas.id, nome: pessoas.nome })
+    .from(pessoas)
+    .where(sql`lower(${pessoas.github}) = lower(${usuario})`);
+  return dono && dono.id !== exceto ? `O GitHub ${usuario} já está no perfil de ${dono.nome}.` : null;
+}
+
 /** Cadastra um membro novo (sem commits ainda). */
 export async function criarMembro(m: MembroForm): Promise<{ id: string } | { erros: string[] }> {
   const erros = validarMembro(m);
+  const repetido = await githubEmUso(m.github);
+  if (repetido) erros.push(repetido);
   if (erros.length) return { erros };
   const base = slug(m.nome) || "membro";
   const existentes = new Set((await db.select({ id: pessoas.id }).from(pessoas)).map((r) => r.id));
@@ -350,6 +410,8 @@ export async function criarMembro(m: MembroForm): Promise<{ id: string } | { err
 /** Edita nome, entrada e saída (marcar como ex-membro = preencher a saída). */
 export async function editarMembro(pessoaId: string, m: MembroForm): Promise<{ id: string } | { erros: string[] }> {
   const erros = validarMembro(m);
+  const repetido = await githubEmUso(m.github, pessoaId);
+  if (repetido) erros.push(repetido);
   if (erros.length) return { erros };
   await db.update(pessoas).set(dadosDoMembro(m)).where(eq(pessoas.id, pessoaId));
   updateTag("dados");

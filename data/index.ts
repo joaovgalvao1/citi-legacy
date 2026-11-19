@@ -72,6 +72,9 @@ export type Projeto = {
   inicio: string;
   fimPrevisto: string;
   entrega?: string;
+  /** Repositório no GitHub ("dono/nome"), quando vinculado, e a última sincronização (ISO). */
+  repositorio?: string;
+  sincronizadoEm?: string;
   clienteId: string;
   /** Só o nome do cliente (sem o segmento); é o que se digita para confirmar a exclusão. */
   clienteNome: string;

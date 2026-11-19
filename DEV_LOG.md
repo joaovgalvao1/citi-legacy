@@ -1217,3 +1217,46 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 **Verificação:**
 - **Membro de teste:** cadastrei com e-mail de exemplo, LinkedIn e o GitHub de demonstração do próprio GitHub (`octocat`). A foto carregou no avatar, e os três ícones viraram links (`mailto:`, `linkedin.com/in/…` e `github.com/octocat`; o link colado do GitHub foi guardado como usuário).
 - **Lixeira de membros:** testei também o **Restaurar** (lixeira → restaurar → o perfil voltou) e depois apaguei o membro de teste de vez.
+
+### Repositório do GitHub funcional (19/11)
+
+**O que pedi:**
+- **Primeiro:** só o visual de "linkar o repositório" no novo projeto. Mudei de ideia: **fazer funcional**.
+- **Depois:** pedi a melhor opção gratuita, mesmo que trabalhosa.
+
+**Opções que a IA comparou:**
+
+| Opção | Resultado |
+|---|---|
+| Sem token | 60 consultas/hora; mal dá para uma sincronização |
+| **Token pessoal (PAT)** | 5.000 consultas/hora, grátis |
+| **Webhook do repositório** | O GitHub avisa o app a cada `push`: tempo real, grátis |
+| GitHub App | O caminho de produção para várias organizações; mais configuração |
+
+**Escolha:** token + webhook. O GitHub App fica como "o caminho em produção" na documentação.
+- **Token:** fine-grained, "Only select repositories", **Contents: read-only** (vale para repositórios privados também).
+- **Configuração:** criei o token e o webhook e cadastrei `GITHUB_TOKEN` e `GITHUB_WEBHOOK_SECRET` no `.env.local` e na Vercel (Production e Preview). A IA nunca viu os valores.
+
+**O que a IA fez:**
+- **Projeto:** campo "Repositório no GitHub" no formulário (novo e edição), conferido na hora pela API. Colunas `repositorio` e `sincronizado_em` em `projetos`.
+- **`lib/github.ts`:** lê os commits pela API REST (os últimos 100; depois só os novos, em lotes de 10), com mensagens claras para repositório inexistente, token recusado e limite atingido. Também confere a assinatura do webhook (HMAC SHA-256, comparação em tempo constante).
+- **`lib/sincronizar.ts`:**
+  - **autor:** ligado ao membro pelo **usuário do GitHub** do perfil. Quem não tem cadastro fica de fora e é informado; um membro cadastrado com commits entra na equipe como "Colaborador (via GitHub)";
+  - **etapa:** pelos caminhos (glob com `**` e `*`);
+  - **data:** no horário de Recife;
+  - **linhas efetivas:** aproximadas por adicionadas − removidas.
+- **Onde a sincronização roda:**
+  - botão **"Sincronizar"** no cabeçalho do projeto, com o repositório e "sincronizado há X";
+  - ao salvar o projeto com repositório novo;
+  - no **webhook** `/api/github/webhook` (ping e push);
+  - no cron de sexta, antes dos resumos.
+- **GitHub único:** o mesmo usuário do GitHub não pode estar em dois membros. Isso apareceu no teste: com dois perfis com o mesmo GitHub, não dava para saber de quem eram os commits.
+
+**Verificação** (com o próprio repositório deste projeto, `joaovgalvao1/citi-legacy`, num projeto e membro temporários no banco local):
+- **Sincronização:** 49 commits reais em 3,6 s; a segunda vez trouxe 0 novos.
+- **Etapas:** distribuição por caminho correta (components 39, app 37, lib/data/db 29, scripts 11); 3 commits fora de qualquer etapa.
+- **Telas:** o cabeçalho mostra o repositório; a Participação mostra os 49 commits da semana e o IC; o botão Sincronizar respondeu "0 commits novos".
+- **Webhook:** sem assinatura ou com assinatura errada, recusado; ping e push assinados, aceitos (o push sincronizou o projeto ligado).
+- **Limpeza:** o projeto e o membro temporários foram apagados do banco local.
+
+**Não testado:** o webhook chamado pelo GitHub de verdade, que só alcança o site publicado. Fica para depois do push.

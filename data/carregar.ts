@@ -62,6 +62,8 @@ export async function carregarTudo() {
       nome: p.nome,
       cliente: cliente.segmento ? `${cliente.nome} · ${cliente.segmento}` : cliente.nome,
       clienteId: p.clienteId,
+      ...(p.repositorio ? { repositorio: p.repositorio } : {}),
+      ...(p.sincronizadoEm ? { sincronizadoEm: p.sincronizadoEm } : {}),
       clienteNome: cliente.nome,
       descricao: p.descricao,
       ...(p.contexto ? { contexto: p.contexto } : {}),

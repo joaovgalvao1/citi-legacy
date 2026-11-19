@@ -12,12 +12,24 @@ import { carregarCommits, carregarResumos, carregarTudo } from "@/data/carregar"
 import { montarBoletim } from "@/lib/boletim";
 import { enviarBoletim } from "@/lib/email";
 import { limparLixeira } from "@/app/acoes";
+import { projetosComRepositorio, sincronizarProjeto } from "@/lib/sincronizar";
 
 export async function GET(request: Request) {
   const segredo = process.env.CRON_SECRET;
   if (!segredo || request.headers.get("authorization") !== `Bearer ${segredo}`) {
     return Response.json({ erro: "não autorizado" }, { status: 401 });
   }
+
+  // repositórios no GitHub: traz os commits que o webhook possa ter perdido, antes dos resumos
+  const github: { projeto: string; novos?: number; erro?: string }[] = [];
+  for (const id of await projetosComRepositorio()) {
+    try {
+      github.push({ projeto: id, novos: (await sincronizarProjeto(id)).novos });
+    } catch (e) {
+      github.push({ projeto: id, erro: e instanceof Error ? e.message : "erro" });
+    }
+  }
+  if (github.length) revalidateTag("dados", "max");
 
   const semana = inicioDaSemana(new Date().toISOString());
   const relatorio: { projeto: string; tipo: string; fonte: string }[] = [];
@@ -47,5 +59,5 @@ export async function GET(request: Request) {
     detalhe: e.message,
   }));
 
-  return Response.json({ semana, relatorio, email, apagadosDeVez });
+  return Response.json({ semana, relatorio, email, apagadosDeVez, github });
 }

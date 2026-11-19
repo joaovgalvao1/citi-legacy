@@ -9,6 +9,7 @@ import { criarProjeto, editarProjeto } from "@/app/acoes";
 import { avisar } from "@/lib/avisos";
 import { caminhoSugerido, linhas, validarProjeto, type EtapaNova, type ProjetoNovo } from "@/lib/novo-projeto";
 import { Botao, Caixa } from "@/components/ui";
+import { IconeGithub } from "@/components/ui/icones";
 
 type Cliente = { id: string; nome: string; segmento: string | null };
 type Pessoa = { id: string; nome: string };
@@ -119,6 +120,7 @@ export function FormularioNovoProjeto({
       if ("erros" in r) setErrosServidor(r.erros);
       else {
         if (inicial) avisar({ texto: "Alterações salvas", detalhe: dados.nome });
+        if (r.github) avisar({ texto: "Repositório sincronizado", detalhe: r.github, tom: r.github.startsWith("Não foi") ? "ambar" : "verde" });
         router.push(`/projetos/${r.id}`);
       }
     });
@@ -227,6 +229,24 @@ export function FormularioNovoProjeto({
             );
           })}
         </ul>
+      </Caixa>
+
+      {/* repositório no GitHub */}
+      <Caixa titulo="Repositório (opcional)">
+        <Campo
+          titulo="Repositório no GitHub"
+          dica="Os commits vêm daqui: cada commit entra na etapa cujos caminhos ele altera, e o autor é ligado ao membro pelo GitHub cadastrado no perfil."
+        >
+          <div className="relative">
+            <IconeGithub className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-500" />
+            <input
+              className={`${campo} pl-9`}
+              value={p.repositorio ?? ""}
+              onChange={(e) => mudar("repositorio", e.target.value)}
+              placeholder="github.com/dono/projeto"
+            />
+          </div>
+        </Campo>
       </Caixa>
 
       {/* etapas */}
