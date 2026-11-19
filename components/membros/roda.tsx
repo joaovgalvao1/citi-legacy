@@ -136,133 +136,134 @@ export function Roda<T extends ItemRoda>({
 
   return (
     <div className="space-y-3">
-      <div
-        ref={area}
-        role="listbox"
-        aria-label={rotulo}
-        aria-activedescendant={emFoco ? `roda-${emFoco.id}` : undefined}
-        tabIndex={0}
-        onKeyDown={aoTeclar}
-        onPointerDown={aoApertar}
-        onPointerMove={aoMover}
-        onPointerUp={aoSoltar}
-        onPointerCancel={aoSoltar}
-        onLostPointerCapture={aoSoltar}
-        onDragStart={(e) => e.preventDefault()}
-        className={`relative mx-auto aspect-square w-full max-w-[520px] touch-none rounded-full outline-none select-none focus-visible:ring-2 focus-visible:ring-verde/50 ${
-          arrastando ? "cursor-grabbing" : "cursor-grab"
-        }`}
-      >
-        {/* trilho */}
-        <div aria-hidden="true" className="absolute inset-[8%] rounded-full border border-dashed border-branco/10" />
-
-        {/* parte que gira: linhas e avatares */}
-        <div className="absolute inset-0" style={{ transform: `rotate(${angulo}deg)`, transition: transicao }}>
-          {temLinhas && (
-            <svg aria-hidden="true" viewBox="0 0 100 100" className="absolute inset-0 h-full w-full overflow-visible">
-              {itens.map((it, i) => {
-                const p = posicao(i, it);
-                const forca = it.linha ?? 0;
-                return (
-                  <line
-                    key={it.id}
-                    x1="50"
-                    y1="50"
-                    x2={p.x}
-                    y2={p.y}
-                    stroke="var(--color-verde)"
-                    strokeOpacity={i === foco ? 0.85 : 0.12 + forca * 0.4}
-                    strokeWidth={1 + forca * 3}
-                    vectorEffect="non-scaling-stroke"
-                    style={{ transition: "stroke-opacity 300ms" }}
-                  />
-                );
-              })}
-            </svg>
-          )}
-          {itens.map((it, i) => {
-            const p = posicao(i, it);
-            const distancia = Math.abs(mod(i * passo + angulo + 180, 360) - 180); // 0 = topo, 180 = embaixo
-            const perto = 1 - distancia / 180;
-            const naFrente = i === foco;
-            const escala = naFrente ? 1.25 : temLinhas ? 0.9 : 0.72 + 0.23 * perto;
-            const opacidade = naFrente ? 1 : (it.apagado ? 0.35 : 0.5) + 0.4 * perto;
-            return (
-              <button
-                key={it.id}
-                id={`roda-${it.id}`}
-                type="button"
-                role="option"
-                aria-selected={naFrente}
-                aria-label={it.nome}
-                title={it.nome}
-                tabIndex={-1}
-                onClick={() => {
-                  if (moveuAgora.current) return;
-                  if (naFrente) aoAbrir(it);
-                  else irPara(i);
-                }}
-                className={`absolute cursor-pointer rounded-full [&_img]:pointer-events-none ${naFrente ? "z-10" : ""}`}
-                style={{
-                  left: `${p.x}%`,
-                  top: `${p.y}%`,
-                  transform: `translate(-50%, -50%) rotate(${-angulo}deg) scale(${escala})`,
-                  opacity: opacidade,
-                  transition: transicao,
-                }}
-              >
-                <span
-                  className={`block rounded-full ${
-                    naFrente ? "shadow-[0_0_0_3px_var(--color-fundo),0_0_0_5px_var(--color-verde)]" : ""
-                  } ${it.apagado ? "grayscale" : ""}`}
-                >
-                  <AvatarMembro nome={it.nome} github={it.github} tamanho="h-9 w-9 text-xs sm:h-11 sm:w-11 sm:text-sm" />
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* disco atrás do centro, para as linhas não passarem por baixo do texto */}
-        {temLinhas && (
-          <div
-            aria-hidden="true"
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-linha bg-white"
-            style={{ width: `${2 * (raioMin - 7)}%`, height: `${2 * (raioMin - 7)}%` }}
-          />
-        )}
-
-        {/* centro: detalhes de quem está em foco (não gira) */}
-        <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center"
-          style={{ width: `${temLinhas ? 2 * (raioMin - 9) : 54}%` }}
-          aria-live="polite"
-        >
-          {emFoco && centro(emFoco)}
-        </div>
-      </div>
-
-      <div className="flex items-center justify-center gap-2">
+      {/* setas fora da roda: nos cantos de baixo no celular, dos lados no resto */}
+      <div className="relative mx-auto max-w-[656px] sm:px-16">
         <button
           type="button"
           onClick={() => girar(-1)}
           aria-label="Girar para trás"
-          className="cursor-pointer rounded-full border border-branco/25 bg-branco/5 px-4 py-1.5 text-sm text-gray-700 transition-colors hover:border-verde/50 hover:text-verde"
+          className="absolute bottom-0 left-0 z-20 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-branco/25 bg-white text-lg text-gray-700 transition-colors hover:border-verde hover:text-verde sm:top-1/2 sm:bottom-auto sm:-translate-y-1/2"
         >
           ←
         </button>
-        <span className="dado min-w-14 text-center text-xs text-gray-500">
-          {n ? foco + 1 : 0} / {n}
-        </span>
         <button
           type="button"
           onClick={() => girar(1)}
           aria-label="Girar para frente"
-          className="cursor-pointer rounded-full border border-branco/25 bg-branco/5 px-4 py-1.5 text-sm text-gray-700 transition-colors hover:border-verde/50 hover:text-verde"
+          className="absolute bottom-0 right-0 z-20 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-branco/25 bg-white text-lg text-gray-700 transition-colors hover:border-verde hover:text-verde sm:top-1/2 sm:bottom-auto sm:-translate-y-1/2"
         >
           →
         </button>
+        <div
+          ref={area}
+          role="listbox"
+          aria-label={rotulo}
+          aria-activedescendant={emFoco ? `roda-${emFoco.id}` : undefined}
+          tabIndex={0}
+          onKeyDown={aoTeclar}
+          onPointerDown={aoApertar}
+          onPointerMove={aoMover}
+          onPointerUp={aoSoltar}
+          onPointerCancel={aoSoltar}
+          onLostPointerCapture={aoSoltar}
+          onDragStart={(e) => e.preventDefault()}
+          className={`relative mx-auto aspect-square w-full max-w-[520px] touch-none rounded-full outline-none select-none focus-visible:ring-2 focus-visible:ring-verde/50 ${
+            arrastando ? "cursor-grabbing" : "cursor-grab"
+          }`}
+        >
+          {/* trilho */}
+          <div aria-hidden="true" className="absolute inset-[8%] rounded-full border border-dashed border-branco/10" />
+
+          {/* parte que gira: linhas e avatares */}
+          <div className="absolute inset-0" style={{ transform: `rotate(${angulo}deg)`, transition: transicao }}>
+            {temLinhas && (
+              <svg aria-hidden="true" viewBox="0 0 100 100" className="absolute inset-0 h-full w-full overflow-visible">
+                {itens.map((it, i) => {
+                  const p = posicao(i, it);
+                  const forca = it.linha ?? 0;
+                  return (
+                    <line
+                      key={it.id}
+                      x1="50"
+                      y1="50"
+                      x2={p.x}
+                      y2={p.y}
+                      stroke="var(--color-verde)"
+                      strokeOpacity={i === foco ? 0.85 : 0.12 + forca * 0.4}
+                      strokeWidth={1 + forca * 3}
+                      vectorEffect="non-scaling-stroke"
+                      style={{ transition: "stroke-opacity 300ms" }}
+                    />
+                  );
+                })}
+              </svg>
+            )}
+            {itens.map((it, i) => {
+              const p = posicao(i, it);
+              const distancia = Math.abs(mod(i * passo + angulo + 180, 360) - 180); // 0 = topo, 180 = embaixo
+              const perto = 1 - distancia / 180;
+              const naFrente = i === foco;
+              const escala = naFrente ? 1.25 : temLinhas ? 0.9 : 0.72 + 0.23 * perto;
+              const opacidade = naFrente ? 1 : (it.apagado ? 0.35 : 0.5) + 0.4 * perto;
+              return (
+                <button
+                  key={it.id}
+                  id={`roda-${it.id}`}
+                  type="button"
+                  role="option"
+                  aria-selected={naFrente}
+                  aria-label={it.nome}
+                  title={it.nome}
+                  tabIndex={-1}
+                  onClick={() => {
+                    if (moveuAgora.current) return;
+                    if (naFrente) aoAbrir(it);
+                    else irPara(i);
+                  }}
+                  className={`absolute cursor-pointer rounded-full [&_img]:pointer-events-none ${naFrente ? "z-10" : ""}`}
+                  style={{
+                    left: `${p.x}%`,
+                    top: `${p.y}%`,
+                    transform: `translate(-50%, -50%) rotate(${-angulo}deg) scale(${escala})`,
+                    opacity: opacidade,
+                    transition: transicao,
+                  }}
+                >
+                  <span
+                    className={`block rounded-full ${
+                      naFrente ? "shadow-[0_0_0_3px_var(--color-fundo),0_0_0_5px_var(--color-verde)]" : ""
+                    } ${it.apagado ? "grayscale" : ""}`}
+                  >
+                    <AvatarMembro nome={it.nome} github={it.github} tamanho="h-9 w-9 text-xs sm:h-11 sm:w-11 sm:text-sm" />
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* disco atrás do centro, para as linhas não passarem por baixo do texto */}
+          {temLinhas && (
+            <div
+              aria-hidden="true"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-linha bg-white"
+              style={{ width: `${2 * (raioMin - 7)}%`, height: `${2 * (raioMin - 7)}%` }}
+            />
+          )}
+
+          {/* centro: detalhes de quem está em foco (não gira) */}
+          <div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center"
+            style={{ width: `${temLinhas ? 2 * (raioMin - 9) : 54}%` }}
+            aria-live="polite"
+          >
+            {emFoco && centro(emFoco)}
+          </div>
+        </div>
       </div>
+
+      <p className="dado text-center text-xs text-gray-500">
+        {n ? foco + 1 : 0} / {n}
+      </p>
       <p className="text-center text-xs text-gray-500">{dica}</p>
     </div>
   );
