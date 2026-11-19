@@ -98,7 +98,7 @@ async function MembroConteudo({ params }: { params: PageProps<"/membros/[membroI
         <CalendarioContribuicoes commits={todos} />
       </Caixa>
 
-      <div className="grid items-start gap-4 lg:grid-cols-2">
+      <div className="grid gap-4 lg:grid-cols-2">
         <Caixa titulo={`Projetos · ${participacoes.length}`}>
           <ul className="space-y-3">
             {participacoes.map(({ projeto, membro }) => {
