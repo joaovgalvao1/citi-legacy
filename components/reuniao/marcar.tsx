@@ -52,6 +52,7 @@ export function MarcarReuniao({
       titulo="Marcar reunião da diretoria"
       rotuloConfirmar="Enviar convite"
       ocupado={enviando}
+      bloqueado={!para.length}
       erro={erro}
       aoConfirmar={confirmar}
       aoFechar={() => {
@@ -129,7 +130,9 @@ export function MarcarReuniao({
         ) : (
           <p className="text-xs text-ambar">Nenhum destinatário configurado (BOLETIM_PARA).</p>
         )}
-        <p className="mt-1.5 text-[11px] text-gray-500">A lista vem da configuração do servidor (BOLETIM_PARA).</p>
+        {destinatarios.length > 0 && !para.length && (
+          <p className="mt-1.5 text-[11px] text-ambar">Selecione pelo menos um destinatário para enviar.</p>
+        )}
       </fieldset>
     </Dialogo>
   );

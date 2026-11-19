@@ -14,6 +14,7 @@ export function Dialogo({
   perigo = false,
   exigir,
   ocupado = false,
+  bloqueado = false,
   erro,
   aoConfirmar,
   aoFechar,
@@ -26,6 +27,8 @@ export function Dialogo({
   /** Texto que precisa ser digitado para liberar o botão. */
   exigir?: string;
   ocupado?: boolean;
+  /** Desativa o botão de confirmar (ex.: falta escolher algo no formulário). */
+  bloqueado?: boolean;
   erro?: string;
   /** Recebe o texto digitado (quando há `exigir`), para o servidor conferir de novo. */
   aoConfirmar: (digitado: string) => void;
@@ -42,7 +45,7 @@ export function Dialogo({
     if (!aberto && d.open) d.close();
   }, [aberto]);
 
-  const liberado = !exigir || confereConfirmacao(digitado, exigir);
+  const liberado = !bloqueado && (!exigir || confereConfirmacao(digitado, exigir));
   const fechar = () => {
     setDigitado("");
     aoFechar();

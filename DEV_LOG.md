@@ -1161,3 +1161,9 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - **Opções descartadas:** "membros do CITi" (os dados fictícios não têm e-mail das pessoas) e "campo livre" (o app viraria um disparador de e-mail).
 
 **Verificação:** a lista mostra "jvgvg@cin.ufpe.br" marcado; com tudo desmarcado, o envio é bloqueado com "Escolha pelo menos um destinatário."
+
+**Ajuste que pedi depois:** bloquear o envio se ninguém estiver selecionado. O botão "Enviar convite" fica desativado sem destinatário, e aparece o aviso "Selecione pelo menos um destinatário para enviar." A janela de confirmação (`Dialogo`) ganhou a opção `bloqueado`. O servidor continua recusando o envio sem destinatário.
+
+**Verificação:**
+- **Botão:** marcado, ativo; desmarcado, desativado e com o aviso; marcado de novo, ativo.
+- **Atalhos:** a IA conferiu também que Esc e P apertados dentro da janela não saem da apresentação nem abrem a impressão.
