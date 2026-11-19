@@ -803,7 +803,7 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 **O que a IA fez:**
 - **Cores:** as cores das folhas (resumo do projeto e boletim) saíram do código e viraram uma paleta em variáveis CSS, com versão clara e escura. A escura usa a identidade do CITi: fundo escuro, texto branco, verde `#00DB58`, semáforo e borda da IA.
 - **Botão "Claro | Escuro":** fica na barra da página (não sai no PDF). A escolha fica guardada no navegador.
-- **Padrão:** claro, até eu decidir.
+- **Padrão:** escolhi o **escuro**, depois de comparar os dois PDFs. O tema escuro vale sempre que o claro não foi escolhido, inclusive antes de a página carregar o JavaScript (sem piscar o branco).
 
 **Problema que a IA encontrou junto:** o PDF claro saía com faixas escuras nas margens entre as páginas. O navegador pinta as margens conforme o `color-scheme`, que no site é escuro. Na impressão, o tema claro agora usa `color-scheme: light`, e o escuro usa o mesmo tom nas margens e na folha, sem emenda.
 

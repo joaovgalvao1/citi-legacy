@@ -158,7 +158,8 @@ h3 {
 
 /* ---------- versão de impressão (exportar resumo em PDF) ---------- */
 /* Paleta da folha em variáveis: tema claro (padrão) e escuro (botão na barra da página,
-   que marca <html data-tema-folha="escuro">). */
+   que marca <html data-tema-folha="claro|escuro">). O escuro é o padrão: vale sempre que
+   o tema não for "claro", inclusive antes de a página carregar o JavaScript. */
 .folha {
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
@@ -183,7 +184,7 @@ h3 {
   --f-ambar-fundo: #fff6e8;
   --f-ambar-borda: #f3c98b;
 }
-html[data-tema-folha="escuro"] .folha {
+html:not([data-tema-folha="claro"]) .folha {
   --f-fundo: #0a0a0a;
   --f-caixa: #141414;
   --f-texto: #ffffff;
@@ -214,22 +215,19 @@ html[data-tema-folha="escuro"] .folha {
   }
   /* As margens da página (entre as folhas) são pintadas pelo navegador conforme o color-scheme:
      no tema claro, claro (antes saíam faixas escuras, porque o site usa color-scheme dark). */
-  html {
+  html[data-tema-folha="claro"] {
     color-scheme: light;
   }
-  html,
-  body {
+  html[data-tema-folha="claro"],
+  html[data-tema-folha="claro"] body {
     background: #fff !important;
   }
   /* tema escuro: margens escuras (#121212, a cor do navegador) e a folha no mesmo tom, sem emenda */
-  html[data-tema-folha="escuro"] {
-    color-scheme: dark;
-  }
-  html[data-tema-folha="escuro"],
-  html[data-tema-folha="escuro"] body {
+  html:not([data-tema-folha="claro"]),
+  html:not([data-tema-folha="claro"]) body {
     background: #121212 !important;
   }
-  html[data-tema-folha="escuro"] .folha {
+  html:not([data-tema-folha="claro"]) .folha {
     --f-fundo: #121212;
     border: 0 !important;
   }

@@ -11,9 +11,9 @@ const CHAVE_TEMA = "citi-legacy:tema-folha";
 
 function lerTema(): Tema {
   try {
-    return localStorage.getItem(CHAVE_TEMA) === "escuro" ? "escuro" : "claro";
+    return localStorage.getItem(CHAVE_TEMA) === "claro" ? "claro" : "escuro";
   } catch {
-    return "claro";
+    return "escuro";
   }
 }
 
@@ -30,8 +30,8 @@ function assinar(avisar: () => void) {
 
 /** Tema da folha: lembrado no navegador e marcado em <html data-tema-folha> (as cores estão em app/globals.css). */
 function useTemaDaFolha() {
-  // no servidor (e na hidratação) é sempre "claro"; no navegador, o tema guardado
-  const tema = useSyncExternalStore(assinar, lerTema, () => "claro" as Tema);
+  // padrão: escuro (no servidor e na hidratação); no navegador, o tema guardado
+  const tema = useSyncExternalStore(assinar, lerTema, () => "escuro" as Tema);
   useEffect(() => {
     document.documentElement.dataset.temaFolha = tema;
     return () => {
