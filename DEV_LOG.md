@@ -1731,3 +1731,9 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
 - **Verificação:**
   - os ícones, o manifest e o `sw.js` respondem em `/icon`, `/apple-icon`, `/icones/192`, `/icones/512`, `/manifest.webmanifest` e `/sw.js`, e o service worker ficou registrado no navegador;
   - o build de produção (`next build`) passou com essas rotas.
+- **Ícone refeito:**
+  - **O que pedi:** tirar o anel de órbita em volta e deixar o visual mais bonito.
+  - **Fundo:** agora usa o mesmo degradê da faixa verde do topo do app, com um brilho suave atrás do logo.
+  - **Logo:** ficou maior (60% da largura).
+  - **"LEGACY":** com um traço fino em cima, como a divisória do logo no cabeçalho, e letras mais espaçadas.
+  - **PNGs:** foram exportados de novo em `public/marca/icones/`.
