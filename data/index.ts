@@ -42,6 +42,10 @@ export type Pessoa = {
   nome: string;
   entrada: string; // "aaaa-mm"
   saiuEm?: string; // já saiu da empresa, "aaaa-mm-dd"
+  /** Contatos opcionais. `linkedin` é o endereço do perfil; `github` é o usuário (a foto do perfil vem dele). */
+  email?: string;
+  linkedin?: string;
+  github?: string;
 };
 
 /** Uma pessoa dentro de um projeto. */

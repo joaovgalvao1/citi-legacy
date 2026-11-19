@@ -1201,4 +1201,19 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - **Fluxo completo com um membro de teste:** adicionar → mover para a lixeira (o botão só libera com a caixa marcada) → "Lixeira · 1" → apagar de vez (lixeira vazia).
 - **Edição:** a página abre preenchida, com Marcos Vilela como ex-membro desde 15/07/2026.
 
-**Não testado:** o botão Restaurar da lixeira de membros. Usa o mesmo caminho da lixeira de projetos, que foi testado.
+
+**Ajustes que pedi depois:**
+- **Foto:** a foto do perfil vem do GitHub quando ele está vinculado.
+- **Contatos na edição:** campos para os links e o e-mail das redes no formulário do membro.
+
+**O que a IA fez:**
+- **Banco:** colunas `email`, `linkedin` e `github` em `pessoas`.
+- **Formulário de membro:** ganhou a seção "Contatos (opcional)". O LinkedIn aceita o link ou o nome do perfil e vira o endereço completo; o GitHub aceita o usuário ou o link e guarda só o usuário.
+- **Avatar:** com GitHub preenchido, mostra a foto `github.com/<usuário>.png`. Se a foto não carregar, voltam as iniciais no verde do CITi.
+- **Ícones:**
+  - com o contato cadastrado, viram links de verdade (e-mail, perfil do LinkedIn, perfil do GitHub), e a dica mostra o endereço;
+  - sem cadastro (todos os membros fictícios), a dica diz "Protótipo. Sem LinkedIn cadastrado para … Cadastre em ‘Editar membro’".
+
+**Verificação:**
+- **Membro de teste:** cadastrei com e-mail de exemplo, LinkedIn e o GitHub de demonstração do próprio GitHub (`octocat`). A foto carregou no avatar, e os três ícones viraram links (`mailto:`, `linkedin.com/in/…` e `github.com/octocat`; o link colado do GitHub foi guardado como usuário).
+- **Lixeira de membros:** testei também o **Restaurar** (lixeira → restaurar → o perfil voltou) e depois apaguei o membro de teste de vez.

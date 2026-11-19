@@ -10,6 +10,8 @@ import { AvatarMembro } from "./pecas";
 export type ResumoMembro = {
   id: string;
   nome: string;
+  /** Usuário do GitHub (a foto do avatar vem dele). */
+  github?: string;
   /** Papel no projeto mais recente. */
   cargo: string;
   desde: string;
@@ -79,7 +81,7 @@ export function ListaMembros({ membros }: { membros: ResumoMembro[] }) {
                 className="flex h-full flex-col gap-3 rounded-xl border border-linha bg-white p-5 transition-colors hover:border-verde/60"
               >
                 <div className="flex items-start gap-3">
-                  <AvatarMembro nome={m.nome} />
+                  <AvatarMembro nome={m.nome} github={m.github} />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
                       <span className="truncate font-semibold">{m.nome}</span>

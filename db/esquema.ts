@@ -17,6 +17,10 @@ export const pessoas = pgTable("pessoas", {
   saiuEm: text("saiu_em"), // "aaaa-mm-dd"
   /** Na lixeira desde ("aaaa-mm-dd"). Só quem não tem commits pode ir para a lixeira. */
   apagadoEm: text("apagado_em"),
+  /** Contatos (opcionais): e-mail, endereço do perfil no LinkedIn e usuário do GitHub (a foto vem dele). */
+  email: text("email"),
+  linkedin: text("linkedin"),
+  github: text("github"),
 });
 
 export const projetos = pgTable("projetos", {

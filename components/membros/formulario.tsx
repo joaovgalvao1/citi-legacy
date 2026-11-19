@@ -16,7 +16,9 @@ const rotulo = "mb-1 block text-xs font-medium text-gray-600";
 
 export function FormularioMembro({ hoje, inicial }: { hoje: string; inicial?: { id: string } & MembroForm }) {
   const router = useRouter();
-  const [m, setM] = useState<MembroForm>(() => inicial ?? { nome: "", entrada: hoje.slice(0, 7), saiuEm: "" });
+  const [m, setM] = useState<MembroForm>(
+    () => inicial ?? { nome: "", entrada: hoje.slice(0, 7), saiuEm: "", email: "", linkedin: "", github: "" },
+  );
   const [exMembro, setExMembro] = useState(!!inicial?.saiuEm);
   const [erros, setErros] = useState<string[]>([]);
   const [salvando, iniciar] = useTransition();
@@ -68,9 +70,26 @@ export function FormularioMembro({ hoje, inicial }: { hoje: string; inicial?: { 
             )}
           </div>
         </div>
-        <p className="mt-4 text-xs text-gray-500">
-          O papel da pessoa é definido em cada projeto (na equipe do projeto). Os contatos (e-mail, LinkedIn e GitHub) aparecem no perfil como
-          protótipo.
+        <p className="mt-4 text-xs text-gray-500">O papel da pessoa é definido em cada projeto (na equipe do projeto).</p>
+      </Caixa>
+
+      <Caixa titulo="Contatos (opcional)">
+        <div className="grid gap-4 sm:grid-cols-3">
+          <label className="block">
+            <span className={rotulo}>E-mail</span>
+            <input type="email" className={campo} value={m.email} onChange={(e) => setM({ ...m, email: e.target.value })} placeholder="nome@exemplo.com" />
+          </label>
+          <label className="block">
+            <span className={rotulo}>LinkedIn</span>
+            <input className={campo} value={m.linkedin} onChange={(e) => setM({ ...m, linkedin: e.target.value })} placeholder="linkedin.com/in/seu-perfil" />
+          </label>
+          <label className="block">
+            <span className={rotulo}>GitHub</span>
+            <input className={campo} value={m.github} onChange={(e) => setM({ ...m, github: e.target.value })} placeholder="usuário ou github.com/usuário" />
+          </label>
+        </div>
+        <p className="mt-3 text-xs text-gray-500">
+          Com o GitHub preenchido, a foto do perfil vem de lá. Os ícones do perfil viram links para os contatos cadastrados.
         </p>
       </Caixa>
 

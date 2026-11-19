@@ -29,7 +29,15 @@ export async function carregarTudo() {
     .map((p) => ({ id: p.id, nome: p.nome, entrada: p.entrada, apagadoEm: p.apagadoEm! }));
   const listaPessoas: Pessoa[] = pessoas
     .filter((p) => !p.apagadoEm)
-    .map((p) => ({ id: p.id, nome: p.nome, entrada: p.entrada, ...(p.saiuEm ? { saiuEm: p.saiuEm } : {}) }));
+    .map((p) => ({
+      id: p.id,
+      nome: p.nome,
+      entrada: p.entrada,
+      ...(p.saiuEm ? { saiuEm: p.saiuEm } : {}),
+      ...(p.email ? { email: p.email } : {}),
+      ...(p.linkedin ? { linkedin: p.linkedin } : {}),
+      ...(p.github ? { github: p.github } : {}),
+    }));
   const membros = membrosTodos.filter((m) => !pessoasNaLixeira.has(m.pessoaId));
 
   // projetos na lixeira ficam fora de tudo (listas, indicadores, boletim, membros)

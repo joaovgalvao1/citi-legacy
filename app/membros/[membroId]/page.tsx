@@ -43,7 +43,7 @@ async function MembroConteudo({ params }: { params: PageProps<"/membros/[membroI
         <Voltar href="/membros">Membros</Voltar>
         <div className="flex flex-wrap items-start justify-between gap-6">
           <div className="flex items-start gap-4">
-            <AvatarMembro nome={pessoa.nome} grande />
+            <AvatarMembro nome={pessoa.nome} github={pessoa.github} grande />
             <div className="space-y-1.5">
               <div className="flex flex-wrap items-center gap-3">
                 <h1 className="text-3xl font-bold tracking-[-0.03em]">{pessoa.nome}</h1>
@@ -52,7 +52,7 @@ async function MembroConteudo({ params }: { params: PageProps<"/membros/[membroI
               </div>
               <p className="text-sm text-gray-700">{cargo}</p>
               <p className="text-xs text-gray-500">No CITi desde {formatarMesAno(pessoa.entrada)}</p>
-              <ContatosMembro nome={pessoa.nome} />
+              <ContatosMembro nome={pessoa.nome} email={pessoa.email} linkedin={pessoa.linkedin} github={pessoa.github} />
             </div>
           </div>
           <dl className="grid grid-cols-3 gap-2">

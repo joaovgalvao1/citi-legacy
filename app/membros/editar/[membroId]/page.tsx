@@ -21,7 +21,15 @@ async function Conteudo({ params }: { params: PageProps<"/membros/editar/[membro
         <Voltar href={`/membros/${pessoa.id}`}>{pessoa.nome}</Voltar>
         <TituloPagina fino="Editar" destaque="membro." />
       </div>
-      <FormularioMembro hoje={algum?.hoje ?? ""} inicial={{ id: pessoa.id, nome: pessoa.nome, entrada: pessoa.entrada, saiuEm: pessoa.saiuEm ?? "" }} />
+      <FormularioMembro hoje={algum?.hoje ?? ""} inicial={{
+          id: pessoa.id,
+          nome: pessoa.nome,
+          entrada: pessoa.entrada,
+          saiuEm: pessoa.saiuEm ?? "",
+          email: pessoa.email ?? "",
+          linkedin: pessoa.linkedin ?? "",
+          github: pessoa.github ?? "",
+        }} />
     </div>
   );
 }

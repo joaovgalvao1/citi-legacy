@@ -17,6 +17,7 @@ export default async function Membros() {
       return {
         id: p.id,
         nome: p.nome,
+        github: p.github,
         // cargo: o papel no projeto mais recente
         cargo: participacoes[0]?.membro.papel ?? "Sem projeto ainda",
         desde: formatarMesAno(p.entrada),

@@ -7,7 +7,7 @@ import { updateTag } from "next/cache";
 import { db, esquema } from "@/db/conexao";
 import { hoje, somarDias } from "@/lib/hoje";
 import { confereConfirmacao, DIAS_NA_LIXEIRA, linhas, slug, validarProjeto, type ProjetoNovo } from "@/lib/novo-projeto";
-import { validarMembro, type MembroForm } from "@/lib/membros";
+import { enderecoLinkedin, usuarioGithub, validarMembro, type MembroForm } from "@/lib/membros";
 import { carregarCommits, carregarResumos, carregarTudo } from "@/data/carregar";
 import { montarBoletim } from "@/lib/boletim";
 import { destinatarios, enviarBoletim, enviarReuniao, eventoReuniao, listaDestinatarios } from "@/lib/email";
@@ -322,6 +322,18 @@ async function apagarPessoa(pessoaId: string) {
   await db.delete(pessoas).where(eq(pessoas.id, pessoaId));
 }
 
+/** Campos do membro como vão para o banco (contatos vazios viram null; LinkedIn vira link, GitHub vira usuário). */
+function dadosDoMembro(m: MembroForm) {
+  return {
+    nome: m.nome.trim(),
+    entrada: m.entrada,
+    saiuEm: m.saiuEm || null,
+    email: m.email.trim() || null,
+    linkedin: enderecoLinkedin(m.linkedin) || null,
+    github: usuarioGithub(m.github) || null,
+  };
+}
+
 /** Cadastra um membro novo (sem commits ainda). */
 export async function criarMembro(m: MembroForm): Promise<{ id: string } | { erros: string[] }> {
   const erros = validarMembro(m);
@@ -330,7 +342,7 @@ export async function criarMembro(m: MembroForm): Promise<{ id: string } | { err
   const existentes = new Set((await db.select({ id: pessoas.id }).from(pessoas)).map((r) => r.id));
   let id = base;
   for (let i = 2; existentes.has(id) || IDS_RESERVADOS.has(id); i++) id = `${base}-${i}`;
-  await db.insert(pessoas).values({ id, nome: m.nome.trim(), entrada: m.entrada, saiuEm: m.saiuEm || null });
+  await db.insert(pessoas).values({ id, ...dadosDoMembro(m) });
   updateTag("dados");
   return { id };
 }
@@ -339,7 +351,7 @@ export async function criarMembro(m: MembroForm): Promise<{ id: string } | { err
 export async function editarMembro(pessoaId: string, m: MembroForm): Promise<{ id: string } | { erros: string[] }> {
   const erros = validarMembro(m);
   if (erros.length) return { erros };
-  await db.update(pessoas).set({ nome: m.nome.trim(), entrada: m.entrada, saiuEm: m.saiuEm || null }).where(eq(pessoas.id, pessoaId));
+  await db.update(pessoas).set(dadosDoMembro(m)).where(eq(pessoas.id, pessoaId));
   updateTag("dados");
   return { id: pessoaId };
 }
