@@ -40,7 +40,7 @@ Registro resumido de como a IA foi usada em cada etapa: **o que eu pedi**, **o q
 
 ### O que eu decidi e por quê
 - **Produto (meu):** analisar os commits para mostrar a participação por etapa e apoiar a troca de membros.
-- **Escopo (meu):** protótipo com repositórios e análises fictícios, porque "o produto precisa ser visual e passar a mensagem".
+- **Escopo (meu):** protótipo com repositórios e análises fictícios, porque "o protótipo inicialmente precisa ser visual e passar a mensagem".
 - **Nome (meu):** CITi Legacy, no sentido positivo de legado.
 - **Métrica (minha):** linhas alteradas em vez de número de commits, porque um commit pequeno pode ter muitas alterações. O refinamento em "linhas efetivas" foi sugestão da IA.
 - **IA no produto:** gerada ao vivo (recomendação da IA), com o Gemini por ser gratuito. Gerei a chave.
@@ -49,7 +49,7 @@ Registro resumido de como a IA foi usada em cada etapa: **o que eu pedi**, **o q
 
 ### O que ficou de fora naquele momento
 - As ideias iniciais da IA, substituídas pela minha.
-- Login, integração com a API do GitHub e banco de dados, para focar no visual. No desenvolvimento, **mudei de ideia**: os três entraram no produto.
+- Login, integração com a API do GitHub e banco de dados, para focar no visual. No desenvolvimento, com o andamento do protótipo **mudei de ideia**: os três entraram no produto.
 - A API do Claude, por não ser gratuita.
 
 ### Resultado
