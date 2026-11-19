@@ -1,4 +1,5 @@
-// GET /api/cron/resumos — chamado pela Vercel Cron toda sexta-feira, em duas etapas (horário de Brasília):
+// GET /api/cron/resumos — chamado pela Vercel Cron todo domingo, em duas etapas (horário de Brasília),
+// para o boletim e os slides estarem prontos para a reunião da diretoria na segunda:
 //
 //   23h00  sincroniza os repositórios do GitHub, limpa a lixeira e gera os resumos que couberem no tempo
 //   23h30  (?etapa=pendentes) gera os que ficaram pendentes (sem resumo ou com o resumo automático,
@@ -46,7 +47,8 @@ export async function GET(request: Request) {
   }
 
   // resumos: só os que ainda não foram feitos pela IA, enquanto houver tempo
-  const semana = inicioDaSemana(new Date().toISOString());
+  // semana pelo horário de Recife: domingo 23h em Recife já é segunda 02h em UTC (e daria a semana nova, vazia)
+  const semana = inicioDaSemana(new Date(Date.now() - 3 * 3600000).toISOString());
   const relatorio: { projeto: string; tipo: string; fonte: string }[] = [];
   const faltaram: string[] = [];
   const { projetos: atuais } = await carregarTudo();

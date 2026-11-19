@@ -7,7 +7,7 @@
 //                   para o e-mail da própria conta Resend enquanto não houver domínio verificado)
 //   SITE_URL        endereço do site, para os links (padrão: https://citi-legacy.vercel.app)
 //
-// Tema: claro ou escuro (padrão escuro, o do cron de sexta). O botão do boletim envia no tema da tela,
+// Tema: claro ou escuro (padrão escuro, o do cron de domingo). O botão do boletim envia no tema da tela,
 // e o link "Ver o boletim em PDF" abre o PDF no mesmo tema (?tema=).
 
 import type { Projeto } from "@/data";
@@ -160,7 +160,7 @@ export function htmlBoletim(b: Boletim, site = siteUrl(), tema: TemaEmail = "esc
         </p>
       </td></tr>
       <tr><td style="padding:20px 28px 26px;font:11px/1.5 Arial,sans-serif;color:${c.fraco};border-top:1px solid ${c.linha};">
-        Resumos gerados por IA toda sexta-feira às 23h, com memória das semanas anteriores. CITi Legacy · uso interno.
+        Resumos gerados por IA todo domingo às 23h, com memória das semanas anteriores. CITi Legacy · uso interno.
       </td></tr>
     </table>
   </td></tr></table>

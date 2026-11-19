@@ -60,7 +60,7 @@ npm run banco:resumos -- --so-regras   # refaz só os que caíram no resumo auto
 Os resumos são gerados **fora da visita** e guardados no banco. A tela só lê, sem chamar a IA.
 
 - **Projeto em andamento: resumo semanal.**
-  - Toda **sexta-feira às 23h**, a **Vercel Cron** chama `/api/cron/resumos`, rota protegida por `CRON_SECRET`.
+  - Todo **domingo às 23h** (e às 23h30 para os pendentes), a **Vercel Cron** chama `/api/cron/resumos`, rota protegida por `CRON_SECRET`. Assim o boletim e os slides ficam prontos para a **reunião da diretoria na segunda**.
   - O contexto é **a semana** (commits daqueles 7 dias, mais tasks, prazos e alertas atuais) e os **resumos das semanas anteriores**, com a instrução de **não repetir** o que já foi dito.
   - A Visão geral mostra a semana mais recente e o **histórico das semanas anteriores**.
 - **Projeto concluído: resumo final**, gerado **uma única vez** e mantido fixo.
@@ -97,13 +97,13 @@ Em Projetos, o botão **Boletim da semana (PDF)** abre `/exportar/boletim`, no m
 - um bloco por projeto em andamento, com status, progresso, prazo, alertas e o resumo da IA. Os atrasados vêm primeiro;
 - no fim, a lista dos concluídos.
 
-Os dados do boletim são montados em `lib/boletim.ts`, que também serve ao e-mail de sexta-feira.
+Os dados do boletim são montados em `lib/boletim.ts`, que também serve ao e-mail de domingo.
 
 O botão **Salvar como PDF** abre a janela de impressão do navegador. O nome do arquivo sugerido é o título da página (`Resumo · <projeto> · CITi Legacy`).
 
 ## Boletim por e-mail
 
-Toda sexta-feira, depois de gerar os resumos, o cron envia o boletim por e-mail pelo **Resend**, chamando a API HTTP sem biblioteca (`lib/email.ts`). O e-mail tem o mesmo conteúdo do PDF, num HTML com estilos embutidos, links para cada projeto e um botão "Ver o boletim em PDF".
+Todo domingo, depois de gerar os resumos, o cron envia o boletim por e-mail pelo **Resend**, chamando a API HTTP sem biblioteca (`lib/email.ts`). O e-mail tem o mesmo conteúdo do PDF, num HTML com estilos embutidos, links para cada projeto e um botão "Ver o boletim em PDF".
 
 - **Variáveis:** `RESEND_API_KEY` e `BOLETIM_PARA` (destinatários, separados por vírgula). Sem elas, o envio é pulado e o cron só registra o motivo.
 - **Sem domínio próprio:** o remetente é `onboarding@resend.dev`, que só envia para o e-mail da conta Resend. Em produção, basta verificar o domínio da empresa no Resend e definir `BOLETIM_DE` (ex.: `CITi Legacy <legacy@dominio>`) e `BOLETIM_PARA`, sem mudar o código.
@@ -154,7 +154,7 @@ Cada etapa tem uma lista de **tasks**. O **progresso da etapa é a fração de t
   - **em andamento** no resto;
   - além disso, ela fica **parada** quando passa 14 dias ou mais sem commits sem estar concluída.
 - **Projeto:** **concluído** (entregue), **atrasado** (passou do fim previsto) ou **em andamento**.
-  - Marcar a **última task** conclui o projeto: ele passa para a aba Concluídos, com entrega na data de hoje. O resumo final sai na sexta-feira seguinte, quando o cron roda.
+  - Marcar a **última task** conclui o projeto: ele passa para a aba Concluídos, com entrega na data de hoje. O resumo final sai no domingo seguinte, quando o cron roda.
   - Desmarcar uma task de um projeto concluído assim **reabre** o projeto e descarta o resumo final, se já existir.
   - Os projetos históricos, que foram concluídos sem passar pelas tasks, ficam com as tasks travadas.
 - **Progresso do projeto:** a média do progresso das etapas, que vem das tasks concluídas.

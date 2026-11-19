@@ -145,7 +145,7 @@ export async function sincronizarRepositorio(projetoId: string): Promise<{ mensa
 }
 
 /**
- * Envia agora o boletim semanal por e-mail (o mesmo do cron de sexta), para BOLETIM_PARA.
+ * Envia agora o boletim semanal por e-mail (o mesmo do cron de domingo), para BOLETIM_PARA.
  * Os destinatários vêm só da configuração do servidor; a tela não escolhe para quem enviar.
  * O e-mail sai no tema escolhido na tela do boletim (claro ou escuro).
  */

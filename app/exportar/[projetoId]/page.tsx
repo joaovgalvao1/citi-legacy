@@ -102,7 +102,7 @@ async function Documento({ params }: { params: PageProps<"/exportar/[projetoId]"
               <Secoes resumo={principal} />
             ) : (
               <p className="text-[11px] text-(--f-suave)">
-                {concluido ? "O resumo final é gerado na sexta-feira, às 23h." : "O primeiro resumo semanal sai na próxima sexta-feira."}
+                {concluido ? "O resumo final é gerado no domingo, às 23h." : "O primeiro resumo semanal sai no próximo domingo."}
               </p>
             )}
           </div>
@@ -140,7 +140,7 @@ async function Documento({ params }: { params: PageProps<"/exportar/[projetoId]"
           <span>
             {principal ? `${ROTULO_FONTE[principal.fonte]}${principal.modelo ? ` (${principal.modelo})` : ""}` : "Resumos gerados por IA"}
             {" · "}
-            {concluido ? "gerado uma vez, ao concluir o projeto" : "gerado toda sexta-feira às 23h, com memória das semanas anteriores"}
+            {concluido ? "gerado uma vez, ao concluir o projeto" : "gerado todo domingo às 23h, com memória das semanas anteriores"}
           </span>
           <span>CITi Legacy · uso interno</span>
         </footer>

@@ -5,7 +5,7 @@
 
 import { useState, useTransition } from "react";
 import { marcarReuniao } from "@/app/acoes";
-import { DURACOES, proximoDiaUtil, validarConvite, type Convite } from "@/lib/convite";
+import { DURACOES, proximaSegunda, validarConvite, type Convite } from "@/lib/convite";
 import { Dialogo } from "@/components/ui/dialogo";
 
 const campo =
@@ -28,7 +28,7 @@ export function MarcarReuniao({
   aoFechar: () => void;
   aoMarcar: (r: Marcada) => void;
 }) {
-  const [c, setC] = useState<Convite>(() => ({ data: proximoDiaUtil(hoje), hora: "14:00", duracao: 60, local: "", recado: "" }));
+  const [c, setC] = useState<Convite>(() => ({ data: proximaSegunda(hoje), hora: "14:00", duracao: 60, local: "", recado: "" }));
   const [erro, setErro] = useState("");
   const [para, setPara] = useState<string[]>(() => destinatarios);
   const [enviando, iniciar] = useTransition();

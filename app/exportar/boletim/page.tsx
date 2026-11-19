@@ -129,7 +129,7 @@ async function Documento() {
         )}
 
         <footer className="mt-9 flex flex-wrap items-center justify-between gap-2 border-t border-(--f-borda) pt-3 text-[9px] text-(--f-fraco)">
-          <span>Resumos gerados por IA toda sexta-feira às 23h, com memória das semanas anteriores</span>
+          <span>Resumos gerados por IA todo domingo às 23h, com memória das semanas anteriores</span>
           <span>CITi Legacy · uso interno</span>
         </footer>
       </article>

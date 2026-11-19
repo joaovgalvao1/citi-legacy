@@ -187,7 +187,7 @@ export function VisaoGeral({ projeto: original, resumo }: { projeto: Projeto; re
         {pedido?.tipo === "concluir" ? (
           <p>
             Esta é a última task de <b className="text-branco">{projeto.nome}</b>. Marcá-la conclui o projeto com entrega hoje, e o resumo final da
-            IA é gerado na próxima sexta-feira.
+            IA é gerado no próximo domingo.
           </p>
         ) : (
           <p>

@@ -18,10 +18,10 @@ const DIAS = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
 const meioDia = (iso: string) => new Date(`${iso}T12:00:00Z`);
 const somar = (iso: string, dias: number) => new Date(meioDia(iso).getTime() + dias * 86400000).toISOString().slice(0, 10);
 
-/** Próximo dia útil depois de hoje (sugestão de data). */
-export function proximoDiaUtil(hoje: string) {
+/** Próxima segunda-feira depois de hoje (sugestão de data): o boletim sai no domingo à noite. */
+export function proximaSegunda(hoje: string) {
   let d = somar(hoje, 1);
-  while ([0, 6].includes(meioDia(d).getUTCDay())) d = somar(d, 1);
+  while (meioDia(d).getUTCDay() !== 1) d = somar(d, 1);
   return d;
 }
 

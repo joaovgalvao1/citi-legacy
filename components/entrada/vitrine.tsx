@@ -267,7 +267,7 @@ export function MiniEmail() {
     <div className="rounded-lg border border-branco/12 bg-fundo p-3 text-[11px]">
       <div className="flex items-center gap-2 text-gray-500">
         <IconeEmail className="h-3.5 w-3.5 text-verde" />
-        <span className="truncate">Reunião da diretoria · sexta, 10h</span>
+        <span className="truncate">Reunião da diretoria · segunda, 14h</span>
       </div>
       <div className="mt-2 space-y-1">
         <div className="h-1.5 w-11/12 rounded-full bg-branco/10" />

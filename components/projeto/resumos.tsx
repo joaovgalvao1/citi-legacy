@@ -86,7 +86,7 @@ export function ResumosDoProjeto({ projetoId, resumos, concluido }: { projetoId:
         </div>
         <div className="flex items-center gap-3">
           <span className="text-xs text-gray-500">
-            {concluido ? "Gerado uma vez, ao concluir o projeto" : "Gerado toda sexta-feira às 23h"}
+            {concluido ? "Gerado uma vez, ao concluir o projeto" : "Gerado todo domingo às 23h"}
           </span>
           <Link
             href={`/exportar/${projetoId}`}
@@ -105,7 +105,7 @@ export function ResumosDoProjeto({ projetoId, resumos, concluido }: { projetoId:
         </div>
       ) : (
         <p className="text-sm text-gray-500">
-          {concluido ? "O resumo final é gerado na sexta-feira, às 23h." : "O primeiro resumo semanal sai na próxima sexta-feira."}
+          {concluido ? "O resumo final é gerado no domingo, às 23h." : "O primeiro resumo semanal sai no próximo domingo."}
         </p>
       )}
 

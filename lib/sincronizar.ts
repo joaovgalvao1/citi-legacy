@@ -1,6 +1,6 @@
 // Sincronização de um projeto com o repositório no GitHub: traz os commits novos e grava no banco,
 // prontos para o IC, a participação, o calendário, a previsão e o resumo da IA.
-// Usada pelo botão "Sincronizar com o GitHub", pelo webhook (a cada push) e pelo cron de sexta.
+// Usada pelo botão "Sincronizar com o GitHub", pelo webhook (a cada push) e pelo cron de domingo.
 //
 // Regras:
 //   · autor   o commit é ligado ao membro pelo usuário do GitHub cadastrado no perfil; commits de

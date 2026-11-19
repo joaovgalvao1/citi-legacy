@@ -1388,3 +1388,21 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - **Sincronização:** com o novo `npm run banco:sincronizar -- [projetoId]` (`scripts/sincronizar.ts`), mais 10 commits novos vieram do GitHub, totalizando 59.
 - **Cache do site:** o próximo push dispara o webhook, que atualiza o cache dos dados no site (antes do projeto existir no Neon, o webhook não tinha a que se ligar).
 - **Resumos da semana 16/11 no Neon:** no site, só o CITi Legacy tinha o resumo da semana nova; os outros 4 projetos em andamento estavam com o de 09/11, porque os resumos gerados pela IA na noite de 18/11 só foram gravados no banco local. Os 4 foram copiados para o Neon (só inserção, sem nova chamada à IA). O cache do site se renova sozinho em algumas horas.
+
+### Resumos no domingo, reunião na segunda (19/11)
+
+**O que pedi:** mudar a geração dos resumos de sexta para domingo, para a reunião da diretoria poder acontecer na segunda, e revisar todas as datas do código.
+
+**O que a IA fez:**
+- **Cron** (`vercel.json`): de sábado 02h/02h30 UTC (sexta 23h/23h30 em Recife) para segunda 02h/02h30 UTC (**domingo 23h/23h30 em Recife**). Agora o resumo cobre a semana inteira, de segunda a domingo; antes, os commits de sábado e domingo ficavam de fora.
+- **Bug evitado na semana do resumo:**
+  - **Problema:** o cron calculava a semana pela data UTC. Domingo 23h em Recife já é segunda em UTC, então o resumo seria gravado para a semana nova, que ainda está vazia.
+  - **Correção:** a semana agora é calculada pelo horário de Recife.
+  - **Simulação:** a execução de 23/11 02h UTC cai na semana de 16/11.
+- **Convite da reunião:** a data sugerida passou de "próximo dia útil" para **a próxima segunda** (`proximaSegunda`).
+- **Textos** trocados de sexta para domingo ou segunda:
+  - página inicial (o selo da IA, "Tudo o que a diretoria precisa **na segunda.**", "Chegue pronto na segunda", "domingo · 23h", a mini ilustração do convite "segunda, 14h");
+  - avisos de "o primeiro resumo sai no próximo domingo" (visão geral, resumos, PDF do projeto);
+  - rodapé do boletim (PDF e e-mail);
+  - comentários do código e README.
+- **Sem mudança:** a semana de segunda a domingo e a escolha da semana mais recente com resumo para o painel e o boletim. Na segunda, a reunião mostra a semana que acabou de fechar.

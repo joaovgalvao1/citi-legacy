@@ -1,5 +1,5 @@
 // Boletim semanal da empresa: o resumo da semana de todos os projetos em andamento.
-// Montado uma vez e usado pelo PDF (/exportar/boletim) e pelo e-mail de sexta-feira.
+// Montado uma vez e usado pelo PDF (/exportar/boletim) e pelo e-mail de domingo (pauta da reunião de segunda).
 
 import type { Commit, Projeto, Resumo } from "@/data";
 import { alertas, diasParada, nivelProjeto, progressoProjeto, statusProjeto, textoPrazo, type StatusProjeto } from "./status";

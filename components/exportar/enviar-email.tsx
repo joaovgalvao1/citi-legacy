@@ -1,6 +1,6 @@
 "use client";
 
-// Botão "Enviar por e-mail" do boletim: envia agora o mesmo e-mail do cron de sexta,
+// Botão "Enviar por e-mail" do boletim: envia agora o mesmo e-mail do cron de domingo,
 // no tema (claro ou escuro) escolhido na barra da página.
 
 import { useState, useTransition } from "react";

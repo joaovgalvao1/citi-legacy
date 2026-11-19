@@ -119,7 +119,7 @@ export default async function Entrada() {
             </p>
             <p className="max-w-lg text-gray-600">
               Progresso, previsão de entrega, quem sabe o quê e o resumo da semana feito pela IA. Tudo direto dos commits do GitHub, para a
-              diretoria decidir na sexta e para quem entra amanhã.
+              diretoria decidir na reunião de segunda e para quem entra amanhã.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link href="/login" className={botaoPrincipal}>
@@ -135,7 +135,7 @@ export default async function Entrada() {
                 <IconeGithub className="h-3.5 w-3.5 text-verde" /> Conectado ao GitHub
               </li>
               <li className="inline-flex items-center gap-1.5">
-                <IconeIA className="h-3.5 w-3.5 text-roxo" /> Resumo com IA toda sexta
+                <IconeIA className="h-3.5 w-3.5 text-roxo" /> Resumo com IA todo domingo
               </li>
               <li className="inline-flex items-center gap-1.5">
                 <IconeExportar className="h-3.5 w-3.5 text-verde" /> Modo reunião em PDF
@@ -175,7 +175,7 @@ export default async function Entrada() {
 
       {/* ---------- recursos ---------- */}
       <section id="recursos" className="mx-auto max-w-6xl scroll-mt-24 px-4 py-20">
-        <Titulo rotulo="O que faz" fino="Tudo o que a diretoria precisa" destaque="numa sexta.">
+        <Titulo rotulo="O que faz" fino="Tudo o que a diretoria precisa" destaque="na segunda.">
           Do “como está cada projeto?” ao “quem sabe mexer nisso?”, sem planilha e sem perguntar no grupo.
         </Titulo>
         <ul className="mt-10 grid gap-4 lg:grid-cols-6">
@@ -192,7 +192,7 @@ export default async function Entrada() {
             ia
             icone={IconeIA}
             titulo="Resumo semanal com IA"
-            texto="Toda sexta, a IA lê a semana de cada projeto e escreve o que andou, o que travou e o que fazer primeiro."
+            texto="Todo domingo, a IA lê a semana de cada projeto e escreve o que andou, o que travou e o que fazer primeiro."
           >
             <MiniIA />
           </Recurso>
@@ -224,7 +224,7 @@ export default async function Entrada() {
             className="lg:col-span-6"
             icone={IconeGithub}
             titulo="Conectado ao repositório"
-            texto="Vincule o repositório do GitHub ao projeto e pronto: cada push chega pelo webhook, e o cron de sexta garante que nada fique de fora."
+            texto="Vincule o repositório do GitHub ao projeto e pronto: cada push chega pelo webhook, e o cron de domingo garante que nada fique de fora."
           >
             <FluxoGithub />
           </Recurso>
@@ -248,9 +248,9 @@ export default async function Entrada() {
                 codigo: "github.com/citi/projeto",
               },
               {
-                titulo: "Receba a sexta pronta",
+                titulo: "Chegue pronto na segunda",
                 texto: "Resumo da IA, boletim por e-mail e slides da reunião, todo fim de semana.",
-                codigo: "sexta · 23h · resumo + boletim",
+                codigo: "domingo · 23h · resumo + boletim",
               },
             ].map((p, i) => (
               <li key={p.titulo} className="relative rounded-2xl border border-linha bg-fundo p-6">
