@@ -1124,3 +1124,31 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - **Código compartilhado:** a lógica das prioridades e da frase principal foi para `lib/reuniao.ts`, usada pela apresentação e pelo e-mail. O envio pelo Resend virou uma função comum (`enviarEmail`) para o boletim e a reunião.
 
 **Verificação:** conferi o HTML do e-mail no navegador e fiz um envio real pelo botão: "Enviado para jv***@cin.ufpe.br."
+
+### Marcar reunião com convite e link da agenda (19/11)
+
+**O que pedi:** que o envio por e-mail da apresentação virasse "marcar a reunião": uma janela com data e horário e, se possível, conexão com a agenda.
+
+**Decisão:**
+- **Opções:** a IA propôs anexar o convite padrão (.ics) e o link "Adicionar ao Google Agenda". A integração oficial com o Google Calendar ficou de fora: exige login com Google e autorização revisada pelo Google, sem tempo para isso hoje.
+- **Escolha:** pedi **só o link** do Google Agenda.
+
+**O que a IA fez:**
+- **Botão "Marcar reunião"**, no lugar de "Enviar por e-mail", abre uma janela com:
+  - data (sugestão: o próximo dia útil) e horário (sugestão: 14h);
+  - duração (30 min, 1h ou 1h30);
+  - local ou link e recado, opcionais;
+  - os destinatários com o e-mail parcialmente oculto.
+- **Convite por e-mail:**
+  - assunto "Convite: Reunião da diretoria · sex 20/11, 14h00";
+  - bloco "Você foi convidado" com data, horário, local, recado e o botão **"Adicionar ao Google Agenda"**;
+  - embaixo, a pauta da semana (indicadores, panorama e prioridades) e o link da apresentação.
+- **Para quem marcou:** a tela mostra a confirmação e o mesmo link da agenda.
+- **Link da agenda:** abre o Google Agenda com o evento preenchido (título, horário de Recife, local e o link da apresentação), sem login nem permissão especial.
+- **Atalhos:** com a janela aberta, os atalhos da apresentação ficam desligados. Sem isso, digitar "p" no recado abriria a impressão.
+- **Código:** a lógica do convite (validação, textos de data e link da agenda) está em `lib/convite.ts`.
+
+**Verificação no navegador:**
+- **Janela:** abriu com 20/11 às 14h e 1h. Preenchi local e recado; os "p" digitados não dispararam a impressão.
+- **Envio:** um convite real foi enviado: "Convite para sex, 20/11 · 14h00 às 15h00 enviado para jv***@cin.ufpe.br."
+- **Link da agenda:** saiu com `dates=20261120T140000/20261120T150000`, `ctz=America/Recife` e o local.

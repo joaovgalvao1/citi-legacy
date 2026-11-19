@@ -13,6 +13,7 @@
 import type { Projeto } from "@/data";
 import type { Boletim } from "./boletim";
 import { prioridadesDaSemana } from "./reuniao";
+import { linkGoogleAgenda, textoCurto, textoQuando, type Convite } from "./convite";
 
 export type TemaEmail = "claro" | "escuro";
 
@@ -193,16 +194,37 @@ export function enviarBoletim(b: Boletim, tema: TemaEmail = "escuro") {
 
 /* ---------- e-mail da reunião da diretoria ---------- */
 
-export function assuntoReuniao(b: Boletim) {
-  return `Reunião da diretoria · semana ${ddmm(b.semana)} a ${ddmm(b.fimSemana)}`;
+export function assuntoReuniao(b: Boletim, convite?: Convite) {
+  return convite
+    ? `Convite: Reunião da diretoria · ${textoCurto(convite)}`
+    : `Reunião da diretoria · semana ${ddmm(b.semana)} a ${ddmm(b.fimSemana)}`;
+}
+
+/** Título e descrição do evento na agenda. */
+export function eventoReuniao(b: Boletim, site = siteUrl()) {
+  return {
+    titulo: `Reunião da diretoria · semana ${ddmm(b.semana)} a ${ddmm(b.fimSemana)}`,
+    detalhes: `Pauta e apresentação no CITi Legacy: ${site}/reuniao`,
+  };
 }
 
 /**
- * E-mail da reunião (tema escuro, como a apresentação): indicadores, panorama dos projetos,
+ * E-mail da reunião (tema escuro, como a apresentação). Com `convite`, abre com a data, o horário,
+ * o local, o recado e o botão "Adicionar ao Google Agenda". Depois: indicadores, panorama dos projetos,
  * prioridades da semana com os responsáveis e o link para abrir a apresentação.
  */
-export function htmlReuniao(b: Boletim, projetos: Projeto[], site = siteUrl()) {
+export function htmlReuniao(b: Boletim, projetos: Projeto[], site = siteUrl(), convite?: Convite) {
   const c = PALETAS.escuro;
+  const evento = eventoReuniao(b, site);
+  const blocoConvite = convite
+    ? `<div style="margin:18px 0 6px;border:1px solid ${c.verdeMarca};border-radius:12px;padding:16px 18px;background:#0d2417;">
+        <div style="font:700 10px Arial,sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:${c.verde};">Você foi convidado</div>
+        <div style="margin-top:6px;font:700 20px Arial,sans-serif;color:${c.texto};">${esc(textoQuando(convite))}</div>
+        ${convite.local.trim() ? `<div style="margin-top:4px;font:13px Arial,sans-serif;color:${c.texto2};">Local: ${esc(convite.local.trim())}</div>` : ""}
+        ${convite.recado.trim() ? `<div style="margin-top:8px;font:13px/1.5 Arial,sans-serif;color:${c.texto2};">${esc(convite.recado.trim())}</div>` : ""}
+        <a href="${esc(linkGoogleAgenda(convite, evento.titulo, evento.detalhes))}" style="display:inline-block;margin-top:12px;background:${c.verdeMarca};color:#0a0a0a;font:700 13px Arial,sans-serif;text-decoration:none;padding:9px 18px;border-radius:99px;">Adicionar ao Google Agenda</a>
+      </div>`
+    : "";
   const cor = { verde: c.verde, ambar: c.ambar, vermelho: c.vermelho };
   const selo = { verde: c.seloVerde, ambar: c.seloAmbar, vermelho: c.seloVermelho };
   const rotulo = { verde: "No prazo", ambar: "Atenção", vermelho: "Atrasado" };
@@ -238,7 +260,7 @@ export function htmlReuniao(b: Boletim, projetos: Projeto[], site = siteUrl()) {
     .join("");
 
   return `<!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"><title>${esc(assuntoReuniao(b))}</title></head>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"><title>${esc(assuntoReuniao(b, convite))}</title></head>
 <body style="margin:0;background:${c.pagina};padding:24px 12px;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:${c.pagina};"><tr><td align="center">
     <table width="640" cellpadding="0" cellspacing="0" style="max-width:640px;width:100%;background:${c.card};border-radius:14px;border:1px solid ${c.borda};">
@@ -249,6 +271,7 @@ export function htmlReuniao(b: Boletim, projetos: Projeto[], site = siteUrl()) {
         </tr></table>
         <h1 style="margin:22px 0 6px;font:300 26px Arial,sans-serif;color:${c.texto};">Semana de <b style="font-weight:700;">${ddmm(b.semana)} a ${ddmm(b.fimSemana)}.</b></h1>
         <p style="margin:0 0 16px;font:13px/1.5 Arial,sans-serif;color:${c.suave};">A pauta da reunião semanal, montada com os dados dos projetos e os resumos da IA.</p>
+        ${blocoConvite}
         <table width="100%" cellpadding="0" cellspacing="0"><tr>
           ${numero(b.numeros.andamento, "projetos em andamento")}${numero(b.numeros.atrasados, "atrasados no momento", c.vermelho)}${numero(b.numeros.tasksSemana, "tasks entregues")}${numero(b.numeros.commitsSemana, "commits na semana", c.verdeMarca)}
         </tr></table>
@@ -270,8 +293,8 @@ export function htmlReuniao(b: Boletim, projetos: Projeto[], site = siteUrl()) {
 }
 
 /** Envia o e-mail da reunião da diretoria. */
-export function enviarReuniao(b: Boletim, projetos: Projeto[]) {
-  return enviarEmail(assuntoReuniao(b), htmlReuniao(b, projetos));
+export function enviarReuniao(b: Boletim, projetos: Projeto[], convite?: Convite) {
+  return enviarEmail(assuntoReuniao(b, convite), htmlReuniao(b, projetos, siteUrl(), convite));
 }
 
 /** Destinatários com o e-mail parcialmente oculto, para mostrar na tela ("jv***@cin.ufpe.br"). */

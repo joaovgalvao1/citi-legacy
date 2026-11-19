@@ -13,6 +13,7 @@ import { statusEtapa, tomSegmentoEtapa } from "@/lib/status";
 import { corDoMembro } from "@/components/graficos/cores";
 import { GanttCompacto } from "@/components/projeto/gantt";
 import { Apresentacao } from "@/components/reuniao/apresentacao";
+import { destinatariosMascarados } from "@/lib/email";
 
 /** Dados da reunião: os projetos e o boletim da semana (a mesma do painel e dos resumos). */
 async function carregarReuniao() {
@@ -225,5 +226,12 @@ export default async function Reuniao() {
     </div>
   );
 
-  return <Apresentacao data={ddmm(b.hoje)} slides={[capa, panorama, ...porProjeto, slidePrioridades]} />;
+  return (
+    <Apresentacao
+      data={ddmm(b.hoje)}
+      hoje={b.hoje}
+      destinatarios={destinatariosMascarados()}
+      slides={[capa, panorama, ...porProjeto, slidePrioridades]}
+    />
+  );
 }

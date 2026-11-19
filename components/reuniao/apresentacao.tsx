@@ -6,11 +6,11 @@
 // como num programa de apresentação: nada se desalinha em telas menores ou maiores.
 // Exportar PDF: a impressão mostra todos os slides, um por página de 1280 × 720 (ver globals.css).
 
-import { useCallback, useEffect, useRef, useState, useTransition, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { Lockup } from "@/components/layout/marca";
 import { IconeEmail, IconeExportar } from "@/components/ui/icones";
-import { enviarReuniaoAgora } from "@/app/acoes";
+import { MarcarReuniao, type Marcada } from "./marcar";
 
 /** Um slide na tela fixa de 1280 × 720: brilho, topo (data e posição), conteúdo, marca e progresso. */
 function Slide({ children, indice, total, data, fade = false }: { children: ReactNode; indice: number; total: number; data: string; fade?: boolean }) {
@@ -44,9 +44,22 @@ function Slide({ children, indice, total, data, fade = false }: { children: Reac
   );
 }
 
-export function Apresentacao({ slides, data }: { slides: ReactNode[]; data: string }) {
+export function Apresentacao({
+  slides,
+  data,
+  hoje,
+  destinatarios,
+}: {
+  slides: ReactNode[];
+  data: string;
+  hoje: string;
+  destinatarios: string;
+}) {
   const router = useRouter();
   const [i, setI] = useState(0);
+  // marcar a reunião: janela com data e horário; o convite vai por e-mail
+  const [marcando, setMarcando] = useState(false);
+  const [marcada, setMarcada] = useState<Marcada | null>(null);
   const moldura = useRef<HTMLDivElement>(null);
   const [escala, setEscala] = useState(1);
   useEffect(() => {
@@ -68,6 +81,8 @@ export function Apresentacao({ slides, data }: { slides: ReactNode[]; data: stri
 
   useEffect(() => {
     function tecla(e: KeyboardEvent) {
+      // com a janela de marcar aberta (ou digitando num campo), os atalhos da apresentação ficam desligados
+      if (marcando || (e.target as HTMLElement).closest?.("input, textarea, select, dialog")) return;
       if (["ArrowRight", "PageDown", " "].includes(e.key)) {
         e.preventDefault();
         ir(i + 1);
@@ -83,17 +98,9 @@ export function Apresentacao({ slides, data }: { slides: ReactNode[]; data: stri
     }
     window.addEventListener("keydown", tecla);
     return () => window.removeEventListener("keydown", tecla);
-  }, [i, ir, total, telaCheia, router]);
+  }, [i, ir, total, telaCheia, router, marcando]);
 
   const secundario = "cursor-pointer rounded-full px-4 py-2 text-branco/55 transition-colors hover:text-branco";
-
-  // enviar a pauta da reunião por e-mail (os destinatários vêm só da configuração do servidor)
-  const [enviando, iniciarEnvio] = useTransition();
-  const [envio, setEnvio] = useState<{ enviado: boolean; mensagem: string } | null>(null);
-  function enviar() {
-    setEnvio(null);
-    iniciarEnvio(async () => setEnvio(await enviarReuniaoAgora()));
-  }
 
   return (
     <>
@@ -114,12 +121,14 @@ export function Apresentacao({ slides, data }: { slides: ReactNode[]; data: stri
         <div className="flex flex-wrap items-center justify-center gap-2 text-sm">
           <button
             type="button"
-            onClick={enviar}
-            disabled={enviando}
-            className={`${secundario} inline-flex items-center gap-1.5 disabled:cursor-wait disabled:opacity-60`}
+            onClick={() => {
+              setMarcada(null);
+              setMarcando(true);
+            }}
+            className={`${secundario} inline-flex items-center gap-1.5`}
           >
             <IconeEmail className="h-4 w-4" />
-            {enviando ? "Enviando…" : "Enviar por e-mail"}
+            Marcar reunião
           </button>
           <button type="button" onClick={() => router.push("/projetos")} className={secundario}>
             Sair (Esc)
@@ -150,11 +159,26 @@ export function Apresentacao({ slides, data }: { slides: ReactNode[]; data: stri
             Exportar PDF (P)
           </button>
         </div>
-        {envio && (
-          <p role="status" className={`-mt-1 text-xs ${envio.enviado ? "text-verde" : "text-ambar"}`}>
-            {envio.mensagem}
+        {marcada && (
+          <p role="status" className="-mt-1 flex flex-wrap items-center justify-center gap-x-3 text-xs text-verde">
+            {marcada.mensagem}
+            {marcada.agenda && (
+              <a href={marcada.agenda} target="_blank" rel="noreferrer" className="font-semibold underline underline-offset-2 hover:text-branco">
+                Adicionar ao Google Agenda ↗
+              </a>
+            )}
           </p>
         )}
+        <MarcarReuniao
+          aberto={marcando}
+          hoje={hoje}
+          destinatarios={destinatarios}
+          aoFechar={() => setMarcando(false)}
+          aoMarcar={(r) => {
+            setMarcando(false);
+            setMarcada(r);
+          }}
+        />
       </div>
 
       {/* página 16:9 sem margem e fundo escuro, só enquanto a apresentação está aberta
