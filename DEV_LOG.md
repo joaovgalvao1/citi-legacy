@@ -1802,3 +1802,17 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
   - **Causa:** cada card de projeto não podia ser dividido entre páginas. Quando o próximo não cabia inteiro, pulava para a página seguinte e deixava um vão.
   - **Correção:** o card pode continuar na página seguinte, com a borda repetida (`box-decoration-break: clone`), e só o bloco do resumo da IA nunca é dividido.
   - **Verificação:** PDF gerado pela rota do servidor, com os projetos em sequência e sem vãos grandes.
+
+### Documentação do desafio (19/11)
+
+**O que pedi:** montar a documentação.
+
+**O que a IA fez:**
+- **`DOCUMENTACAO.md`** a partir do DEV_LOG, do README e do código, com 6 seções:
+  1. o produto (o que é, o que resolve, para quem);
+  2. as funcionalidades, tela por tela;
+  3. como funciona por dentro (do push ao painel, regras de progresso, status, IC e previsão, rotina de domingo);
+  4. a tecnologia, os cuidados de segurança e desempenho, como rodar e os dados do protótipo;
+  5. o uso de IA no produto e no desenvolvimento: como trabalhamos, as decisões que foram minhas, os problemas que a IA investigou, onde errou e como foi corrigido, e a divisão do trabalho;
+  6. limitações e próximos passos.
+- **README:** o topo agora aponta para a documentação e usa o slogan atual.

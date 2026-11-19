@@ -1,6 +1,8 @@
 # CITi Legacy
 
-> Todo projeto deixa um legado. Quem chega não começa do zero.
+> Todos os projetos do CITi, acompanhados semana a semana.
+
+📄 **Documentação completa do produto, da tecnologia e do uso de IA: [`DOCUMENTACAO.md`](DOCUMENTACAO.md).** Registro detalhado de cada etapa com IA: [`DEV_LOG.md`](DEV_LOG.md).
 
 Protótipo para o desafio **Inovação no PS** do CITi. O CITi Legacy é um **visualizador interno de todos os projetos da empresa**, em andamento e concluídos.
 
