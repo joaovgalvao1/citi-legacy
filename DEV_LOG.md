@@ -1559,3 +1559,24 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
   - quem passa de 3 membros ("+N") aparece listado na dica do "+N".
 - **Verificação:** a foto do João Vitor (joaovgalvao1) aparece ao passar o mouse no card do CITi Legacy.
 - **Foto sempre visível:** pedi a foto como padrão, sem precisar passar o mouse. Os avatares saíram do bloco de detalhes e foram para a linha do pulso, sempre visíveis, também no destaque. Quem tem GitHub cadastrado aparece com a foto, e os outros com as iniciais.
+
+### Fundos trocados e foto que leva ao perfil (19/11)
+
+**O que pedi:** aplicar os fundos sugeridos (ramificações em Projetos e órbitas em Membros) e fazer o clique na foto do membro, no card do projeto, levar ao perfil dele.
+
+**O que a IA fez:**
+- **Projetos:**
+  - as ramificações de commits ficam atrás do cabeçalho, descem do canto direito e somem antes dos cards (máscara em degradê);
+  - substituíram a órbita, que aparecia cortada.
+- **Membros, modo Roda:**
+  - as órbitas ficam concêntricas com a roda, dentro do card dela, e dão a impressão de que a roda continua pelo fundo;
+  - o anel mais interno e o ponto central saem (nova opção `centro={false}` em `Orbitas`), para não passar por cima do cartão do meio.
+- **Membros, modo Lista:** uma órbita discreta atrás do topo da grade, à direita.
+- **Perfil do membro:** sem fundo, porque a órbita de colaboração já está lá.
+- **Foto que leva ao perfil:**
+  - clicar (ou apertar Enter) na foto ou nas iniciais de um membro, no card do projeto, abre o perfil dele, sem abrir o projeto;
+  - a dica mostra "Nome · ver perfil", e o círculo cresce ao passar o mouse ou focar.
+
+**Verificação:**
+- **Desktop (1280 px):** clicar no avatar de Otávio Neves abriu `/membros/otavio-neves`.
+- **Celular (375 px):** roda e fundos sem rolagem lateral.

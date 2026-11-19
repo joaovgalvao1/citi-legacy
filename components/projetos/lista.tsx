@@ -5,7 +5,8 @@
 // etapas e prazo aparecem ao passar o mouse (sempre visíveis em telas de toque).
 // No topo, o projeto atrasado mais grave ganha o destaque "Precisa de você agora", com o resumo da IA.
 
-import { useState } from "react";
+import { useState, type KeyboardEvent, type MouseEvent } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 type Tom = "verde" | "ambar" | "vermelho";
@@ -91,17 +92,31 @@ function FotoGithub({ github, nome }: { github: string; nome: string }) {
   );
 }
 
-/** Até 3 membros da equipe (foto do GitHub, ou as iniciais); o resto vira "+N". */
+/** Até 3 membros da equipe (foto do GitHub, ou as iniciais); o resto vira "+N".
+ *  O card inteiro é um link para o projeto; clicar num membro leva ao perfil dele (sem abrir o projeto). */
 function Avatares({ membros }: { membros: ResumoProjeto["membros"] }) {
+  const router = useRouter();
   const visiveis = membros.slice(0, 3);
   const resto = membros.length - visiveis.length;
+  const abrir = (e: MouseEvent | KeyboardEvent, id: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    router.push(`/membros/${id}`);
+  };
   return (
     <div className="flex shrink-0 -space-x-2">
       {visiveis.map((m) => (
         <span
           key={m.id}
-          title={m.nome}
-          className="dado relative flex h-6 w-6 items-center justify-center rounded-full border-2 border-white text-[9px] font-semibold text-fundo transition-transform duration-200 hover:z-10 hover:scale-150"
+          role="link"
+          tabIndex={0}
+          title={`${m.nome} · ver perfil`}
+          aria-label={`Ver perfil de ${m.nome}`}
+          onClick={(e) => abrir(e, m.id)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") abrir(e, m.id);
+          }}
+          className="dado relative flex h-6 w-6 cursor-pointer items-center justify-center rounded-full border-2 border-white text-[9px] font-semibold text-fundo transition-transform duration-200 outline-none hover:z-10 hover:scale-150 focus-visible:z-10 focus-visible:scale-150 focus-visible:ring-2 focus-visible:ring-verde"
           style={{ backgroundColor: m.cor }}
         >
           {m.iniciais}

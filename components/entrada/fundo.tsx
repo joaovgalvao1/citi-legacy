@@ -69,8 +69,21 @@ function useVisivel<T extends HTMLElement>() {
   return { ref, visivel };
 }
 
-export function Orbitas({ id, className = "", brilho = 0.22 }: { id: string; className?: string; brilho?: number }) {
+export function Orbitas({
+  id,
+  className = "",
+  brilho = 0.22,
+  centro = true,
+}: {
+  id: string;
+  className?: string;
+  brilho?: number;
+  /** Ponto verde no centro (sem ele quando há conteúdo no meio, como na roda de membros). */
+  centro?: boolean;
+}) {
   const { ref, visivel } = useVisivel<HTMLDivElement>();
+  // com conteúdo no meio (centro=false), o anel mais interno sai para não passar por cima dele
+  const aneis = centro ? ANEIS : ANEIS.slice(1);
   return (
     <div
       ref={ref}
@@ -88,7 +101,7 @@ export function Orbitas({ id, className = "", brilho = 0.22 }: { id: string; cla
           </radialGradient>
         </defs>
         <circle cx="500" cy="500" r="500" fill={`url(#brilho-${id})`} />
-        {ANEIS.map((anel) => (
+        {aneis.map((anel) => (
           <circle
             key={anel.r}
             cx="500"
@@ -102,10 +115,10 @@ export function Orbitas({ id, className = "", brilho = 0.22 }: { id: string; cla
             vectorEffect="non-scaling-stroke"
           />
         ))}
-        <circle cx="500" cy="500" r="14" fill="#00DB58" fillOpacity="0.9" />
+        {centro && <circle cx="500" cy="500" r="14" fill="#00DB58" fillOpacity="0.9" />}
       </svg>
       {/* parte que gira: só as pessoas, uma camada por anel */}
-      {ANEIS.map((anel) => (
+      {aneis.map((anel) => (
         <div key={anel.r} className={`giro-fundo absolute inset-0 ${anel.reverso ? "anima-girar-reverso" : "anima-girar"}`}>
           {anel.pessoas.map((p) => {
             const t = (p.a * Math.PI) / 180;

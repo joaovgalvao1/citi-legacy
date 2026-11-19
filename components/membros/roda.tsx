@@ -9,6 +9,7 @@
 
 import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
 import { AvatarMembro } from "./avatar";
+import { Orbitas } from "@/components/entrada/fundo";
 
 export type ItemRoda = {
   id: string;
@@ -31,6 +32,7 @@ export function Roda<T extends ItemRoda>({
   centro,
   aoAbrir,
   raioMin = 27,
+  fundo = false,
   dica = "Arraste, use a roda do mouse ou as setas. Clique num avatar para trazê-lo ao topo.",
 }: {
   itens: T[];
@@ -41,6 +43,8 @@ export function Roda<T extends ItemRoda>({
   aoAbrir: (item: T) => void;
   /** Raio (% do lado) de quem tem `raio` 0, o mais perto do centro. */
   raioMin?: number;
+  /** Órbitas da identidade atrás da roda, concêntricas com ela. */
+  fundo?: boolean;
   dica?: string;
 }) {
   const n = itens.length;
@@ -138,6 +142,14 @@ export function Roda<T extends ItemRoda>({
     <div className="space-y-3">
       {/* setas fora da roda: nos cantos de baixo no celular, dos lados no resto */}
       <div className="relative mx-auto max-w-[656px] sm:px-16">
+        {fundo && (
+          <Orbitas
+            id="roda"
+            brilho={0.14}
+            centro={false}
+            className="top-1/2 left-1/2 w-[190%] -translate-x-1/2 -translate-y-1/2 sm:w-[150%]"
+          />
+        )}
         <button
           type="button"
           onClick={() => girar(-1)}

@@ -17,7 +17,7 @@ import {
 } from "@/lib/status";
 import { corDoMembro } from "@/components/graficos/cores";
 import { ListaProjetos, type ResumoProjeto } from "@/components/projetos/lista";
-import { Orbitas } from "@/components/entrada/fundo";
+import { Ramificacoes } from "@/components/entrada/fundo";
 import { BotaoLink, TituloPagina } from "@/components/ui";
 
 const ddmm = (iso: string) => `${iso.slice(8, 10)}/${iso.slice(5, 7)}`;
@@ -189,13 +189,17 @@ export default async function Projetos() {
 
   return (
     <div className="relative space-y-6">
-      {/* órbitas da identidade, discretas, atrás do cabeçalho */}
+      {/* ramificações de commits atrás do cabeçalho: descem do canto direito e somem antes dos cards */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-8 right-0 h-[420px] w-full overflow-hidden"
-        style={{ zIndex: -1 }}
+        className="pointer-events-none absolute -top-10 right-0 h-[560px] w-[min(100%,680px)]"
+        style={{
+          zIndex: -1,
+          maskImage: "linear-gradient(to bottom, black 35%, transparent 95%), linear-gradient(to right, transparent, black 30%)",
+          maskComposite: "intersect",
+        }}
       >
-        <Orbitas id="projetos" brilho={0.1} className="-top-[260px] -right-[260px] w-[720px] opacity-60" />
+        <Ramificacoes className="top-0 right-[-60px] w-[680px] opacity-90" />
       </div>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <TituloPagina rotulo={`Semana de ${ddmm(semana)} a ${ddmm(fimSemana)}`} fino="Projetos" destaque="em andamento." />

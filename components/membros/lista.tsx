@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { Selo } from "@/components/ui";
 import { AvatarMembro } from "./pecas";
 import { Roda } from "./roda";
+import { Orbitas } from "@/components/entrada/fundo";
 
 export type ResumoMembro = {
   id: string;
@@ -133,8 +134,9 @@ export function ListaMembros({ membros, projetos }: { membros: ResumoMembro[]; p
       {visiveis.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-gray-400 p-6 text-center text-sm text-gray-500">Nenhum membro encontrado.</p>
       ) : modo === "roda" ? (
-        <div className="rounded-2xl border border-linha bg-white px-3 py-6 sm:px-6">
+        <div className="relative overflow-hidden rounded-2xl border border-linha bg-white px-3 py-6 sm:px-6">
           <Roda
+            fundo
             key={`${aba}-${projetoId}-${termo}`}
             itens={visiveis.map((m) => ({ ...m, apagado: !!m.saiuEm }))}
             rotulo={aba === "empresa" ? "Roda dos membros na empresa" : "Roda de quem já saiu"}
@@ -143,46 +145,52 @@ export function ListaMembros({ membros, projetos }: { membros: ResumoMembro[]; p
           />
         </div>
       ) : (
-        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {visiveis.map((m) => {
-            const { cargo, ic } = contexto(m, projetoId, nomeProjeto);
-            return (
-              <li key={m.id}>
-                <Link
-                  href={`/membros/${m.id}`}
-                  className="flex h-full flex-col gap-3 rounded-xl border border-linha bg-white p-5 transition-colors hover:border-verde/60"
-                >
-                  <div className="flex items-start gap-3">
-                    <AvatarMembro nome={m.nome} github={m.github} />
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-start justify-between gap-2">
-                        <span className="truncate font-semibold">{m.nome}</span>
-                        {m.saiuEm && <Selo>Saiu em {m.saiuEm}</Selo>}
+        <div className="relative">
+          {/* no modo lista, as órbitas ficam atrás do topo da grade, à direita */}
+          <div aria-hidden="true" className="pointer-events-none absolute -top-40 right-0 h-[520px] w-[520px]" style={{ zIndex: -1 }}>
+            <Orbitas id="lista-membros" brilho={0.12} className="inset-0 w-full opacity-70" />
+          </div>
+          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {visiveis.map((m) => {
+              const { cargo, ic } = contexto(m, projetoId, nomeProjeto);
+              return (
+                <li key={m.id}>
+                  <Link
+                    href={`/membros/${m.id}`}
+                    className="flex h-full flex-col gap-3 rounded-xl border border-linha bg-white p-5 transition-colors hover:border-verde/60"
+                  >
+                    <div className="flex items-start gap-3">
+                      <AvatarMembro nome={m.nome} github={m.github} />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-start justify-between gap-2">
+                          <span className="truncate font-semibold">{m.nome}</span>
+                          {m.saiuEm && <Selo>Saiu em {m.saiuEm}</Selo>}
+                        </div>
+                        <p className="truncate text-sm text-gray-600">{cargo}</p>
+                        <p className="text-xs text-gray-500">No CITi desde {m.desde}</p>
                       </div>
-                      <p className="truncate text-sm text-gray-600">{cargo}</p>
-                      <p className="text-xs text-gray-500">No CITi desde {m.desde}</p>
                     </div>
-                  </div>
-                  <div className="mt-auto space-y-1.5">
-                    <div className="flex justify-between text-xs text-gray-600">
-                      <span>
-                        {m.projetos} {m.projetos === 1 ? "projeto" : "projetos"}
-                      </span>
-                      {ic && (
-                        <span className="dado">
-                          {projetoId ? "IC" : "maior IC"} {Math.round(ic.valor)}%
+                    <div className="mt-auto space-y-1.5">
+                      <div className="flex justify-between text-xs text-gray-600">
+                        <span>
+                          {m.projetos} {m.projetos === 1 ? "projeto" : "projetos"}
                         </span>
-                      )}
+                        {ic && (
+                          <span className="dado">
+                            {projetoId ? "IC" : "maior IC"} {Math.round(ic.valor)}%
+                          </span>
+                        )}
+                      </div>
+                      <div className="h-1.5 overflow-hidden rounded-full bg-branco/10" title={ic ? ic.rotulo : "Sem commits ainda"}>
+                        {ic && <div className="anima-barra h-full rounded-full bg-verde" style={{ width: `${ic.valor}%` }} />}
+                      </div>
                     </div>
-                    <div className="h-1.5 overflow-hidden rounded-full bg-branco/10" title={ic ? ic.rotulo : "Sem commits ainda"}>
-                      {ic && <div className="anima-barra h-full rounded-full bg-verde" style={{ width: `${ic.valor}%` }} />}
-                    </div>
-                  </div>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       )}
     </div>
   );
