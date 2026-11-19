@@ -9,7 +9,7 @@ import { hoje, somarDias } from "@/lib/hoje";
 import { confereConfirmacao, DIAS_NA_LIXEIRA, linhas, slug, validarProjeto, type ProjetoNovo } from "@/lib/novo-projeto";
 import { carregarCommits, carregarResumos, carregarTudo } from "@/data/carregar";
 import { montarBoletim } from "@/lib/boletim";
-import { destinatariosMascarados, enviarBoletim, enviarReuniao, eventoReuniao } from "@/lib/email";
+import { destinatarios, enviarBoletim, enviarReuniao, eventoReuniao } from "@/lib/email";
 import { linkGoogleAgenda, textoQuando, validarConvite, type Convite } from "@/lib/convite";
 
 const { clientes, commits, etapas, membrosProjeto, projetos, resumos, tasks } = esquema;
@@ -115,7 +115,7 @@ export async function enviarBoletimAgora(tema: unknown = "escuro"): Promise<{ en
     detalhe: e.message,
   }));
   if (!r.enviado) return { enviado: false, mensagem: `Não foi possível enviar: ${r.detalhe}.` };
-  return { enviado: true, mensagem: `Boletim enviado (tema ${temaEmail}) para ${destinatariosMascarados()}.` };
+  return { enviado: true, mensagem: `Boletim enviado (tema ${temaEmail}) para ${destinatarios()}.` };
 }
 
 /**
@@ -133,7 +133,7 @@ export async function marcarReuniao(convite: Convite): Promise<{ enviado: boolea
   const evento = eventoReuniao(b);
   return {
     enviado: true,
-    mensagem: `Convite para ${textoQuando(convite)} enviado para ${destinatariosMascarados()}.`,
+    mensagem: `Convite para ${textoQuando(convite)} enviado para ${destinatarios()}.`,
     agenda: linkGoogleAgenda(convite, evento.titulo, evento.detalhes),
   };
 }

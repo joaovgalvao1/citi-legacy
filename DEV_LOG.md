@@ -1152,3 +1152,5 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - **Janela:** abriu com 20/11 às 14h e 1h. Preenchi local e recado; os "p" digitados não dispararam a impressão.
 - **Envio:** um convite real foi enviado: "Convite para sex, 20/11 · 14h00 às 15h00 enviado para jv***@cin.ufpe.br."
 - **Link da agenda:** saiu com `dates=20261120T140000/20261120T150000`, `ctz=America/Recife` e o local.
+
+**Ajuste que pedi depois:** retirar o sigilo dos e-mails. Os destinatários agora aparecem por extenso ("jvgvg@cin.ufpe.br") na janela "Marcar reunião" e nas confirmações de envio do convite e do boletim. A função `destinatariosMascarados` virou `destinatarios`.

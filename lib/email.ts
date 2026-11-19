@@ -297,12 +297,11 @@ export function enviarReuniao(b: Boletim, projetos: Projeto[], convite?: Convite
   return enviarEmail(assuntoReuniao(b, convite), htmlReuniao(b, projetos, siteUrl(), convite));
 }
 
-/** Destinatários com o e-mail parcialmente oculto, para mostrar na tela ("jv***@cin.ufpe.br"). */
-export function destinatariosMascarados() {
+/** Destinatários configurados (BOLETIM_PARA), por extenso, para mostrar na tela. */
+export function destinatarios() {
   return (process.env.BOLETIM_PARA ?? "")
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean)
-    .map((e) => e.replace(/^(.{2})[^@]*/, "$1***"))
     .join(", ");
 }
