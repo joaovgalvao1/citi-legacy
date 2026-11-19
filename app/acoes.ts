@@ -103,14 +103,16 @@ export async function criarProjeto(p: ProjetoNovo): Promise<{ id: string } | { e
 /**
  * Envia agora o boletim semanal por e-mail (o mesmo do cron de sexta), para BOLETIM_PARA.
  * Os destinatários vêm só da configuração do servidor; a tela não escolhe para quem enviar.
+ * O e-mail sai no tema escolhido na tela do boletim (claro ou escuro).
  */
-export async function enviarBoletimAgora(): Promise<{ enviado: boolean; mensagem: string }> {
+export async function enviarBoletimAgora(tema: unknown = "escuro"): Promise<{ enviado: boolean; mensagem: string }> {
+  const temaEmail = tema === "claro" ? "claro" : "escuro";
   const { projetos } = await carregarTudo();
   const resumos = Object.fromEntries(await Promise.all(projetos.map(async (p) => [p.id, await carregarResumos(p.id)] as const)));
-  const r = await enviarBoletim(montarBoletim(projetos, resumos, await carregarCommits({}))).catch((e: Error) => ({
+  const r = await enviarBoletim(montarBoletim(projetos, resumos, await carregarCommits({})), temaEmail).catch((e: Error) => ({
     enviado: false,
     detalhe: e.message,
   }));
   if (!r.enviado) return { enviado: false, mensagem: `Não foi possível enviar: ${r.detalhe}.` };
-  return { enviado: true, mensagem: `Boletim enviado para ${destinatariosMascarados()}.` };
+  return { enviado: true, mensagem: `Boletim enviado (tema ${temaEmail}) para ${destinatariosMascarados()}.` };
 }

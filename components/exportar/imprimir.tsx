@@ -29,9 +29,23 @@ function assinar(avisar: () => void) {
 }
 
 /** Tema da folha: lembrado no navegador e marcado em <html data-tema-folha> (as cores estão em app/globals.css). */
-function useTemaDaFolha() {
+export function useTemaDaFolha() {
   // padrão: escuro (no servidor e na hidratação); no navegador, o tema guardado
   const tema = useSyncExternalStore(assinar, lerTema, () => "escuro" as Tema);
+  // link com ?tema=claro|escuro (ex.: botão do e-mail): adota esse tema e limpa a URL
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const pedido = url.searchParams.get("tema");
+    if (pedido !== "claro" && pedido !== "escuro") return;
+    try {
+      localStorage.setItem(CHAVE_TEMA, pedido);
+    } catch {
+      // sem armazenamento: segue o padrão
+    }
+    url.searchParams.delete("tema");
+    window.history.replaceState(window.history.state, "", url);
+    window.dispatchEvent(new Event(EVENTO));
+  }, []);
   useEffect(() => {
     document.documentElement.dataset.temaFolha = tema;
     return () => {

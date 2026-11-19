@@ -810,3 +810,18 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 **Verificação:**
 - **PDFs:** gerei os dois PDFs nos dois temas com um Chromium sem janela e conferi as páginas. As margens ficaram brancas no claro e uniformes no escuro.
 - **Navegador:** troquei o tema no boletim pela tela.
+
+### E-mail no mesmo tema do PDF (18/11)
+
+**O que pedi:** que o e-mail do boletim siga o modo escolhido (claro ou escuro).
+
+**O que a IA fez:**
+- **Cores:** o HTML do e-mail ganhou duas paletas, só com cores sólidas, porque leitores de e-mail lidam mal com transparência e gradiente. O e-mail também declara o esquema de cores, para o leitor não inverter as cores sozinho.
+- **Botão "Enviar por e-mail":** envia no tema selecionado na barra do boletim. A mensagem de confirmação diz qual tema foi.
+- **Cron de sexta:** envia no escuro, o padrão.
+- **Link "Ver o boletim em PDF":** leva `?tema=`, e a página abre no mesmo tema do e-mail.
+- **Script:** `npm run boletim:enviar` aceita `--tema claro|escuro`.
+
+**Verificação:**
+- **E-mail:** gerei o HTML nos dois temas, sem enviar, e conferi no navegador.
+- **Link:** abri `/exportar/boletim?tema=claro`. A folha ficou clara, o botão marcou "Claro" e a URL foi limpa.
