@@ -1271,3 +1271,10 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 - **Sugestão de caminho:** sem o `src/` fixo (`telas/**`). A dica do campo explica que são as pastas do repositório como estão no GitHub (ex.: `app/**`).
 
 **Verificação:** previsões recalculadas para 19/11; os 6 projetos de exemplo ficaram iguais, e o CITi Legacy deu 23/11.
+
+**Resumo da IA do projeto CITi Legacy (banco local):**
+- **Aviso da IA:** os resumos são semanais, e o painel, o boletim e a reunião usam a semana do resumo mais recente. Um resumo da semana 16/11 só para o CITi Legacy mudaria a semana de tudo e deixaria os outros projetos sem resumo.
+- **Escolha:** pedi a opção B, que gera a semana **16/11 a 22/11 para os 5 projetos em andamento** (5 pedidos à IA), como o cron de sexta faria.
+- **Execução:** o Gemini estava sobrecarregado (503) em 2 projetos, que caíram no resumo automático por regras. A IA esperou 30 s e refez só esses dois. Os 5 ficaram gerados pela IA.
+- **Resumo do CITi Legacy:** citou as 4 etapas concluídas e a "Entrega do desafio" com Documentação e Vídeo do pitch pendentes.
+- **Painel local:** passou para a semana 16/11 a 22/11 (5 projetos, 14 tasks e 77 commits, incluindo os 49 reais).
