@@ -1757,3 +1757,7 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
 - **Modo reunião:** 4 páginas com 2 slides cada, inteiros (antes cortava à direita).
 - **Boletim e PDF do projeto:** inteiros, em 3 e 2 páginas.
 - **Falta:** conferir num iPad de verdade.
+- **PDFs colados na borda (computador):**
+  - **Problema:** os PDFs do boletim e do projeto que gerei no Firefox saíram sem margem em cima, e o título "Legado · projetos concluídos" cortava no topo. A margem dependia do `@page`, que algumas opções de impressão ignoram.
+  - **Correção:** a margem de 12 mm em cima e embaixo agora é desenhada pela própria folha e repetida em cada página (`box-decoration-break: clone`, com `@page` sem margem). No Safari, que não tem esse recurso, continua valendo a margem do `@page`.
+  - **Verificação:** PDFs gerados no Chromium, com todas as páginas com margem.

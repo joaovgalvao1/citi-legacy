@@ -437,4 +437,18 @@ html:not([data-tema-folha="claro"]) .folha {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
   }
+  /* Margem de cima e de baixo desenhada pela própria folha e repetida em cada página
+     (box-decoration-break: clone), em vez de depender da margem do @page, que alguns navegadores
+     e opções de impressão ignoram (o PDF saía colado na borda). Onde não há suporte (Safari),
+     continua valendo a margem do @page acima. */
+  @supports (box-decoration-break: clone) {
+    @page {
+      margin: 0;
+    }
+    .folha {
+      padding-top: 12mm !important;
+      padding-bottom: 12mm !important;
+      box-decoration-break: clone;
+    }
+  }
 }
