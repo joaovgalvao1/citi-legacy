@@ -89,14 +89,6 @@ export function Estrutura({ children }: { children: ReactNode }) {
           ) : (
             usuario && (
               <nav className="flex items-center gap-0.5 text-sm sm:gap-1">
-                <Link
-                  href="/"
-                  aria-label="Página inicial"
-                  title="Página inicial"
-                  className="rounded-full p-1.5 text-gray-600 transition-colors hover:text-verde"
-                >
-                  <IconeCasa className="h-4 w-4" />
-                </Link>
                 {[
                   ["/projetos", "Projetos"],
                   ["/membros", "Membros"],
@@ -115,6 +107,14 @@ export function Estrutura({ children }: { children: ReactNode }) {
                     </Link>
                   );
                 })}
+                <Link
+                  href="/"
+                  aria-label="Página inicial"
+                  title="Página inicial"
+                  className="rounded-full p-1.5 text-gray-600 transition-colors hover:text-verde"
+                >
+                  <IconeCasa className="h-4 w-4" />
+                </Link>
                 <span className="mx-2 hidden h-5 w-px bg-gray-400 sm:block" aria-hidden="true" />
                 {/* no celular, só "Sair": o usuário fica escondido para caber numa linha */}
                 <span className="hidden items-center gap-1.5 text-gray-600 sm:flex">

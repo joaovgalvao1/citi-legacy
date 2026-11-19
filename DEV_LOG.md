@@ -1041,7 +1041,7 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 **O que pedi:** um símbolo de casa no cabeçalho, levando à página inicial (a entrada do site).
 
 **O que a IA fez:**
-- **Ícone:** casa em traço (`IconeCasa`) antes de "Projetos", com o rótulo "Página inicial" para leitores de tela.
+- **Ícone:** casa em traço (`IconeCasa`) à direita de "Membros" (pedi para mudar de lugar; antes ficava antes de "Projetos"), com o rótulo "Página inicial" para leitores de tela.
 - **Celular:** o ícone empurrava o botão Sair para fora da pílula, então o lockup ficou um pouco menor no celular (logo de 24 px e texto de 10 px). O tamanho no computador não mudou.
 
 **Verificação:** desktop e celular de 375 px, sem rolagem lateral.
