@@ -120,7 +120,7 @@ function CardAndamento({ p }: { p: ResumoProjeto }) {
       <div className="mt-auto flex items-center justify-between gap-3 pt-1">
         <div className="min-w-0">
           <p className={`dado text-sm font-semibold ${COR_TEXTO[p.previsao.tom]}`}>{p.previsao.texto}</p>
-          {p.gargalo && <p className="truncate text-xs text-gray-500">gargalo: {p.gargalo}</p>}
+          {p.gargalo && <p className="truncate text-xs text-gray-500">gargalo principal: {p.gargalo}</p>}
         </div>
         <Avatares membros={p.membros} />
       </div>

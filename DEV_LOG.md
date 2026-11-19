@@ -873,7 +873,7 @@ Escrevi um documento com as melhorias visuais e funcionalidades novas, em 5 bloc
 **O que mudou:**
 - **Mezzalira:** a Infra/Deploy passou a ter 2 tasks recentes, como a da Folhagem. A previsão ficou em 16/12, no prazo. O projeto segue em "Atenção" pelo motivo real: etapas paradas, em âmbar na barra.
 - **Barra:** uma etapa cuja previsão passa do prazo dela fica em âmbar (`nivelEtapa`). Vale para a barra dos cards e da Visão geral.
-- **Card:** mostra o gargalo ("gargalo: Financeiro") quando a previsão passa do prazo.
+- **Card:** mostra o gargalo ("gargalo principal: Financeiro") quando a previsão passa do prazo. O rótulo era "gargalo"; pedi "gargalo principal".
 - **Folhagem:** para continuar no prazo com a regra nova, os prazos fictícios de Estoque e de Pedidos foram adiados em uma semana (04/12 e 18/12).
 
 **Resultado:**
