@@ -1703,3 +1703,11 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
 **Verificação:**
 - **Tablet (768 px):** deslizar na horizontal girou 2 posições, e na vertical não girou.
 - **Perfil da Helena (1280 px):** conferido no navegador.
+- **iPad, segunda tentativa:**
+  - **Problema:** no site publicado, o iPad ainda não girava ao deslizar. O Safari do iOS não entregava os eventos de ponteiro do toque de forma confiável.
+  - **Correção:** o toque passou a usar eventos de toque nativos (`touchstart`, `touchmove`, `touchend`):
+    - o gesto se decide nos primeiros 6 px;
+    - na horizontal, gira a roda e bloqueia a rolagem só nesse gesto (`preventDefault` com listener não passivo);
+    - na vertical, deixa a página rolar.
+  - **Mouse e caneta:** continuam com os eventos de ponteiro.
+  - **Teste** (toques simulados, tablet de 768 px): na horizontal girou 2 posições e bloqueou a rolagem; na vertical não girou nem bloqueou; o arraste com mouse continua girando.

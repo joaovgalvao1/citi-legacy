@@ -52,9 +52,7 @@ export function Roda<T extends ItemRoda>({
   const [angulo, setAngulo] = useState(0);
   const [arrastando, setArrastando] = useState(false);
   const area = useRef<HTMLDivElement>(null);
-  const arrasto = useRef<{ x: number; y: number; ux: number; a0: number; base: number; moveu: boolean; id: number; toque: boolean } | null>(
-    null,
-  );
+  const arrasto = useRef<{ x: number; y: number; a0: number; base: number; moveu: boolean; id: number } | null>(null);
   const moveuAgora = useRef(false);
 
   const foco = mod(Math.round(-angulo / passo), Math.max(n, 1));
@@ -79,22 +77,71 @@ export function Roda<T extends ItemRoda>({
     return () => el.removeEventListener("wheel", aoRolar);
   }, [passo]);
 
+  // toque (celular/iPad): eventos de toque nativos, que o Safari do iOS sempre respeita.
+  // Deslizar na horizontal gira a roda (e bloqueia a rolagem só nesse gesto); na vertical, a página rola.
+  useEffect(() => {
+    const el = area.current;
+    if (!el) return;
+    let t: { x: number; y: number; ux: number; direcao: "h" | "v" | null } | null = null;
+    const inicio = (e: TouchEvent) => {
+      if (e.touches.length !== 1) return (t = null);
+      t = { x: e.touches[0].clientX, y: e.touches[0].clientY, ux: e.touches[0].clientX, direcao: null };
+    };
+    const mover = (e: TouchEvent) => {
+      if (!t) return;
+      const p = e.touches[0];
+      if (!t.direcao) {
+        const dx = p.clientX - t.x;
+        const dy = p.clientY - t.y;
+        if (Math.hypot(dx, dy) < 6) return;
+        t.direcao = Math.abs(dx) > Math.abs(dy) ? "h" : "v";
+        if (t.direcao === "h") {
+          moveuAgora.current = true;
+          setArrastando(true);
+        }
+      }
+      if (t.direcao !== "h") return;
+      e.preventDefault();
+      const raio = (el.getBoundingClientRect().width * RAIO_MAX) / 100;
+      const delta = ((p.clientX - t.ux) / raio) * (180 / Math.PI);
+      t.ux = p.clientX;
+      setAngulo((a) => a + delta);
+    };
+    const fim = () => {
+      if (t?.direcao === "h") {
+        setArrastando(false);
+        setAngulo((a) => Math.round(a / passo) * passo);
+        setTimeout(() => (moveuAgora.current = false), 0);
+      }
+      t = null;
+    };
+    el.addEventListener("touchstart", inicio, { passive: true });
+    el.addEventListener("touchmove", mover, { passive: false });
+    el.addEventListener("touchend", fim);
+    el.addEventListener("touchcancel", fim);
+    return () => {
+      el.removeEventListener("touchstart", inicio);
+      el.removeEventListener("touchmove", mover);
+      el.removeEventListener("touchend", fim);
+      el.removeEventListener("touchcancel", fim);
+    };
+  }, [passo]);
+
   const anguloDoPonteiro = (x: number, y: number) => {
     const r = area.current!.getBoundingClientRect();
     return (Math.atan2(y - (r.top + r.height / 2), x - (r.left + r.width / 2)) * 180) / Math.PI;
   };
 
   function aoApertar(e: PointerEvent<HTMLDivElement>) {
-    if (e.button !== 0) return;
+    // toque é tratado pelos eventos de toque nativos (mais confiáveis no iOS); aqui só mouse e caneta
+    if (e.button !== 0 || e.pointerType === "touch") return;
     arrasto.current = {
       x: e.clientX,
       y: e.clientY,
-      ux: e.clientX,
       a0: anguloDoPonteiro(e.clientX, e.clientY),
       base: angulo,
       moveu: false,
       id: e.pointerId,
-      toque: e.pointerType !== "mouse",
     };
     moveuAgora.current = false;
   }
@@ -105,26 +152,13 @@ export function Roda<T extends ItemRoda>({
     if (e.pointerType === "mouse" && e.buttons === 0) return aoSoltar();
     if (!d.moveu) {
       if (Math.hypot(e.clientX - d.x, e.clientY - d.y) < 6) return;
-      // no toque, gesto mais vertical é rolagem da página (touch-action: pan-y), não giro
-      if (d.toque && Math.abs(e.clientY - d.y) > Math.abs(e.clientX - d.x)) {
-        arrasto.current = null;
-        return;
-      }
       d.moveu = true;
       moveuAgora.current = true;
       setArrastando(true);
       area.current?.setPointerCapture(d.id); // só captura depois de mover, para o clique no avatar continuar funcionando
     }
-    let delta: number;
-    if (d.toque) {
-      // no toque, deslizar para os lados gira a roda (como arrastar o avatar do topo pela borda)
-      const raio = (area.current!.getBoundingClientRect().width * RAIO_MAX) / 100;
-      delta = ((e.clientX - d.ux) / raio) * (180 / Math.PI);
-      d.ux = e.clientX;
-    } else {
-      delta = anguloDoPonteiro(e.clientX, e.clientY) - d.a0;
-      delta = mod(delta + 180, 360) - 180;
-    }
+    let delta = anguloDoPonteiro(e.clientX, e.clientY) - d.a0;
+    delta = mod(delta + 180, 360) - 180;
     d.a0 += delta;
     d.base += delta;
     setAngulo(d.base);
