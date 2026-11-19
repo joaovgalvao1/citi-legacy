@@ -1,21 +1,15 @@
-// Exportar em PDF: no Safari (iPad, iPhone e Mac) o PDF é gerado no servidor (app/api/pdf), porque
-// a impressão do Safari força A4 com margens brancas e cabeçalho/rodapé próprios e ignora o 16:9 dos
-// slides. Nos outros navegadores, a impressão do próprio navegador ("Salvar como PDF"), que é instantânea
-// e já sai igual ao PDF do servidor.
+// Exportar em PDF: em todos os navegadores (computador, iPad e celular) o PDF é gerado no servidor
+// (app/api/pdf), por um Chromium sem tela que abre a própria página de exportação. Assim o arquivo sai
+// sempre igual: slides em 16:9 e folhas A4 com o fundo até a borda, sem depender da impressão de cada
+// navegador (o Firefox e o Safari tratavam margens, tamanho de página e fundo cada um de um jeito).
 
-/** Safari de verdade (o Chrome e o Edge também dizem "Safari" no userAgent, por isso o filtro). */
-export function ehSafari() {
-  if (typeof navigator === "undefined") return false;
-  const ua = navigator.userAgent;
-  return /Safari/i.test(ua) && !/Chrome|Chromium|CriOS|FxiOS|EdgiOS|Edg|OPR|Android/i.test(ua);
-}
-
-export function exportarPdf(
-  pedido: { pagina: "reuniao" } | { pagina: "boletim"; tema: string } | { pagina: "projeto"; id: string; tema: string },
-) {
-  if (!ehSafari()) return window.print();
-  const q = new URLSearchParams(pedido as Record<string, string>);
-  // abre o PDF pronto (no iPad, com o botão de compartilhar para salvar em Arquivos ou enviar)
+export function exportarPdf(pedido: { pagina: "reuniao" } | { pagina: "boletim"; tema: string } | { pagina: "projeto"; id: string; tema: string }) {
+  const url = `/api/pdf?${new URLSearchParams(pedido as Record<string, string>).toString()}`;
+  // abre o PDF pronto numa aba nova (no iPad, com o botão de compartilhar para salvar ou enviar);
+  // se o navegador bloquear a aba, abre na mesma
+  // (sem "noopener" na chamada: com ele o window.open sempre devolve null e não daria para saber se abriu)
+  const aba = window.open(url, "_blank");
+  if (aba) aba.opener = null;
   // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- é um arquivo (rota de API), não uma página
-  window.location.href = `/api/pdf?${q.toString()}`;
+  else window.location.href = url;
 }

@@ -92,7 +92,7 @@ export function BarraDeImpressao({ voltar, rotuloVoltar, acoes }: { voltar: stri
         ← {rotuloVoltar}
       </Link>
       <div className="flex flex-wrap items-start gap-3">
-        <span className="hidden self-center text-xs text-gray-500 lg:inline">Na janela de impressão, escolha “Salvar como PDF”.</span>
+        <span className="hidden self-center text-xs text-gray-500 lg:inline">O PDF é gerado e abre numa aba nova.</span>
         <BotaoTema tema={tema} alternar={alternar} />
         {acoes}
         <button

@@ -1794,3 +1794,7 @@ A melhora deve ser bem maior em computadores e celulares mais fracos.
 - **Safari simulado (identificação de iPad):** os três botões pediram o PDF ao servidor.
 - **Build de produção:** passou, com os binários do Chromium rastreados para a função.
 - **Falta:** testar na Vercel e no iPad depois do push.
+- **Mesmo modelo no computador:**
+  - **O que pedi:** no Firefox, o PDF pela impressão continuava com problema. Pedi para usar o PDF do servidor também no computador.
+  - **O que mudou:** todos os navegadores passaram a usar o PDF gerado no servidor, que abre numa aba nova. A detecção de Safari foi removida e a dica da barra virou "O PDF é gerado e abre numa aba nova."
+  - **Verificação (Firefox):** os três botões abriram uma aba nova pedindo `/api/pdf`, e a página original continuou aberta.
